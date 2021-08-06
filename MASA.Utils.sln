@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31521.260
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D956582F-4071-47E6-A8E7-4C5A83770045}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution items", "{2852693E-7C18-4031-AF92-DA423BD0B3D8}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{AC4B880D-01C6-4D9C-AE55-21A1A0E5E3DB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASA.Utils.Configuration.Json", "src\Configuration\MASA.Utils.Configuration.Json\MASA.Utils.Configuration.Json.csproj", "{14A4C51E-4FE9-4BF2-BEC8-09B6F62F8870}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MASA.Utils.Configuration.Dcc", "src\Configuration\MASA.Utils.Configuration.Dcc\MASA.Utils.Configuration.Dcc.csproj", "{A7C78BBB-1DFA-4A8C-85FC-106198F96AFA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching", "Caching", "{A7C058C9-B4A3-472A-A82B-FC4A0A12AC9D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{14A4C51E-4FE9-4BF2-BEC8-09B6F62F8870}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14A4C51E-4FE9-4BF2-BEC8-09B6F62F8870}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14A4C51E-4FE9-4BF2-BEC8-09B6F62F8870}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14A4C51E-4FE9-4BF2-BEC8-09B6F62F8870}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7C78BBB-1DFA-4A8C-85FC-106198F96AFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7C78BBB-1DFA-4A8C-85FC-106198F96AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7C78BBB-1DFA-4A8C-85FC-106198F96AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7C78BBB-1DFA-4A8C-85FC-106198F96AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AC4B880D-01C6-4D9C-AE55-21A1A0E5E3DB} = {D956582F-4071-47E6-A8E7-4C5A83770045}
+		{14A4C51E-4FE9-4BF2-BEC8-09B6F62F8870} = {AC4B880D-01C6-4D9C-AE55-21A1A0E5E3DB}
+		{A7C78BBB-1DFA-4A8C-85FC-106198F96AFA} = {AC4B880D-01C6-4D9C-AE55-21A1A0E5E3DB}
+		{A7C058C9-B4A3-472A-A82B-FC4A0A12AC9D} = {D956582F-4071-47E6-A8E7-4C5A83770045}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D7DAA0E6-098F-4B18-8775-64FDA96F1FF0}
+	EndGlobalSection
+EndGlobal
