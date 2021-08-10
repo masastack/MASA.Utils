@@ -10,7 +10,7 @@ build:
   only:
     - branches
   script:
-    - dotnet build src
+    - dotnet build
   retry: 2
 
 tests:
@@ -18,7 +18,7 @@ tests:
   only:
     - branches
   script:
-    - dotnet test src --collect:"XPlat Code Coverage"
+    - dotnet test --collect:"XPlat Code Coverage"
   retry: 2
 
 nuget:
@@ -26,7 +26,7 @@ nuget:
   only:
     - branches
   script:
-    - dotnet build src
-    - dotnet pack src --include-symbols -p:PackageVersion=0.0.$CI_PIPELINE_ID
-    - dotnet nuget push "**/*.symbols.nupkg" --source gitlab
+    - dotnet build
+    - dotnet pack --include-symbols -p:PackageVersion=0.0.$CI_PIPELINE_ID
+    - dotnet nuget "**/*.symbols.nupkg" --source gitlab
   retry: 2
