@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31605.320
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31606.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D956582F-4071-47E6-A8E7-4C5A83770045}"
 EndProject
@@ -29,11 +29,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASA.Utils.Models.Config", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{F844C2A1-C36D-400E-A0D8-7658EF9C3B93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MASA.Utils.Data.DataAnnotations", "src\Data\MASA.Utils.Data.DataAnnotations\MASA.Utils.Data.DataAnnotations.csproj", "{98E5FEB6-71FA-43A5-9411-BE7C95B59AE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASA.Utils.Data.DataAnnotations", "src\Data\MASA.Utils.Data.DataAnnotations\MASA.Utils.Data.DataAnnotations.csproj", "{98E5FEB6-71FA-43A5-9411-BE7C95B59AE5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4F908878-0EB8-43E4-96E4-8B1F32E9B635}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4F908878-0EB8-43E4-96E4-8B1F32E9B635}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MASA.Utils.Data.DataAnnotations.Tests", "tests\MASA.Utils.Data.DataAnnotations.Tests\MASA.Utils.Data.DataAnnotations.Tests.csproj", "{1D6302D8-DA31-4782-A076-AC586A286253}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASA.Utils.Data.DataAnnotations.Tests", "test\MASA.Utils.Data.DataAnnotations.Tests\MASA.Utils.Data.DataAnnotations.Tests.csproj", "{1D6302D8-DA31-4782-A076-AC586A286253}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
