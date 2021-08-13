@@ -1,6 +1,6 @@
 ﻿
 namespace MASA.Utils.Models.Config;
-public class App
+public class AppConfig
 {
     public string AppId { get; set; }
 }
