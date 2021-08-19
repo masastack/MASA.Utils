@@ -10,9 +10,7 @@ namespace MASA.Utils.Configuration.Json
 {
     public class AppSettings
     {
-#pragma warning disable CS8618
-        private static JsonConfiguration _config;
-#pragma warning restore CS8618
+        private static JsonConfiguration _config = null!;
 
         public static bool Initialized => _config != null;
 

@@ -11,7 +11,7 @@ namespace MASA.Utils.Configuration.Json
         /// <summary>
         /// Path relative to the base path stored in Microsoft.Extensions.Configuration.IConfigurationBuilder.Properties of builder.
         /// </summary>
-        public string? FileName { get; set; }
+        public string FileName { get; set; } = null!;
 
         /// <summary>
         /// Whether the file is optional.
