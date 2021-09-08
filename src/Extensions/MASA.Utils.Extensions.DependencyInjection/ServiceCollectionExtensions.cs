@@ -8,7 +8,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services"></param>
     /// <param name="suffix">default is Service</param>
-    public static IServiceCollection AddServices(this IServiceCollection services, string suffix = "Service", bool autoFire = false)
+    public static IServiceCollection AddServices(this IServiceCollection services, string suffix, bool autoFire)
     {
         Assembly
             .GetCallingAssembly()
@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services"></param>
     /// <param name="suffix">default is Service</param>
-    public static IServiceCollection AddServices<TService>(this IServiceCollection services, bool autoFire = false)
+    public static IServiceCollection AddServices<TService>(this IServiceCollection services, bool autoFire)
     {
         var serviceType = typeof(TService);
 
