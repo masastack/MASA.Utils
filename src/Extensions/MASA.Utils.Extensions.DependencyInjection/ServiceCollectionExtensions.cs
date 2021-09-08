@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServices(this IServiceCollection services, string suffix, bool autoFire)
     {
         Assembly
-            .GetCallingAssembly()
+            .GetEntryAssembly()!
             .GetTypes()
             .Where(t => t.Name.EndsWith(suffix))
             .ToList()
@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
         var serviceType = typeof(TService);
 
         Assembly
-            .GetCallingAssembly()
+            .GetEntryAssembly()!
             .GetTypes()
             .Where(t => t.BaseType == serviceType)
             .ToList()
