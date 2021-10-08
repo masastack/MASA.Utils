@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class ServiceCollectionExtensions
@@ -10,14 +13,11 @@ public static class ServiceCollectionExtensions
     /// <param name="suffix">default is Service</param>
     public static IServiceCollection AddServices(this IServiceCollection services, string suffix, bool autoFire)
     {
-        Assembly
+        return Assembly
             .GetEntryAssembly()!
             .GetTypes()
             .Where(t => t.Name.EndsWith(suffix))
-            .ToList()
-            .ForEach(serviceType => AddScoped(services, serviceType, autoFire));
-
-        return services;
+            .AddScoped(services, autoFire);
     }
 
     /// <summary>
@@ -29,20 +29,27 @@ public static class ServiceCollectionExtensions
     {
         var serviceType = typeof(TService);
 
-        Assembly
+        return Assembly
             .GetEntryAssembly()!
             .GetTypes()
             .Where(t => t.BaseType == serviceType)
-            .ToList()
-            .ForEach(serviceType => AddScoped(services, serviceType, autoFire));
-
-        return services;
+            .AddScoped(services, autoFire);
     }
 
-    private static void AddScoped(IServiceCollection services, Type serviceType, bool autoFire)
+    private static IServiceCollection AddScoped(this IEnumerable<Type> serviceTypes, IServiceCollection services, bool autoFire)
     {
-        services.AddScoped(serviceType);
+        foreach (var serviceType in serviceTypes)
+        {
+            services.AddScoped(serviceType);
+        }
 
-        if (autoFire) services.BuildServiceProvider().GetService(serviceType);
+        if (autoFire)
+        {
+            foreach (var serviceType in serviceTypes)
+            {
+                services.BuildServiceProvider().GetService(serviceType);
+            }
+        }
+        return services;
     }
 }

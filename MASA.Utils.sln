@@ -35,7 +35,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4F908878-0
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASA.Utils.Data.DataAnnotations.Tests", "test\MASA.Utils.Data.DataAnnotations.Tests\MASA.Utils.Data.DataAnnotations.Tests.csproj", "{1D6302D8-DA31-4782-A076-AC586A286253}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MASA.Utils.Extensions.DependencyInjection", "src\Extensions\MASA.Utils.Extensions.DependencyInjection\MASA.Utils.Extensions.DependencyInjection.csproj", "{00E275C2-3B6A-4F48-AE0B-738AA669226D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASA.Utils.Extensions.DependencyInjection", "src\Extensions\MASA.Utils.Extensions.DependencyInjection\MASA.Utils.Extensions.DependencyInjection.csproj", "{00E275C2-3B6A-4F48-AE0B-738AA669226D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASA.Utils.Data.EntityFrameworkCore", "src\Data\MASA.Utils.Data.EntityFrameworkCore\MASA.Utils.Data.EntityFrameworkCore.csproj", "{66CE7FFE-E2DD-43EA-92DB-82A46D1B2215}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{00E275C2-3B6A-4F48-AE0B-738AA669226D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00E275C2-3B6A-4F48-AE0B-738AA669226D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00E275C2-3B6A-4F48-AE0B-738AA669226D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66CE7FFE-E2DD-43EA-92DB-82A46D1B2215}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66CE7FFE-E2DD-43EA-92DB-82A46D1B2215}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66CE7FFE-E2DD-43EA-92DB-82A46D1B2215}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66CE7FFE-E2DD-43EA-92DB-82A46D1B2215}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +94,7 @@ Global
 		{98E5FEB6-71FA-43A5-9411-BE7C95B59AE5} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
 		{1D6302D8-DA31-4782-A076-AC586A286253} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 		{00E275C2-3B6A-4F48-AE0B-738AA669226D} = {B2DA607D-4A39-4F0C-A9B3-DD9A061B0B4E}
+		{66CE7FFE-E2DD-43EA-92DB-82A46D1B2215} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7DAA0E6-098F-4B18-8775-64FDA96F1FF0}
