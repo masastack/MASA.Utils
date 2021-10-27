@@ -1,0 +1,12 @@
+global using MASA.Utils.Caching.Core.DependencyInjection;
+global using MASA.Utils.Caching.Core.Helpers;
+global using MASA.Utils.Caching.Core.Interfaces;
+global using MASA.Utils.Caching.Core.Models;
+global using MASA.Utils.Caching.DistributedMemory.Interfaces;
+global using MASA.Utils.Caching.DistributedMemory.Models;
+global using Microsoft.Extensions.Caching.Distributed;
+global using Microsoft.Extensions.Caching.Memory;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.DependencyInjection.Extensions;
+global using Microsoft.Extensions.Options;
+global using System.Collections.Concurrent;
