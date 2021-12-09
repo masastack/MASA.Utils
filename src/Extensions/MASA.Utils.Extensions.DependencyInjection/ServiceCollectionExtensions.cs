@@ -1,4 +1,5 @@
 namespace Microsoft.Extensions.DependencyInjection;
+
 public static class ServiceCollectionExtensions
 {
     /// <summary>
@@ -19,7 +20,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddServices(this IServiceCollection services, string suffix, bool autoFire, params Assembly[] assemblies)
         => (from type in assemblies.SelectMany(assembly => assembly.GetTypes())
-            where type.Name.EndsWith(suffix)
+            where !type.IsAbstract && type.Name.EndsWith(suffix)
             select type).AddScoped(services, autoFire);
 
     /// <summary>
@@ -45,7 +46,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddServices<TService>(this IServiceCollection services, bool autoFire, params Assembly[] assemblies)
         => (from type in assemblies.SelectMany(assembly => assembly.GetTypes())
-            where type.BaseType == typeof(TService)
+            where !type.IsAbstract && BaseOf<TService>(type)
             select type).AddScoped(services, autoFire);
 
     private static IServiceCollection AddScoped(this IEnumerable<Type> serviceTypes, IServiceCollection services, bool autoFire)
@@ -62,6 +63,14 @@ public static class ServiceCollectionExtensions
                 services.BuildServiceProvider().GetService(serviceType);
             }
         }
+
         return services;
+    }
+
+    private static bool BaseOf<T>(Type type)
+    {
+        if (type.BaseType == typeof(T)) return true;
+
+        return type.BaseType != null && BaseOf<T>(type.BaseType);
     }
 }
