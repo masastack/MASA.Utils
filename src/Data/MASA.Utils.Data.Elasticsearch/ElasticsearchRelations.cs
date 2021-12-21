@@ -4,7 +4,7 @@ public class ElasticsearchRelations
 {
     public bool IsDefault { get; private set; }
 
-    public string? Name { get; }
+    public string Name { get; }
 
     public Uri[] Nodes { get; }
 
@@ -14,7 +14,7 @@ public class ElasticsearchRelations
 
     internal ConnectionSettingsOptions ConnectionSettingsOptions { get; private set; }
 
-    public ElasticsearchRelations(string? name, bool useConnectionPool, Uri[] nodes)
+    public ElasticsearchRelations(string name, bool useConnectionPool, Uri[] nodes)
     {
         IsDefault = false;
         Name = name;

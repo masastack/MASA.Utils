@@ -3,7 +3,7 @@
 public class DefaultElasticsearchFactory : IElasticsearchFactory
 {
     private readonly List<ElasticsearchRelations> _relations;
-    private ConcurrentDictionary<string, IElasticClient> _elasticClients;
+    private readonly ConcurrentDictionary<string, IElasticClient> _elasticClients;
 
     public DefaultElasticsearchFactory()
     {
@@ -27,7 +27,7 @@ public class DefaultElasticsearchFactory : IElasticsearchFactory
         if (elasticsearchRelation == null)
             throw new Exception("The default ElasticClient is not found, please check if Elasticsearch is added");
 
-        return GetOrAddElasticClient(elasticsearchRelation.Name);
+        return GetOrAddElasticClient(elasticsearchRelation.Name ?? "");
     }
 
     public IElasticClient CreateElasticClient(string name)
