@@ -11,6 +11,16 @@ public class DefaultElasticsearchFactory : IElasticsearchFactory
         _elasticClients = new();
     }
 
+    public IMasaElasticClient CreateClient()
+    {
+        return new DefaultMasaElasticClient(CreateElasticClient());
+    }
+
+    public IMasaElasticClient CreateClient(string name)
+    {
+        return new DefaultMasaElasticClient(CreateElasticClient(name));
+    }
+
     public IElasticClient CreateElasticClient()
     {
         var elasticsearchRelation = _relations.SingleOrDefault(r => r.IsDefault) ?? _relations.FirstOrDefault();

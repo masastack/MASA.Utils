@@ -18,6 +18,12 @@ public static class ServiceCollectionExtensions
         }
 
         services.TryAddSingleton<IElasticsearchFactory, DefaultElasticsearchFactory>();
+        services.TryAddSingleton<IMasaElasticClient>(serviceProvider =>
+        {
+            var elasticClient = serviceProvider.GetRequiredService<IElasticsearchFactory>().CreateElasticClient();
+            return new DefaultMasaElasticClient(elasticClient);
+        });
+
         string? name = null;
         if (ElasticsearchRelations.All(r => r.Name != name))
         {
