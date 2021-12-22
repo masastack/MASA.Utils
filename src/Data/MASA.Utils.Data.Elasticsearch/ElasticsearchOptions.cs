@@ -1,6 +1,4 @@
-﻿using MASA.Utils.Data.Elasticsearch.Options;
-
-namespace MASA.Utils.Data.Elasticsearch;
+﻿namespace MASA.Utils.Data.Elasticsearch;
 
 public class ElasticsearchOptions
 {
@@ -10,11 +8,11 @@ public class ElasticsearchOptions
 
     internal string[] Nodes { get; set; }
 
-    internal StaticConnectionPoolOptions StaticConnectionPoolOptions { get; set; }
+    internal StaticConnectionPoolOptions StaticConnectionPoolOptions { get; }
 
-    internal ConnectionSettingsOptions ConnectionSettingsOptions { get; set; }
+    internal ConnectionSettingsOptions ConnectionSettingsOptions { get; }
 
-    public static ElasticsearchOptions Default = new ElasticsearchOptions();
+    internal Action<ConnectionSettings>? Action { get; private set; }
 
     public ElasticsearchOptions(params string[] nodes)
     {
@@ -31,6 +29,7 @@ public class ElasticsearchOptions
         this.UseConnectionPool = nodes.Length > 1;
         this.ConnectionSettingsOptions = new();
         this.StaticConnectionPoolOptions = new();
+        this.Action = null;
     }
 
     public ElasticsearchOptions UseNodes(params string[] nodes)
@@ -52,6 +51,12 @@ public class ElasticsearchOptions
     public ElasticsearchOptions UseDateTimeProvider(IDateTimeProvider dateTimeProvider)
     {
         this.StaticConnectionPoolOptions.UseDateTimeProvider(dateTimeProvider);
+        return this;
+    }
+
+    public ElasticsearchOptions UseConnectionSettings(Action<ConnectionSettings> action)
+    {
+        this.Action = action;
         return this;
     }
 }

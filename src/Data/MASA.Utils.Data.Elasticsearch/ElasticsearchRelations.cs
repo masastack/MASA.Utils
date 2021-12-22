@@ -10,9 +10,11 @@ public class ElasticsearchRelations
 
     public bool UseConnectionPool { get; }
 
-    internal StaticConnectionPoolOptions StaticConnectionPoolOptions { get; private set; }
+    internal StaticConnectionPoolOptions? StaticConnectionPoolOptions { get; private set; }
 
-    internal ConnectionSettingsOptions ConnectionSettingsOptions { get; private set; }
+    internal ConnectionSettingsOptions? ConnectionSettingsOptions { get; private set; }
+
+    internal Action<ConnectionSettings>? Action { get; private set; }
 
     public ElasticsearchRelations(string name, bool useConnectionPool, Uri[] nodes)
     {
@@ -20,6 +22,9 @@ public class ElasticsearchRelations
         Name = name;
         UseConnectionPool = useConnectionPool;
         Nodes = nodes;
+        Action = null;
+        StaticConnectionPoolOptions = null;
+        ConnectionSettingsOptions = null;
     }
 
     public ElasticsearchRelations UseStaticConnectionPoolOptions(StaticConnectionPoolOptions staticConnectionPoolOptions)
@@ -31,6 +36,12 @@ public class ElasticsearchRelations
     public ElasticsearchRelations UseConnectionSettingsOptions(ConnectionSettingsOptions connectionSettingsOptions)
     {
         ConnectionSettingsOptions = connectionSettingsOptions;
+        return this;
+    }
+
+    public ElasticsearchRelations UseConnectionSettings(Action<ConnectionSettings>? action)
+    {
+        Action = action;
         return this;
     }
 }

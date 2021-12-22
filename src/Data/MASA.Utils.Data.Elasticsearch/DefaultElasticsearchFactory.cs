@@ -65,10 +65,14 @@ public class DefaultElasticsearchFactory : IElasticsearchFactory
 
     private ConnectionSettings GetConnectionSettingsConnectionPool(ElasticsearchRelations relation)
     {
-        var pool = new StaticConnectionPool(relation.Nodes, relation.StaticConnectionPoolOptions.Randomize,
-            relation.StaticConnectionPoolOptions.DateTimeProvider);
-        var settings = new ConnectionSettings(pool, relation.ConnectionSettingsOptions.Connection,
-            relation.ConnectionSettingsOptions.SourceSerializerFactory, relation.ConnectionSettingsOptions.PropertyMappingProvider);
+        var pool = new StaticConnectionPool(relation.Nodes, relation.StaticConnectionPoolOptions?.Randomize??true,
+            relation.StaticConnectionPoolOptions?.DateTimeProvider);
+        var settings = new ConnectionSettings(pool, relation.ConnectionSettingsOptions?.Connection,
+            relation.ConnectionSettingsOptions?.SourceSerializerFactory, relation.ConnectionSettingsOptions?.PropertyMappingProvider);
+        if (relation.Action != null)
+        {
+            relation.Action.Invoke(settings);
+        }
         return settings;
     }
 }

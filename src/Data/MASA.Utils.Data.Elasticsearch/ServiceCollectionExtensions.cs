@@ -4,25 +4,15 @@ public static class ServiceCollectionExtensions
 {
     internal static List<ElasticsearchRelations> ElasticsearchRelations = new();
 
-    public static IServiceCollection AddElasticsearch(this IServiceCollection services, params string[] nodes)
-        => services.AddElasticsearch(options => { options.UseNodes(nodes); });
+    public static IServiceCollection AddElasticsearch(this IServiceCollection services, string[] nodes)
+        => services.AddElasticsearch(Const.DEFAULT_CLIENT_NAME, nodes);
 
-    public static IServiceCollection AddElasticsearch(this IServiceCollection services, Action<ElasticsearchOptions> action)
-        => services.AddElasticsearch(Const.DEFAULT_CLIENT_NAME, action);
+    public static IServiceCollection AddElasticsearch(this IServiceCollection services, string name, params string[] nodes)
+        => services.AddElasticsearch(name, options => options.UseNodes(nodes));
 
     public static IServiceCollection AddElasticsearch(this IServiceCollection services)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
-
-        services.TryAddSingleton<IElasticsearchFactory, DefaultElasticsearchFactory>();
-
-        services.TryAddSingleton(serviceProvider =>
-            serviceProvider.GetRequiredService<IElasticsearchFactory>().CreateElasticClient());
-
-        services.TryAddSingleton<IMasaElasticClient>(serviceProvider => new DefaultMasaElasticClient(serviceProvider.GetRequiredService<IElasticClient>()));
+        AddElasticsearchCore(services);
 
         string name = string.Empty;
         if (ElasticsearchRelations.All(r => r.Name != name))
@@ -40,11 +30,29 @@ public static class ServiceCollectionExtensions
             throw new ArgumentNullException(nameof(name));
         }
 
-        AddElasticsearch(services);
+        AddElasticsearchCore(services);
 
         ElasticsearchOptions options = new();
         action.Invoke(options);
         TryAddElasticsearchRelation(name, options);
+
+        return services;
+    }
+
+    public static IServiceCollection AddElasticsearchCore(this IServiceCollection services)
+    {
+        if (services == null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
+
+        services.TryAddSingleton<IElasticsearchFactory, DefaultElasticsearchFactory>();
+
+        services.TryAddSingleton(serviceProvider =>
+            serviceProvider.GetRequiredService<IElasticsearchFactory>().CreateElasticClient());
+
+        services.TryAddSingleton<IMasaElasticClient>(serviceProvider =>
+            new DefaultMasaElasticClient(serviceProvider.GetRequiredService<IElasticClient>()));
 
         return services;
     }
@@ -65,7 +73,8 @@ public static class ServiceCollectionExtensions
         Uri[] nodes = options.Nodes.Select(uriString => new Uri(uriString)).ToArray();
         ElasticsearchRelations relation = new ElasticsearchRelations(name, options.UseConnectionPool, nodes)
             .UseStaticConnectionPoolOptions(options.StaticConnectionPoolOptions)
-            .UseConnectionSettingsOptions(options.ConnectionSettingsOptions);
+            .UseConnectionSettingsOptions(options.ConnectionSettingsOptions)
+            .UseConnectionSettings(options.Action);
         ElasticsearchRelations.Add(relation);
     }
 }
