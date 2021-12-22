@@ -36,6 +36,15 @@ public interface IMasaElasticClient
 
     #region document manage
 
+    Task<Response.ExistsResponse> DocumentExistsAsync(
+        string documentId,
+        CancellationToken cancellationToken = default);
+
+    Task<Response.ExistsResponse> DocumentExistsAsync(
+        string indexName,
+        string documentId,
+        CancellationToken cancellationToken = default);
+
     Task<Response.CreateResponse> CreateDocumentAsync<TDocument>(
         TDocument document,
         string? documentId = null,
@@ -59,7 +68,7 @@ public interface IMasaElasticClient
     Task<Response.SearchResponse<TDocument>> GetListAsync<TDocument>(
         QueryOptions options,
         CancellationToken cancellationToken = default) where TDocument : class;
-    
+
     Task<SearchPaginatedResponse<TDocument>> GetPaginatedListAsync<TDocument>(
         PaginatedOptions options,
         CancellationToken cancellationToken = default) where TDocument : class;

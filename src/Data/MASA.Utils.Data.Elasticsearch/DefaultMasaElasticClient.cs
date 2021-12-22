@@ -90,7 +90,22 @@ public class DefaultMasaElasticClient : IMasaElasticClient
 
     #region document manage
 
-    public Task<Response.CreateResponse> CreateDocumentAsync<TDocument>(TDocument document,
+    public Task<Response.ExistsResponse> DocumentExistsAsync(
+        string documentId,
+        CancellationToken cancellationToken = default)
+        => DocumentExistsAsync(DefaultIndex, documentId, cancellationToken);
+
+    public async Task<Response.ExistsResponse> DocumentExistsAsync(
+        string indexName,
+        string documentId,
+        CancellationToken cancellationToken = default)
+    {
+        IDocumentExistsRequest request = new DocumentExistsRequest(indexName, documentId);
+        return new Response.ExistsResponse(await _elasticClient.DocumentExistsAsync(request, cancellationToken));
+    }
+
+    public Task<Response.CreateResponse> CreateDocumentAsync<TDocument>(
+        TDocument document,
         string? documentId = null,
         CancellationToken cancellationToken = default) where TDocument : class
         => CreateDocumentAsync(DefaultIndex, document, documentId, cancellationToken);
