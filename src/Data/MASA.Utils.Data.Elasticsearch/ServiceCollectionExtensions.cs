@@ -41,10 +41,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddElasticsearchCore(this IServiceCollection services)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
+        ArgumentNullException.ThrowIfNull(services);
 
         services.TryAddSingleton<IElasticsearchFactory, DefaultElasticsearchFactory>();
 

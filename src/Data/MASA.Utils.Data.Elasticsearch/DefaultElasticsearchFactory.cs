@@ -24,6 +24,7 @@ public class DefaultElasticsearchFactory : IElasticsearchFactory
     public IElasticClient CreateElasticClient()
     {
         var elasticsearchRelation = _relations.SingleOrDefault(r => r.IsDefault) ?? _relations.FirstOrDefault();
+
         if (elasticsearchRelation == null)
             throw new Exception("The default ElasticClient is not found, please check if Elasticsearch is added");
 

@@ -6,7 +6,7 @@ public class ElasticsearchOptions
 
     public bool UseConnectionPool { get; private set; }
 
-    internal string[] Nodes { get; set; }
+    internal string[] Nodes { get; private set; }
 
     internal StaticConnectionPoolOptions StaticConnectionPoolOptions { get; }
 
@@ -30,6 +30,12 @@ public class ElasticsearchOptions
         this.ConnectionSettingsOptions = new();
         this.StaticConnectionPoolOptions = new();
         this.Action = null;
+    }
+
+    public ElasticsearchOptions UseDefault()
+    {
+        this.IsDefault = true;
+        return this;
     }
 
     public ElasticsearchOptions UseNodes(params string[] nodes)

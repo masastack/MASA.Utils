@@ -4,12 +4,16 @@ public class DefaultMasaElasticClient : IMasaElasticClient
 {
     private readonly IElasticClient _elasticClient;
 
-    public string DefaultIndex => _elasticClient.ConnectionSettings.DefaultIndex;
+    public bool ExistDefaultIndex
+        => !string.IsNullOrWhiteSpace(_elasticClient.ConnectionSettings.DefaultIndex);
+
+    public string DefaultIndex
+        => ExistDefaultIndex
+            ? _elasticClient.ConnectionSettings.DefaultIndex
+            : throw new ArgumentNullException("The default IndexName is not set", nameof(DefaultIndex));
 
     public DefaultMasaElasticClient(IElasticClient elasticClient)
-    {
-        _elasticClient = elasticClient;
-    }
+        => _elasticClient = elasticClient;
 
     #region index manage
 
@@ -116,6 +120,59 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     {
         IDeleteRequest request = new DeleteRequest(indexName, new Id(documentId));
         return new Response.DeleteResponse(await _elasticClient.DeleteAsync(request, cancellationToken));
+    }
+
+    public async Task<Response.SearchResponse<TDocument>> GetListAsync<TDocument>(
+        QueryOptions options,
+        CancellationToken cancellationToken = default) where TDocument : class
+    {
+        var ret = await QueryString<TDocument>(
+            options.IndexName,
+            options.Skip,
+            options.Take,
+            options.Fields,
+            options.Query,
+            options.Operator,
+            cancellationToken);
+        return new Response.SearchResponse<TDocument>(ret);
+    }
+
+    public async Task<SearchPaginatedResponse<TDocument>> GetPaginatedListAsync<TDocument>(
+        PaginatedOptions options,
+        CancellationToken cancellationToken = default) where TDocument : class
+    {
+        var ret = await QueryString<TDocument>(
+            options.IndexName,
+            (options.Page - 1) * options.PageSize,
+            options.PageSize,
+            options.Fields,
+            options.Query,
+            options.Operator,
+            cancellationToken);
+        return new SearchPaginatedResponse<TDocument>(options.PageSize, ret);
+    }
+
+    private Task<ISearchResponse<TDocument>> QueryString<TDocument>(
+        string? indexName,
+        int skip,
+        int take,
+        string[] fields,
+        string query,
+        Operator @operator,
+        CancellationToken cancellationToken = default)
+        where TDocument : class
+    {
+        return _elasticClient.SearchAsync<TDocument>(s => s
+            .Index(indexName ?? DefaultIndex)
+            .From(skip)
+            .Size(take)
+            .Query(q => q
+                .QueryString(qs => qs
+                    .Fields(fields)
+                    .Query(query)
+                    .DefaultOperator(@operator)
+                )
+            ), cancellationToken);
     }
 
     #endregion

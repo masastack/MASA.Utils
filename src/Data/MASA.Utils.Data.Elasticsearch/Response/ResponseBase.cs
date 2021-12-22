@@ -12,7 +12,7 @@ public class ResponseBase
         Message = message;
     }
 
-    public ResponseBase(Nest.ResponseBase ret) : this(ret.IsValid, ret.IsValid ? "success" : ret.ServerError?.ToString() ?? "")
+    public ResponseBase(IResponse ret) : this(ret.IsValid, ret.IsValid ? "success" : ret.ServerError?.ToString() ?? "")
     {
     }
 }

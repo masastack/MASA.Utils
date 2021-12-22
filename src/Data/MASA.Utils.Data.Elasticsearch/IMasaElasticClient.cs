@@ -2,6 +2,8 @@
 
 public interface IMasaElasticClient
 {
+    bool ExistDefaultIndex { get; }
+
     string DefaultIndex { get; }
 
     #region index manage
@@ -53,6 +55,14 @@ public interface IMasaElasticClient
         string indexName,
         string documentId,
         CancellationToken cancellationToken = default);
+
+    Task<Response.SearchResponse<TDocument>> GetListAsync<TDocument>(
+        QueryOptions options,
+        CancellationToken cancellationToken = default) where TDocument : class;
+    
+    Task<SearchPaginatedResponse<TDocument>> GetPaginatedListAsync<TDocument>(
+        PaginatedOptions options,
+        CancellationToken cancellationToken = default) where TDocument : class;
 
     #endregion
 }
