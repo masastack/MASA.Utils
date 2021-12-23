@@ -2,12 +2,6 @@
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddElasticsearch(this IServiceCollection services, string[] nodes)
-        => services.AddElasticsearch(Const.DEFAULT_CLIENT_NAME, nodes);
-
-    public static IServiceCollection AddElasticsearch(this IServiceCollection services, string name, params string[] nodes)
-        => services.AddElasticsearch(name, options => options.UseNodes(nodes));
-
     public static IServiceCollection AddElasticsearch(this IServiceCollection services)
     {
         if (services.Any(service => service.ImplementationType == typeof(ElasticsearchService)))
@@ -22,7 +16,23 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection AddElasticsearch(this IServiceCollection services, string[] nodes)
+        => services.AddElasticsearch(Const.DEFAULT_CLIENT_NAME, nodes);
+
+    public static IServiceCollection AddElasticsearch(this IServiceCollection services, string name, params string[] nodes)
+        => services.AddElasticsearch(name, options => options.UseNodes(nodes));
+
     public static IServiceCollection AddElasticsearch(this IServiceCollection services, string name, Action<ElasticsearchOptions> action)
+    {
+        return services.AddElasticsearch(name, () =>
+        {
+            ElasticsearchOptions options = new();
+            action.Invoke(options);
+            return options;
+        });
+    }
+
+    public static IServiceCollection AddElasticsearch(this IServiceCollection services, string name, Func<ElasticsearchOptions> func)
     {
         if (string.IsNullOrEmpty(name))
         {
@@ -31,9 +41,7 @@ public static class ServiceCollectionExtensions
 
         AddElasticsearchCore(services);
 
-        ElasticsearchOptions options = new();
-        action.Invoke(options);
-        services.TryAddElasticsearchRelation(name, options);
+        services.TryAddElasticsearchRelation(name, func.Invoke());
 
         return services;
     }
