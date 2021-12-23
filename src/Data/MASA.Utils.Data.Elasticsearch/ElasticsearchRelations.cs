@@ -27,6 +27,12 @@ public class ElasticsearchRelations
         ConnectionSettingsOptions = null;
     }
 
+    public ElasticsearchRelations UseDefault()
+    {
+        IsDefault = true;
+        return this;
+    }
+
     public ElasticsearchRelations UseStaticConnectionPoolOptions(StaticConnectionPoolOptions staticConnectionPoolOptions)
     {
         StaticConnectionPoolOptions = staticConnectionPoolOptions;

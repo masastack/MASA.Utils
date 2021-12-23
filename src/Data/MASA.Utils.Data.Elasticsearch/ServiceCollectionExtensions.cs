@@ -1,6 +1,6 @@
 ﻿namespace MASA.Utils.Data.Elasticsearch;
 
-public static class ServiceCollectionExtensions
+public static partial class ServiceCollectionExtensions
 {
     public static IServiceCollection AddElasticsearch(this IServiceCollection services)
     {
@@ -72,7 +72,7 @@ public static class ServiceCollectionExtensions
             throw new ArgumentException($"The ElasticClient whose name is {name} is exist");
 
         if (options.IsDefault && relationsOptions.Relations.Any(r => r.IsDefault))
-            throw new ArgumentNullException("ElasticClient can only have one default");
+            throw new ArgumentNullException(nameof(ElasticsearchRelations.IsDefault),"ElasticClient can only have one default");
 
         relationsOptions.AddRelation(name, options);
     }

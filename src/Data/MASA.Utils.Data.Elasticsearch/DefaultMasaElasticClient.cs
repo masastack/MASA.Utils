@@ -10,7 +10,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     public string DefaultIndex
         => ExistDefaultIndex
             ? _elasticClient.ConnectionSettings.DefaultIndex
-            : throw new ArgumentNullException("The default IndexName is not set", nameof(DefaultIndex));
+            : throw new ArgumentNullException(nameof(DefaultIndex), "The default IndexName is not set");
 
     public DefaultMasaElasticClient(IElasticClient elasticClient)
         => _elasticClient = elasticClient;
