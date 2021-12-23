@@ -5,9 +5,9 @@ public class DefaultElasticsearchFactory : IElasticsearchFactory
     private readonly List<ElasticsearchRelations> _relations;
     private readonly ConcurrentDictionary<string, IElasticClient> _elasticClients;
 
-    public DefaultElasticsearchFactory()
+    public DefaultElasticsearchFactory(ElasticsearchRelationsOptions options)
     {
-        _relations = ServiceCollectionExtensions.ElasticsearchRelations;
+        _relations = options.Relations;
         _elasticClients = new();
     }
 

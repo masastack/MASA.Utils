@@ -1,0 +1,17 @@
+﻿namespace MASA.Utils.Data.Elasticsearch.Options;
+
+public class ElasticsearchRelationsOptions
+{
+    public List<ElasticsearchRelations> Relations = new();
+
+    public ElasticsearchRelationsOptions AddRelation(string name, ElasticsearchOptions options)
+    {
+        Uri[] nodes = options.Nodes.Select(uriString => new Uri(uriString)).ToArray();
+        ElasticsearchRelations relation = new ElasticsearchRelations(name, options.UseConnectionPool, nodes)
+            .UseStaticConnectionPoolOptions(options.StaticConnectionPoolOptions)
+            .UseConnectionSettingsOptions(options.ConnectionSettingsOptions)
+            .UseConnectionSettings(options.Action);
+        Relations.Add(relation);
+        return this;
+    }
+}

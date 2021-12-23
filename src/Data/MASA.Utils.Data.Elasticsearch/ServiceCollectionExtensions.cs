@@ -2,8 +2,6 @@
 
 public static class ServiceCollectionExtensions
 {
-    internal static List<ElasticsearchRelations> ElasticsearchRelations = new();
-
     public static IServiceCollection AddElasticsearch(this IServiceCollection services, string[] nodes)
         => services.AddElasticsearch(Const.DEFAULT_CLIENT_NAME, nodes);
 
@@ -12,13 +10,14 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddElasticsearch(this IServiceCollection services)
     {
+        if (services.Any(service => service.ImplementationType == typeof(ElasticsearchService)))
+            return services;
+
+        services.AddSingleton<ElasticsearchService>();
+
         AddElasticsearchCore(services);
 
-        string name = string.Empty;
-        if (ElasticsearchRelations.All(r => r.Name != name))
-        {
-            AddElasticsearchRelation(name, new ElasticsearchOptions());
-        }
+        services.TryAddElasticsearchRelation(string.Empty, new());
 
         return services;
     }
@@ -34,12 +33,12 @@ public static class ServiceCollectionExtensions
 
         ElasticsearchOptions options = new();
         action.Invoke(options);
-        TryAddElasticsearchRelation(name, options);
+        services.TryAddElasticsearchRelation(name, options);
 
         return services;
     }
 
-    public static IServiceCollection AddElasticsearchCore(this IServiceCollection services)
+    private static IServiceCollection AddElasticsearchCore(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
 
@@ -51,27 +50,26 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton<IMasaElasticClient>(serviceProvider =>
             new DefaultMasaElasticClient(serviceProvider.GetRequiredService<IElasticClient>()));
 
+        services.TryAddSingleton(new ElasticsearchRelationsOptions());
+
         return services;
     }
 
-    private static void TryAddElasticsearchRelation(string name, ElasticsearchOptions options)
+    private static void TryAddElasticsearchRelation(this IServiceCollection services, string name, ElasticsearchOptions options)
     {
-        if (ElasticsearchRelations.Any(r => r.Name == name))
+        var serviceProvider = services.BuildServiceProvider();
+        var relationsOptions = serviceProvider.GetRequiredService<ElasticsearchRelationsOptions>();
+
+        if (relationsOptions.Relations.Any(r => r.Name == name))
             throw new ArgumentException($"The ElasticClient whose name is {name} is exist");
 
-        if (options.IsDefault && ElasticsearchRelations.Any(r => r.IsDefault))
+        if (options.IsDefault && relationsOptions.Relations.Any(r => r.IsDefault))
             throw new ArgumentNullException("ElasticClient can only have one default");
 
-        AddElasticsearchRelation(name, options);
+        relationsOptions.AddRelation(name, options);
     }
 
-    private static void AddElasticsearchRelation(string name, ElasticsearchOptions options)
+    private class ElasticsearchService
     {
-        Uri[] nodes = options.Nodes.Select(uriString => new Uri(uriString)).ToArray();
-        ElasticsearchRelations relation = new ElasticsearchRelations(name, options.UseConnectionPool, nodes)
-            .UseStaticConnectionPoolOptions(options.StaticConnectionPoolOptions)
-            .UseConnectionSettingsOptions(options.ConnectionSettingsOptions)
-            .UseConnectionSettings(options.Action);
-        ElasticsearchRelations.Add(relation);
     }
 }
