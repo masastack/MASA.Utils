@@ -1,9 +1,7 @@
 ﻿namespace MASA.Utils.Data.Elasticsearch.Options.Document.Query;
 
-public class QueryBaseOptions
+public class QueryBaseOptions : DocumentOptions
 {
-    public string? IndexName { get; }
-
     public string[] Fields { get; }
 
     public string Query { get; }
@@ -15,9 +13,8 @@ public class QueryBaseOptions
     {
     }
 
-    public QueryBaseOptions(string? indexName, string[] fields, string query, Operator @operator = Operator.Or)
+    public QueryBaseOptions(string? indexName, string[] fields, string query, Operator @operator = Operator.Or) : base(indexName)
     {
-        IndexName = indexName;
         Fields = fields;
         Query = query;
         Operator = @operator;

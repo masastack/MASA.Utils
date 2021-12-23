@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Response;
+﻿namespace MASA.Utils.Data.Elasticsearch.Response.Index;
 
 public class CreateIndexResponse : ResponseBase
 {

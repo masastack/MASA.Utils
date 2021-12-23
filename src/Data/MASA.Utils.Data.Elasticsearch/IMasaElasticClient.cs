@@ -14,20 +14,20 @@ public interface IMasaElasticClient
         string indexName,
         CancellationToken cancellationToken = default);
 
-    Task<Response.CreateIndexResponse> CreateIndexAsync(
+    Task<Response.Index.CreateIndexResponse> CreateIndexAsync(
         CreateIndexOptions? options = null,
         CancellationToken cancellationToken = default);
 
-    Task<Response.CreateIndexResponse> CreateIndexAsync(
+    Task<Response.Index.CreateIndexResponse> CreateIndexAsync(
         string indexName,
         CreateIndexOptions? options = null,
         CancellationToken cancellationToken = default);
 
-    Task<Response.DeleteIndexResponse> DeleteIndexAsync(
+    Task<Response.Index.DeleteIndexResponse> DeleteIndexAsync(
         DeleteIndexOptions? options = null,
         CancellationToken cancellationToken = default);
 
-    Task<Response.DeleteIndexResponse> DeleteIndexAsync(
+    Task<Response.Index.DeleteIndexResponse> DeleteIndexAsync(
         string indexName,
         DeleteIndexOptions? options = null,
         CancellationToken cancellationToken = default);
@@ -37,33 +37,78 @@ public interface IMasaElasticClient
     #region document manage
 
     Task<Response.ExistsResponse> DocumentExistsAsync(
-        string documentId,
+        ExistDocumentRequest request,
         CancellationToken cancellationToken = default);
 
-    Task<Response.ExistsResponse> DocumentExistsAsync(
-        string indexName,
-        string documentId,
-        CancellationToken cancellationToken = default);
-
+    /// <summary>
+    /// Add a new document
+    /// only when the document does not exist
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TDocument"></typeparam>
+    /// <returns></returns>
     Task<Response.CreateResponse> CreateDocumentAsync<TDocument>(
-        TDocument document,
-        string? documentId = null,
+        CreateDocumentRequest<TDocument> request,
         CancellationToken cancellationToken = default) where TDocument : class;
 
-    Task<Response.CreateResponse> CreateDocumentAsync<TDocument>(
-        string indexName,
-        TDocument document,
-        string? documentId = null,
+    /// <summary>
+    /// Add new documents in batches
+    /// only when the documents do not exist
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TDocument"></typeparam>
+    /// <returns></returns>
+    Task<Response.CreateMultiResponse> CreateMultiDocumentAsync<TDocument>(
+        CreateMultiDocumentRequest<TDocument> request,
+        CancellationToken cancellationToken = default) where TDocument : class;
+
+    /// <summary>
+    /// Update or insert document
+    /// Overwrite if it exists, add new if it does not exist
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TDocument"></typeparam>
+    /// <returns></returns>
+    Task<SetResponse> SetDocumentAsync<TDocument>(
+        SetDocumentRequest<TDocument> request,
         CancellationToken cancellationToken = default) where TDocument : class;
 
     Task<Response.DeleteResponse> DeleteDocumentAsync(
-        string documentId,
+        DeleteDocumentRequest request,
         CancellationToken cancellationToken = default);
 
-    Task<Response.DeleteResponse> DeleteDocumentAsync(
-        string indexName,
-        string documentId,
+    Task<Response.DeleteMultiResponse> DeleteMultiDocumentAsync(
+        DeleteMultiDocumentRequest request,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Update the document
+    /// only if the document exists
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TDocument"></typeparam>
+    /// <returns></returns>
+    Task<UpdateResponse> UpdateDocumentAsync<TDocument>(
+        UpdateDocumentRequest<TDocument> request,
+        CancellationToken cancellationToken = default)
+        where TDocument : class;
+
+    /// <summary>
+    /// Update documents in batches
+    /// only when the documents exist
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <typeparam name="TDocument"></typeparam>
+    /// <returns></returns>
+    Task<UpdateMultiResponse> UpdateMultiDocumentAsync<TDocument>(
+        UpdateMultiDocumentRequest<TDocument> request,
+        CancellationToken cancellationToken = default)
+        where TDocument : class;
 
     Task<Response.SearchResponse<TDocument>> GetListAsync<TDocument>(
         QueryOptions options,
