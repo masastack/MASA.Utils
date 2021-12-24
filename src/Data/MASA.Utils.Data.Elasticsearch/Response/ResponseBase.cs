@@ -6,7 +6,7 @@ public class ResponseBase
 
     public string Message { get; }
 
-    private ResponseBase(bool isValid, string message)
+    protected ResponseBase(bool isValid, string message)
     {
         IsValid = isValid;
         Message = message;

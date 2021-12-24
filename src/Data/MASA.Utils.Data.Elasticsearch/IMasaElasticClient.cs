@@ -32,6 +32,17 @@ public interface IMasaElasticClient
         DeleteIndexOptions? options = null,
         CancellationToken cancellationToken = default);
 
+    Task<MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse> GetAliasAsync(
+        string? indexName = null,
+        CancellationToken cancellationToken = default);
+
+    Task<MASA.Utils.Data.Elasticsearch.Response.Alias.BulkAliasResponse> BindAliasAsync(
+        BindAliasIndexOptions options,
+        CancellationToken cancellationToken = default);
+
+    Task<MASA.Utils.Data.Elasticsearch.Response.Alias.BulkAliasResponse> UnBindAliasAsync(
+        UnBindAliasIndexOptions options,
+        CancellationToken cancellationToken = default);
     #endregion
 
     #region document manage
@@ -109,6 +120,14 @@ public interface IMasaElasticClient
         UpdateMultiDocumentRequest<TDocument> request,
         CancellationToken cancellationToken = default)
         where TDocument : class;
+
+    Task<Response.GetResponse<TDocument>> GetAsync<TDocument>(
+        GetDocumentRequest request,
+        CancellationToken cancellationToken = default) where TDocument : class;
+
+    Task<GetMultiResponse<TDocument>> GetMultiAsync<TDocument>(
+        GetMultiDocumentRequest request,
+        CancellationToken cancellationToken = default) where TDocument : class;
 
     Task<Response.SearchResponse<TDocument>> GetListAsync<TDocument>(
         QueryOptions<TDocument> options,
