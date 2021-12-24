@@ -111,11 +111,11 @@ public interface IMasaElasticClient
         where TDocument : class;
 
     Task<Response.SearchResponse<TDocument>> GetListAsync<TDocument>(
-        QueryOptions options,
+        QueryOptions<TDocument> options,
         CancellationToken cancellationToken = default) where TDocument : class;
 
     Task<SearchPaginatedResponse<TDocument>> GetPaginatedListAsync<TDocument>(
-        PaginatedOptions options,
+        PaginatedOptions<TDocument> options,
         CancellationToken cancellationToken = default) where TDocument : class;
 
     #endregion

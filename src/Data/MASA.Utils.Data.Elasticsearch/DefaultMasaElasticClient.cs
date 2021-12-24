@@ -125,7 +125,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     /// <param name="cancellationToken"></param>
     /// <typeparam name="TDocument"></typeparam>
     /// <returns></returns>
-    public async Task<Response.CreateMultiResponse> CreateMultiDocumentAsync<TDocument>(
+    public async Task<CreateMultiResponse> CreateMultiDocumentAsync<TDocument>(
         CreateMultiDocumentRequest<TDocument> request,
         CancellationToken cancellationToken = default) where TDocument : class
     {
@@ -140,7 +140,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         }
 
         var ret = await _elasticClient.BulkAsync(descriptor, cancellationToken);
-        return new Response.CreateMultiResponse(ret);
+        return new CreateMultiResponse(ret);
     }
 
     /// <summary>
@@ -177,7 +177,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         return new Response.DeleteResponse(await _elasticClient.DeleteAsync(newRequest, cancellationToken));
     }
 
-    public async Task<Response.DeleteMultiResponse> DeleteMultiDocumentAsync(
+    public async Task<DeleteMultiResponse> DeleteMultiDocumentAsync(
         DeleteMultiDocumentRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -208,17 +208,12 @@ public class DefaultMasaElasticClient : IMasaElasticClient
             return new UpdateResponse(ret);
         }
 
-        if (request.Request.PartialDocument != null)
-        {
-            IUpdateRequest<TDocument, object> newRequest =
-                new UpdateRequest<TDocument, object>(GetIndexName(request.IndexName), request.Request.DocumentId)
-                {
-                    Doc = request.Request.PartialDocument
-                };
-            return new UpdateResponse(await _elasticClient.UpdateAsync(newRequest, cancellationToken));
-        }
-
-        throw new NotSupportedException("Document is error");
+        IUpdateRequest<TDocument, object> newRequest =
+            new UpdateRequest<TDocument, object>(GetIndexName(request.IndexName), request.Request.DocumentId)
+            {
+                Doc = request.Request.PartialDocument!
+            };
+        return new UpdateResponse(await _elasticClient.UpdateAsync(newRequest, cancellationToken));
     }
 
     /// <summary>
@@ -238,8 +233,16 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         BulkDescriptor descriptor = new BulkDescriptor(indexName);
         foreach (var item in request.Items)
         {
+            if (item.Document != null)
+            {
+                descriptor
+                    .Update<TDocument>(opt => opt.Doc(item.Document)
+                        .Index(indexName)
+                        .Id(item.DocumentId));
+            }
+
             descriptor
-                .Update<TDocument>(opt => opt.Doc(item.Document)
+                .Update<TDocument, object>(opt => opt.Doc(item.PartialDocument!)
                     .Index(indexName)
                     .Id(item.DocumentId));
         }
@@ -249,31 +252,27 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     }
 
     public async Task<Response.SearchResponse<TDocument>> GetListAsync<TDocument>(
-        QueryOptions options,
+        QueryOptions<TDocument> options,
         CancellationToken cancellationToken = default) where TDocument : class
     {
-        var ret = await QueryString<TDocument>(
+        var ret = await QueryString(
             options.IndexName,
             options.Skip,
             options.Take,
-            options.Fields,
-            options.Query,
-            options.Operator,
+            options,
             cancellationToken);
         return new Response.SearchResponse<TDocument>(ret);
     }
 
     public async Task<SearchPaginatedResponse<TDocument>> GetPaginatedListAsync<TDocument>(
-        PaginatedOptions options,
+        PaginatedOptions<TDocument> options,
         CancellationToken cancellationToken = default) where TDocument : class
     {
-        var ret = await QueryString<TDocument>(
+        var ret = await QueryString(
             options.IndexName,
             (options.Page - 1) * options.PageSize,
             options.PageSize,
-            options.Fields,
-            options.Query,
-            options.Operator,
+            options,
             cancellationToken);
         return new SearchPaginatedResponse<TDocument>(options.PageSize, ret);
     }
@@ -282,9 +281,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         string? indexName,
         int skip,
         int take,
-        string[] fields,
-        string query,
-        Operator @operator,
+        QueryBaseOptions<TDocument> queryBaseOptions,
         CancellationToken cancellationToken = default)
         where TDocument : class
     {
@@ -293,12 +290,29 @@ public class DefaultMasaElasticClient : IMasaElasticClient
             .From(skip)
             .Size(take)
             .Query(q => q
-                .QueryString(qs => qs
-                    .Fields(fields)
-                    .Query(query)
-                    .DefaultOperator(@operator)
-                )
+                .QueryString(qs => GetQueryDescriptor(qs, queryBaseOptions))
             ), cancellationToken);
+    }
+
+    private static QueryStringQueryDescriptor<TDocument> GetQueryDescriptor<TDocument>(
+        QueryStringQueryDescriptor<TDocument> queryDescriptor,
+        QueryBaseOptions<TDocument> queryBaseOptions)
+        where TDocument : class
+    {
+        queryDescriptor = queryDescriptor.Query(queryBaseOptions.Query);
+        if (queryBaseOptions.DefaultField != null)
+        {
+            queryDescriptor.DefaultField(queryBaseOptions.DefaultField);
+        }
+
+        if (queryBaseOptions.Fields.Length > 0)
+        {
+            queryDescriptor.Fields(queryBaseOptions.Fields);
+        }
+
+        queryBaseOptions.Action?.Invoke(queryDescriptor);
+
+        return queryDescriptor;
     }
 
     #endregion

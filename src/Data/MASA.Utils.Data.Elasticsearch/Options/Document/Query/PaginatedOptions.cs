@@ -1,27 +1,28 @@
 ﻿namespace MASA.Utils.Data.Elasticsearch.Options.Document.Query;
 
-public class PaginatedOptions : QueryBaseOptions
+public class PaginatedOptions<TDocument> : QueryBaseOptions<TDocument>
+    where TDocument : class
 {
     public int Page { get; }
 
     public int PageSize { get; }
 
     public PaginatedOptions(
-        string[] fields,
         string query,
+        string defaultField,
         int page,
         int pageSize)
-        : this(null, fields, query, page, pageSize)
+        : this(null, query, defaultField, page, pageSize)
     {
     }
 
     public PaginatedOptions(
         string? indexName,
-        string[] fields,
         string query,
+        string defaultField,
         int page,
         int pageSize)
-        : base(indexName, fields, query)
+        : base(indexName, query, defaultField)
     {
         Page = page;
         PageSize = pageSize;

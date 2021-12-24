@@ -1,28 +1,39 @@
 ﻿namespace MASA.Utils.Data.Elasticsearch.Options.Document.Query;
 
-public class QueryBaseOptions : DocumentOptions
+public class QueryBaseOptions<TDocument> : DocumentOptions
+    where TDocument : class
 {
-    public string[] Fields { get; }
+    public string? DefaultField { get; }
+
+    public string[] Fields { get; private set; }
 
     public string Query { get; }
 
-    public Operator Operator { get; private set; }
+    public Operator Operator { get; set; }
 
-    public QueryBaseOptions(string[] fields, string query, Operator @operator = Operator.Or)
-        : this(null, fields, query, @operator)
+    public Action<QueryStringQueryDescriptor<TDocument>>? Action { get; set; }
+
+    public QueryBaseOptions(string query, string? defaultField = null, Operator @operator = Operator.Or)
+        : this(null, query, defaultField, @operator)
     {
     }
 
-    public QueryBaseOptions(string? indexName, string[] fields, string query, Operator @operator = Operator.Or) : base(indexName)
+    public QueryBaseOptions(string? indexName, string query, string? defaultField = null, Operator @operator = Operator.Or)
+        : base(indexName)
     {
-        Fields = fields;
+        DefaultField = defaultField;
+        Fields = Array.Empty<string>();
         Query = query;
         Operator = @operator;
     }
 
-    public QueryBaseOptions UseOperator(Operator @operator)
+
+    public QueryBaseOptions<TDocument> UseFields(params string[] fields)
     {
-        Operator = @operator;
+        if (string.IsNullOrEmpty(DefaultField))
+            throw new NotSupportedException("Does not support the assignment of DefaultField and Fields at the same time");
+
+        Fields = fields;
         return this;
     }
 }
