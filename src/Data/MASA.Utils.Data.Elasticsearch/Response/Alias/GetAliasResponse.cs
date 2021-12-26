@@ -4,14 +4,23 @@ public class GetAliasResponse : ResponseBase
 {
     public string[] Aliases { get; }
 
-    public GetAliasResponse(Nest.GetAliasResponse ret) : base(ret)
+    public GetAliasResponse(CatResponse<CatAliasesRecord> ret) : base(ret)
     {
-        if (ret.IsValid)
-        {
-            Aliases = ret.Indices
-                .Select(item => item.Value)
-                .SelectMany(indexAlias => indexAlias.Aliases)
-                .Select(alias => alias.Key).ToArray();
-        }
+        Aliases = ret.IsValid ? ret.Records.Select(r => r.Alias).ToArray() : Array.Empty<string>();
     }
+
+    // public GetAliasResponse(Nest.GetAliasResponse ret) : base(ret)
+    // {
+    //     if (ret.IsValid)
+    //     {
+    //         Aliases = ret.Indices
+    //             .Select(item => item.Value)
+    //             .SelectMany(indexAlias => indexAlias.Aliases)
+    //             .Select(alias => alias.Key).Distinct().ToArray();
+    //     }
+    //     else
+    //     {
+    //         Aliases = Array.Empty<string>();
+    //     }
+    // }
 }

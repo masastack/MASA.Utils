@@ -6,7 +6,11 @@ public class DeleteIndexResponse : ResponseBase
     {
     }
 
-    public DeleteIndexResponse(Nest.DeleteAliasResponse ret) : base(ret)
+    public DeleteIndexResponse(Nest.BulkAliasResponse ret) : base(ret)
+    {
+    }
+
+    public DeleteIndexResponse(string message) : base(false, message)
     {
     }
 }

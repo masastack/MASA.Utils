@@ -1,4 +1,6 @@
-﻿namespace MASA.Utils.Data.Elasticsearch;
+﻿using DeleteIndexResponse = MASA.Utils.Data.Elasticsearch.Response.Index.DeleteIndexResponse;
+
+namespace MASA.Utils.Data.Elasticsearch;
 
 public interface IMasaElasticClient
 {
@@ -8,14 +10,8 @@ public interface IMasaElasticClient
 
     #region index manage
 
-    Task<Response.ExistsResponse> IndexExistAsync(CancellationToken cancellationToken = default);
-
     Task<Response.ExistsResponse> IndexExistAsync(
-        string indexName,
-        CancellationToken cancellationToken = default);
-
-    Task<Response.Index.CreateIndexResponse> CreateIndexAsync(
-        CreateIndexOptions? options = null,
+        string? indexName = null,
         CancellationToken cancellationToken = default);
 
     Task<Response.Index.CreateIndexResponse> CreateIndexAsync(
@@ -23,16 +19,30 @@ public interface IMasaElasticClient
         CreateIndexOptions? options = null,
         CancellationToken cancellationToken = default);
 
-    Task<Response.Index.DeleteIndexResponse> DeleteIndexAsync(
-        DeleteIndexOptions? options = null,
+    Task<DeleteIndexResponse> DeleteIndexAsync(string? indexName = null,
         CancellationToken cancellationToken = default);
 
-    Task<Response.Index.DeleteIndexResponse> DeleteIndexAsync(
-        string indexName,
-        DeleteIndexOptions? options = null,
+    Task<Response.Index.DeleteIndexResponse> DeleteMultiIndexAsync(
+        string[] indexNames,
         CancellationToken cancellationToken = default);
 
-    Task<MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse> GetAliasAsync(
+    Task<Response.Index.DeleteIndexResponse> DeleteIndexByAliasAsync(
+        string alias,
+        CancellationToken cancellationToken = default);
+
+    Task<Response.Index.GetIndexResponse> GetAllIndexAsync(CancellationToken cancellationToken);
+
+    Task<Response.Index.GetIndexByAliasResponse> GetIndexByAliasAsync(
+        string alias,
+        CancellationToken cancellationToken);
+
+    #endregion
+
+    #region alias manage
+
+    Task<MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse> GetAllAliasAsync(CancellationToken cancellationToken = default);
+
+    Task<MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse> GetAliasByIndexAsync(
         string? indexName = null,
         CancellationToken cancellationToken = default);
 
@@ -43,6 +53,7 @@ public interface IMasaElasticClient
     Task<MASA.Utils.Data.Elasticsearch.Response.Alias.BulkAliasResponse> UnBindAliasAsync(
         UnBindAliasIndexOptions options,
         CancellationToken cancellationToken = default);
+
     #endregion
 
     #region document manage
