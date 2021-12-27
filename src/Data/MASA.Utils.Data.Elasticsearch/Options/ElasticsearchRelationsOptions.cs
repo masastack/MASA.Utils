@@ -2,7 +2,7 @@
 
 public class ElasticsearchRelationsOptions
 {
-    public List<ElasticsearchRelations> Relations = new();
+    internal List<ElasticsearchRelations> Relations = new();
 
     public ElasticsearchRelationsOptions AddRelation(string name, ElasticsearchOptions options)
     {

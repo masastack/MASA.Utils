@@ -1,6 +1,4 @@
-﻿using DeleteIndexResponse = MASA.Utils.Data.Elasticsearch.Response.Index.DeleteIndexResponse;
-
-namespace MASA.Utils.Data.Elasticsearch;
+﻿namespace MASA.Utils.Data.Elasticsearch;
 
 public class DefaultMasaElasticClient : IMasaElasticClient
 {
@@ -39,7 +37,6 @@ public class DefaultMasaElasticClient : IMasaElasticClient
             request.Aliases = options.Aliases;
             request.Mappings = options.Mappings;
         }
-
         return new Response.Index.CreateIndexResponse(await _elasticClient.Indices.CreateAsync(request, cancellationToken));
     }
 
@@ -75,7 +72,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
             return await DeleteMultiIndexAsync(ret.IndexNames, cancellationToken);
         }
 
-        return new DeleteIndexResponse(ret.Message);
+        return new MASA.Utils.Data.Elasticsearch.Response.Index.DeleteIndexResponse(ret.Message);
     }
 
     public async Task<Response.Index.GetIndexResponse> GetAllIndexAsync(CancellationToken cancellationToken)
@@ -108,8 +105,8 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         string? indexName = null,
         CancellationToken cancellationToken = default)
     {
-        ICatAliasesRequest request = new CatAliasesRequest(GetIndex(indexName));
-        var ret = await _elasticClient.Cat.AliasesAsync(request, cancellationToken);
+        IGetAliasRequest request = new GetAliasRequest(GetIndices(indexName));
+        var ret = await _elasticClient.Indices.GetAliasAsync(request, cancellationToken);
         return new MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse(ret);
     }
 

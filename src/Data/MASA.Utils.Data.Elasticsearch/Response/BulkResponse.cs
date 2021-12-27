@@ -11,6 +11,9 @@ public class BulkResponse : ResponseBase
 
     public class BulkResponseItems
     {
+        /// <summary>
+        /// The id of the document for the bulk operation
+        /// </summary>
         public string Id { get; }
 
         public bool IsValid { get; }
