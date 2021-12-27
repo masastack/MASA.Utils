@@ -1,6 +1,4 @@
-﻿using DeleteIndexResponse = MASA.Utils.Data.Elasticsearch.Response.Index.DeleteIndexResponse;
-
-namespace MASA.Utils.Data.Elasticsearch;
+﻿namespace MASA.Utils.Data.Elasticsearch;
 
 public interface IMasaElasticClient
 {
@@ -19,7 +17,7 @@ public interface IMasaElasticClient
         CreateIndexOptions? options = null,
         CancellationToken cancellationToken = default);
 
-    Task<DeleteIndexResponse> DeleteIndexAsync(string? indexName = null,
+    Task<MASA.Utils.Data.Elasticsearch.Response.Index.DeleteIndexResponse> DeleteIndexAsync(string? indexName = null,
         CancellationToken cancellationToken = default);
 
     Task<Response.Index.DeleteIndexResponse> DeleteMultiIndexAsync(
