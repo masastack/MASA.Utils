@@ -18,7 +18,8 @@ public class MemoryCacheClient : IMemoryCacheClient
     /// <param name="distributedClient">The distributed client.</param>
     /// <param name="subscribeKeyType">The type of subscribe key.</param>
     /// <param name="subscribeKeyPrefix">The prefix of subscribe key.</param>
-    public MemoryCacheClient(IMemoryCache cache, IDistributedCacheClient distributedClient, SubscribeKeyTypes subscribeKeyType, string subscribeKeyPrefix = "")
+    public MemoryCacheClient(IMemoryCache cache, IDistributedCacheClient distributedClient, SubscribeKeyTypes subscribeKeyType,
+        string subscribeKeyPrefix = "")
     {
         _cache = cache;
         _distributedClient = distributedClient;
@@ -28,14 +29,14 @@ public class MemoryCacheClient : IMemoryCacheClient
     }
 
     /// <inheritdoc />
-    public T Get<T>(string key)
+    public T? Get<T>(string key)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
 
         var formattedKey = FormatMemoryCacheKey<T>(key);
 
-        if (!_cache.TryGetValue(formattedKey, out T value))
+        if (!_cache.TryGetValue(formattedKey, out T? value))
         {
             value = _distributedClient.Get<T>(key);
 
@@ -50,14 +51,14 @@ public class MemoryCacheClient : IMemoryCacheClient
     }
 
     /// <inheritdoc />
-    public async Task<T> GetAsync<T>(string key)
+    public async Task<T?> GetAsync<T>(string key)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
 
         var formattedKey = FormatMemoryCacheKey<T>(key);
 
-        if (!_cache.TryGetValue(formattedKey, out T value))
+        if (!_cache.TryGetValue(formattedKey, out T? value))
         {
             value = await _distributedClient.GetAsync<T>(key);
 
@@ -72,14 +73,14 @@ public class MemoryCacheClient : IMemoryCacheClient
     }
 
     /// <inheritdoc />
-    public T Get<T>(string key, Action<T> valueChanged)
+    public T? Get<T>(string key, Action<T?> valueChanged)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
 
         var formattedKey = FormatMemoryCacheKey<T>(key);
 
-        if (!_cache.TryGetValue(formattedKey, out T value))
+        if (!_cache.TryGetValue(formattedKey, out T? value))
         {
             value = _distributedClient.Get<T>(key);
 
@@ -97,14 +98,14 @@ public class MemoryCacheClient : IMemoryCacheClient
     }
 
     /// <inheritdoc />
-    public async Task<T> GetAsync<T>(string key, Action<T> valueChanged)
+    public async Task<T?> GetAsync<T>(string key, Action<T?> valueChanged)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
 
         var formattedKey = FormatMemoryCacheKey<T>(key);
 
-        if (!_cache.TryGetValue(formattedKey, out T value))
+        if (!_cache.TryGetValue(formattedKey, out T? value))
         {
             value = await _distributedClient.GetAsync<T>(key);
 
@@ -112,7 +113,7 @@ public class MemoryCacheClient : IMemoryCacheClient
 
             var channel = FormatSubscribeChannel<T>(key);
 
-            Subscribe(channel, new CombinedCacheEntryOptions<T>
+            Subscribe(channel, new CombinedCacheEntryOptions<T?>
             {
                 ValueChanged = valueChanged
             });
@@ -122,7 +123,7 @@ public class MemoryCacheClient : IMemoryCacheClient
     }
 
     /// <inheritdoc />
-    public IEnumerable<T> GetList<T>(string[] keys)
+    public IEnumerable<T?> GetList<T>(string[] keys)
     {
         if (keys == null)
             throw new ArgumentNullException(nameof(keys));
@@ -135,7 +136,7 @@ public class MemoryCacheClient : IMemoryCacheClient
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<T>> GetListAsync<T>(string[] keys)
+    public async Task<IEnumerable<T?>> GetListAsync<T>(string[] keys)
     {
         if (keys == null)
             throw new ArgumentNullException(nameof(keys));
@@ -147,7 +148,7 @@ public class MemoryCacheClient : IMemoryCacheClient
     }
 
     /// <inheritdoc />
-    public T GetOrSet<T>(string key, Func<T> setter, CombinedCacheEntryOptions<T> options = null)
+    public T? GetOrSet<T>(string key, Func<T> setter, CombinedCacheEntryOptions<T?>? options = null)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
@@ -157,7 +158,7 @@ public class MemoryCacheClient : IMemoryCacheClient
 
         var formattedKey = FormatMemoryCacheKey<T>(key);
 
-        if (!_cache.TryGetValue(formattedKey, out T value))
+        if (!_cache.TryGetValue(formattedKey, out T? value))
         {
             value = _distributedClient.GetOrSet(key, setter, options);
 
@@ -177,17 +178,15 @@ public class MemoryCacheClient : IMemoryCacheClient
     }
 
     /// <inheritdoc />
-    public async Task<T> GetOrSetAsync<T>(string key, Func<T> setter, CombinedCacheEntryOptions<T> options = null)
+    public async Task<T?> GetOrSetAsync<T>(string key, Func<T> setter, CombinedCacheEntryOptions<T>? options = null)
     {
-        if (key == null)
-            throw new ArgumentNullException(nameof(key));
+        ArgumentNullException.ThrowIfNull(key, nameof(key));
 
-        if (setter == null)
-            throw new ArgumentNullException(nameof(setter));
+        ArgumentNullException.ThrowIfNull(setter, nameof(setter));
 
         var formattedKey = FormatMemoryCacheKey<T>(key);
 
-        if (!_cache.TryGetValue(key, out T value))
+        if (!_cache.TryGetValue(key, out T? value))
         {
             value = await _distributedClient.GetOrSetAsync(key, setter, options);
 
@@ -225,7 +224,7 @@ public class MemoryCacheClient : IMemoryCacheClient
     }
 
     /// <inheritdoc />
-    public void Set<T>(string key, T value, CombinedCacheEntryOptions<T> options = null)
+    public void Set<T>(string key, T value, CombinedCacheEntryOptions<T>? options = null)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
@@ -241,7 +240,7 @@ public class MemoryCacheClient : IMemoryCacheClient
     }
 
     /// <inheritdoc />
-    public async Task SetAsync<T>(string key, T value, CombinedCacheEntryOptions<T> options = null)
+    public async Task SetAsync<T>(string key, T value, CombinedCacheEntryOptions<T>? options = null)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
@@ -257,35 +256,25 @@ public class MemoryCacheClient : IMemoryCacheClient
     }
 
     /// <inheritdoc />
-    public void SetList<T>(Dictionary<string, T> keyValues, CombinedCacheEntryOptions<T> options = null)
+    public void SetList<T>(Dictionary<string, T?> keyValues, CombinedCacheEntryOptions<T>? options = null)
     {
         if (keyValues == null)
             throw new ArgumentNullException(nameof(keyValues));
 
         _distributedClient.SetList(keyValues, options);
 
-        Parallel.ForEach(keyValues, item =>
-        {
-            Set(item.Key, item.Value, options?.MemoryCacheEntryOptions);
-
-            PubSub(item.Key, SubscribeOperation.Set, item.Value, options);
-        });
+        Parallel.ForEach(keyValues, item => PubSub(item.Key, SubscribeOperation.Set, item.Value, options));
     }
 
     /// <inheritdoc />
-    public async Task SetListAsync<T>(Dictionary<string, T> keyValues, CombinedCacheEntryOptions<T> options = null)
+    public async Task SetListAsync<T>(Dictionary<string, T> keyValues, CombinedCacheEntryOptions<T>? options = null)
     {
         if (keyValues == null)
             throw new ArgumentNullException(nameof(keyValues));
 
         await _distributedClient.SetListAsync(keyValues, options);
 
-        await Task.WhenAll(keyValues.Select(item =>
-        {
-            Set(item.Key, item.Value, options?.MemoryCacheEntryOptions);
-
-            return PubSubAsync(item.Key, SubscribeOperation.Set, item.Value, options);
-        }));
+        await Task.WhenAll(keyValues.Select(item => PubSubAsync(item.Key, SubscribeOperation.Set, item.Value, options)));
     }
 
     private void RemoveOne<T>(string key)
@@ -302,7 +291,7 @@ public class MemoryCacheClient : IMemoryCacheClient
         await PublishAsync<T>(key, SubscribeOperation.Remove);
     }
 
-    private void Subscribe<T>(string channel, CombinedCacheEntryOptions<T> options = null)
+    private void Subscribe<T>(string channel, CombinedCacheEntryOptions<T>? options = null)
     {
         if (!_subscribeChannels.Contains(channel))
         {
@@ -334,7 +323,7 @@ public class MemoryCacheClient : IMemoryCacheClient
         }
     }
 
-    private void Publish<T>(string key, SubscribeOperation operation, T value = default)
+    private void Publish<T>(string key, SubscribeOperation operation, T? value = default)
     {
         var channel = FormatSubscribeChannel<T>(key);
         _distributedClient.Publish<T>(channel, subscribeOptions =>
@@ -345,7 +334,7 @@ public class MemoryCacheClient : IMemoryCacheClient
         });
     }
 
-    private async Task PublishAsync<T>(string key, SubscribeOperation operation, T value = default)
+    private async Task PublishAsync<T>(string key, SubscribeOperation operation, T? value = default)
     {
         var channel = FormatSubscribeChannel<T>(key);
         await _distributedClient.PublishAsync<T>(channel, subscribeOptions =>
@@ -356,11 +345,14 @@ public class MemoryCacheClient : IMemoryCacheClient
         });
     }
 
-    private void PubSub<T>(string key, SubscribeOperation operation, T value = default, CombinedCacheEntryOptions<T> options = null)
+    private void PubSub<T>(string key, SubscribeOperation operation, T? value, CombinedCacheEntryOptions<T>? options = null)
     {
         var channel = FormatSubscribeChannel<T>(key);
 
-        Subscribe(channel, options);
+        if (!options?.IgnoreSubscribe ?? true)
+        {
+            Subscribe(channel, options);
+        }
 
         _distributedClient.Publish<T>(channel, subscribeOptions =>
         {
@@ -370,7 +362,8 @@ public class MemoryCacheClient : IMemoryCacheClient
         });
     }
 
-    private async Task PubSubAsync<T>(string key, SubscribeOperation operation, T value = default, CombinedCacheEntryOptions<T> options = null)
+    private async Task PubSubAsync<T>(string key, SubscribeOperation operation, T? value=default,
+        CombinedCacheEntryOptions<T>? options = null)
     {
         var channel = FormatSubscribeChannel<T>(key);
 
@@ -389,7 +382,7 @@ public class MemoryCacheClient : IMemoryCacheClient
     private string FormatSubscribeChannel<T>(string key) =>
         SubscribeHelper.FormatSubscribeChannel<T>(key, _subscribeKeyType, _subscribeKeyPrefix);
 
-    private void Set<T>(string key, T value, MemoryCacheEntryOptions options = null)
+    private void Set<T>(string key, T value, MemoryCacheEntryOptions? options = null)
     {
         var formattedKey = FormatMemoryCacheKey<T>(key);
         if (options == null)
@@ -405,10 +398,7 @@ public class MemoryCacheClient : IMemoryCacheClient
     /// <inheritdoc />
     public void Dispose()
     {
-        if (_cache != null)
-            _cache.Dispose();
-
-        if (_distributedClient != null)
-            _distributedClient.Dispose();
+        _cache.Dispose();
+        _distributedClient.Dispose();
     }
 }

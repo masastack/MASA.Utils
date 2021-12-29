@@ -17,7 +17,7 @@ public static class MemoryCacheClientFactoryCachingBuilderExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        var name = builder.Name ?? string.Empty;
+        var name = builder.Name;
 
         builder.Services.TryAddSingleton<IMemoryCacheClientFactory, MemoryCacheClientFactory>();
 

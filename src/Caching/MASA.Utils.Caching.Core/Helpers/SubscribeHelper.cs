@@ -38,7 +38,7 @@ public static class SubscribeHelper
     /// <returns>A string.</returns>
     public static string FormatSubscribeChannel<T>(string key, SubscribeKeyTypes type, string prefix = "")
     {
-        var valueTypeFullName = typeof(T).FullName;
+        var valueTypeFullName = typeof(T).FullName!;
         switch (type)
         {
             case SubscribeKeyTypes.ValueTypeFullName:

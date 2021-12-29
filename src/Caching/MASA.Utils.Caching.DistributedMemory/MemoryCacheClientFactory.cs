@@ -12,15 +12,9 @@ public class MemoryCacheClientFactory : IMemoryCacheClientFactory
 
     public MemoryCacheClientFactory(IServiceProvider services, IOptionsMonitor<MasaMemoryCacheOptions> optionsMonitor)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
+        ArgumentNullException.ThrowIfNull(services);
 
-        if (optionsMonitor == null)
-        {
-            throw new ArgumentNullException(nameof(optionsMonitor));
-        }
+        ArgumentNullException.ThrowIfNull(optionsMonitor);
 
         _services = services;
 
@@ -39,7 +33,7 @@ public class MemoryCacheClientFactory : IMemoryCacheClientFactory
 
     public MemoryCacheClient CreateClient(string name)
     {
-        name ??= string.Empty;
+        ArgumentNullException.ThrowIfNull(name);
 
         var client = _clients.GetOrAdd(name, _clientFactory);
 
