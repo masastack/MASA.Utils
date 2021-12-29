@@ -18,5 +18,5 @@ public class SubscribeOptions<T>
     /// <summary>
     /// Gets or sets the value.
     /// </summary>
-    public T Value { get; set; } = default!;
+    public T? Value { get; set; }
 }

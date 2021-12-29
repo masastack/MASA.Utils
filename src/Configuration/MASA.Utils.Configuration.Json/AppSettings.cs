@@ -4,7 +4,7 @@ namespace MASA.Utils.Configuration.Json
 {
     public class AppSettings
     {
-        private static JsonConfiguration _config = null!;
+        private static JsonConfiguration? _config;
 
         public static bool Initialized => _config != null;
 
@@ -14,7 +14,7 @@ namespace MASA.Utils.Configuration.Json
             {
                 InitializeIfNot();
 
-                return _config.Configuration;
+                return _config!.Configuration;
             }
         }
 
@@ -75,11 +75,11 @@ namespace MASA.Utils.Configuration.Json
         /// <param name="key"></param>
         /// <param name="onChange"></param>
         /// <returns></returns>
-        public static string Get(string key, Action<string> onChange = null)
+        public static string Get(string key, Action<string>? onChange = null)
         {
             InitializeIfNot();
 
-            return _config.Get(key, onChange);
+            return _config!.Get(key, onChange);
         }
 
         /// <summary>
@@ -89,11 +89,11 @@ namespace MASA.Utils.Configuration.Json
         /// <param name="key"></param>
         /// <param name="onChange"></param>
         /// <returns></returns>
-        public static TModel GetModel<TModel>(string key, Action<TModel> onChange = null)
+        public static TModel GetModel<TModel>(string key, Action<TModel>? onChange = null)
         {
             InitializeIfNot();
 
-            return _config.GetModel(key, onChange);
+            return _config!.GetModel(key, onChange);
         }
     }
 }

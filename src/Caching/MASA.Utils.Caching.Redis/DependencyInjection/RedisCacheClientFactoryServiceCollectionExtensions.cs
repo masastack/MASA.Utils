@@ -25,7 +25,7 @@ public static class RedisCacheClientFactoryServiceCollectionExtensions
 
         services.TryAddSingleton<IDistributedCacheClientFactory, RedisCacheClientFactory>();
 
-        services.TryAddSingleton<IDistributedCacheClient>(serviceProvider =>
+        services.TryAddSingleton(serviceProvider =>
         {
             var factory = serviceProvider.GetRequiredService<IDistributedCacheClientFactory>();
             return factory.CreateClient(string.Empty);
@@ -33,7 +33,7 @@ public static class RedisCacheClientFactoryServiceCollectionExtensions
 
         var builder = new CachingBuilder(services, string.Empty);
 
-        builder.ConfigureDistributedCacheClient<RedisConfigurationOptions>(configureOptions);
+        builder.ConfigureDistributedCacheClient(configureOptions);
 
         return builder;
     }
@@ -66,7 +66,7 @@ public static class RedisCacheClientFactoryServiceCollectionExtensions
 
         var builder = new CachingBuilder(services, name);
 
-        builder.ConfigureDistributedCacheClient<RedisConfigurationOptions>(configureOptions);
+        builder.ConfigureDistributedCacheClient(configureOptions);
 
         return builder;
     }

@@ -2,7 +2,7 @@ namespace MASA.Utils.Caching.Redis.Helpers;
 
 public static class RedisHelper
 {
-    public static T ConvertToValue<T>(RedisValue redisValue)
+    public static T? ConvertToValue<T>(RedisValue redisValue)
     {
         if (typeof(T).IsNumericType())
         {
@@ -16,7 +16,7 @@ public static class RedisHelper
 
         var value = Decompress(byteValue);
 
-        if (typeof(T).Equals(typeof(string)))
+        if (typeof(T) == typeof(string))
         {
             var valueString = Encoding.UTF8.GetString(value);
             return (dynamic)valueString;
@@ -43,9 +43,9 @@ public static class RedisHelper
             case TypeCode.Decimal:
             case TypeCode.Double:
             case TypeCode.Single:
-                return (dynamic)value;
+                return value;
             case TypeCode.String:
-                return Compress(Encoding.UTF8.GetBytes(value.ToString()));
+                return Compress(Encoding.UTF8.GetBytes(value?.ToString() ?? string.Empty));
             default:
                 var options = new JsonSerializerOptions();
                 options.EnableDynamicTypes();

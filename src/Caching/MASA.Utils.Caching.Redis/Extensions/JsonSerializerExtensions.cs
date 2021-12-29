@@ -395,7 +395,10 @@ public static class JsonSerializerExtensions
         public void Clear() => _value.Clear();
         bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item) => _value.Contains(item);
         public bool ContainsKey(string key) => _value.ContainsKey(key);
-        void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex) => _value.CopyTo(array, arrayIndex);
+
+        void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+            => _value.CopyTo(array, arrayIndex);
+
         public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => _value.GetEnumerator();
         public bool Remove(string key) => _value.Remove(key);
         bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item) => _value.Remove(item);
@@ -466,12 +469,12 @@ public static class JsonSerializerExtensions
                 typeof(JsonDynamicType).IsAssignableFrom(typeToConvert);
         }
 
-        public override sealed object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public sealed override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             switch (reader.TokenType)
             {
                 case JsonTokenType.String:
-                    return new JsonDynamicString(reader.GetString(), options);
+                    return new JsonDynamicString(reader.GetString() ?? string.Empty, options);
                 case JsonTokenType.StartArray:
                     var dynamicArray = new JsonDynamicArray(options);
                     ReadList(dynamicArray, ref reader, options);

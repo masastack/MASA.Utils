@@ -6,6 +6,7 @@ public class CachingBuilder : ICachingBuilder
     /// Initializes a new instance of the <see cref="CachingBuilder"/> class.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+    /// <param name="name"></param>
     public CachingBuilder(IServiceCollection services, string name)
     {
         Services = services;
