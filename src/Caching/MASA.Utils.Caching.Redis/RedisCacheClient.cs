@@ -37,7 +37,7 @@ public class RedisCacheClient : IDistributedCacheClient
 
     internal static readonly RedisConfigurationOptions RedisConfiguration = new RedisConfigurationOptions();
 
-    private readonly IConnectionMultiplexer _connection;
+    private readonly IConnectionMultiplexer? _connection;
     private readonly IDatabase _db;
     private readonly ISubscriber _subscriber;
 
@@ -49,7 +49,7 @@ public class RedisCacheClient : IDistributedCacheClient
     }
 
     /// <inheritdoc />
-    public T Get<T>(string key)
+    public T? Get<T>(string key)
     {
         var redisValue = GetAndRefresh(key, getData: true);
         if (redisValue.HasValue && !redisValue.IsNullOrEmpty)
@@ -61,7 +61,7 @@ public class RedisCacheClient : IDistributedCacheClient
     }
 
     /// <inheritdoc />
-    public async Task<T> GetAsync<T>(string key)
+    public async Task<T?> GetAsync<T>(string key)
     {
         var redisValue = await GetAndRefreshAsync(key, getData: true);
         if (redisValue.HasValue && !redisValue.IsNullOrEmpty)
@@ -73,7 +73,7 @@ public class RedisCacheClient : IDistributedCacheClient
     }
 
     /// <inheritdoc />
-    public T GetOrSet<T>(string key, Func<T> setter, CombinedCacheEntryOptions<T> options = null)
+    public T? GetOrSet<T>(string key, Func<T> setter, CombinedCacheEntryOptions<T?>? options = null)
     {
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentNullException(nameof(key));
@@ -81,7 +81,7 @@ public class RedisCacheClient : IDistributedCacheClient
         if (setter == null)
             throw new ArgumentNullException(nameof(setter));
 
-        T value;
+        T? value;
 
         var redisValue = GetAndRefresh(key, true);
 
@@ -100,7 +100,7 @@ public class RedisCacheClient : IDistributedCacheClient
     }
 
     /// <inheritdoc />
-    public async Task<T> GetOrSetAsync<T>(string key, Func<T> setter, CombinedCacheEntryOptions<T> options = null)
+    public async Task<T?> GetOrSetAsync<T>(string key, Func<T> setter, CombinedCacheEntryOptions<T>? options = null)
     {
         if (string.IsNullOrWhiteSpace(key))
             throw new ArgumentNullException(nameof(key));
@@ -108,7 +108,7 @@ public class RedisCacheClient : IDistributedCacheClient
         if (setter == null)
             throw new ArgumentNullException(nameof(setter));
 
-        T value;
+        T? value;
 
         var redisValue = await GetAndRefreshAsync(key, getData: true);
 
@@ -127,7 +127,7 @@ public class RedisCacheClient : IDistributedCacheClient
     }
 
     /// <inheritdoc />
-    public IEnumerable<T> GetList<T>(string[] keys)
+    public IEnumerable<T?> GetList<T>(string[] keys)
     {
         if (keys == null)
             throw new ArgumentNullException(nameof(keys));
@@ -142,7 +142,7 @@ public class RedisCacheClient : IDistributedCacheClient
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<T>> GetListAsync<T>(string[] keys)
+    public async Task<IEnumerable<T?>> GetListAsync<T>(string[] keys)
     {
         if (keys == null)
             throw new ArgumentNullException(nameof(keys));
@@ -175,7 +175,7 @@ public class RedisCacheClient : IDistributedCacheClient
     }
 
     /// <inheritdoc />
-    public void Set<T>(string key, T value, CombinedCacheEntryOptions<T> options = null)
+    public void Set<T>(string key, T value, CombinedCacheEntryOptions<T>? options = null)
     {
         if (key == null)
             throw new ArgumentNullException(nameof(key));
@@ -196,100 +196,83 @@ public class RedisCacheClient : IDistributedCacheClient
         var redisKeys = new RedisKey[] { key };
         var redisValues = new RedisValue[]
         {
-                absoluteExpiration?.Ticks ?? NOT_PRESENT,
-                distributedCacheEntryOptions?.SlidingExpiration?.Ticks ?? NOT_PRESENT,
-                GetExpirationInSeconds(creationTime, absoluteExpiration, distributedCacheEntryOptions) ?? NOT_PRESENT,
-                bytesValue
+            absoluteExpiration?.Ticks ?? NOT_PRESENT,
+            distributedCacheEntryOptions?.SlidingExpiration?.Ticks ?? NOT_PRESENT,
+            GetExpirationInSeconds(creationTime, absoluteExpiration, distributedCacheEntryOptions) ?? NOT_PRESENT,
+            bytesValue
         };
 
         _db.ScriptEvaluate(SET_SCRIPT, redisKeys, redisValues);
     }
 
     /// <inheritdoc />
-    public async Task SetAsync<T>(string key, T value, CombinedCacheEntryOptions<T> options = null)
+    public async Task SetAsync<T>(string key, T value, CombinedCacheEntryOptions<T>? options = null)
     {
-        if (key == null)
-            throw new ArgumentNullException(nameof(key));
+        ArgumentNullException.ThrowIfNull(key, nameof(key));
 
-        if (value == null)
-            throw new ArgumentNullException(nameof(value));
+        ArgumentNullException.ThrowIfNull(value, nameof(value));
 
-        if (options == null)
-            options = new CombinedCacheEntryOptions<T>();
-
-        var distributedCacheEntryOptions = options.DistributedCacheEntryOptions;
+        options ??= new CombinedCacheEntryOptions<T>();
 
         var bytesValue = ConvertFromValue(value);
 
-        var creationTime = DateTimeOffset.UtcNow;
-        var absoluteExpiration = GetAbsoluteExpiration(creationTime, distributedCacheEntryOptions);
-
-        await _db.ScriptEvaluateAsync(SET_SCRIPT, new RedisKey[] { key },
-            new RedisValue[]
-            {
-                    absoluteExpiration?.Ticks ?? NOT_PRESENT,
-                    distributedCacheEntryOptions?.SlidingExpiration?.Ticks ?? NOT_PRESENT,
-                    GetExpirationInSeconds(creationTime, absoluteExpiration, distributedCacheEntryOptions) ?? NOT_PRESENT,
-                    bytesValue
-            }).ConfigureAwait(false);
+        await _db.ScriptEvaluateAsync(
+            SET_SCRIPT,
+            new RedisKey[] { key },
+            GetRedisValues(options.DistributedCacheEntryOptions, () => bytesValue)
+        ).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
-    public void SetList<T>(Dictionary<string, T> keyValues, CombinedCacheEntryOptions<T> options = null)
+    public void SetList<T>(Dictionary<string, T?> keyValues, CombinedCacheEntryOptions<T>? options = null)
     {
-        if (keyValues == null)
-            throw new ArgumentNullException(nameof(keyValues));
+        ArgumentNullException.ThrowIfNull(keyValues, nameof(keyValues));
 
-        if (options == null)
-            options = new CombinedCacheEntryOptions<T>();
-
-        var distributedCacheEntryOptions = options.DistributedCacheEntryOptions;
+        options ??= new CombinedCacheEntryOptions<T>();
 
         var redisKeys = keyValues.Select(item => (RedisKey)item.Key).ToArray();
         var redisValues = keyValues.Select(item => (RedisValue)ConvertFromValue(item.Value)).ToArray();
 
-        var creationTime = DateTimeOffset.UtcNow;
-        var absoluteExpiration = GetAbsoluteExpiration(creationTime, distributedCacheEntryOptions);
-
-        var values = new List<RedisValue>
-            {
-                absoluteExpiration?.Ticks ?? NOT_PRESENT,
-                distributedCacheEntryOptions?.SlidingExpiration?.Ticks ?? NOT_PRESENT,
-                GetExpirationInSeconds(creationTime, absoluteExpiration, distributedCacheEntryOptions) ?? NOT_PRESENT
-            };
-
-        values.AddRange(redisValues);
-
-        _db.ScriptEvaluate(SET_MULTIPLE_SCRIPT, redisKeys, values.ToArray());
+        _db.ScriptEvaluate(
+            SET_MULTIPLE_SCRIPT,
+            redisKeys,
+            GetRedisValues(options.DistributedCacheEntryOptions, () => redisValues)
+        );
     }
 
     /// <inheritdoc />
-    public async Task SetListAsync<T>(Dictionary<string, T> keyValues, CombinedCacheEntryOptions<T> options = null)
+    public async Task SetListAsync<T>(Dictionary<string, T> keyValues, CombinedCacheEntryOptions<T>? options = null)
     {
         if (keyValues == null)
             throw new ArgumentNullException(nameof(keyValues));
 
-        if (options == null)
-            options = new CombinedCacheEntryOptions<T>();
-
-        var distributedCacheEntryOptions = options.DistributedCacheEntryOptions;
+        options ??= new CombinedCacheEntryOptions<T>();
 
         var keys = keyValues.Select(item => (RedisKey)item.Key).ToArray();
         var redisValues = keyValues.Select(item => (RedisValue)ConvertFromValue(item.Value)).ToArray();
 
+        await _db.ScriptEvaluateAsync(
+            SET_MULTIPLE_SCRIPT,
+            keys,
+            GetRedisValues(options.DistributedCacheEntryOptions, () => redisValues)
+        ).ConfigureAwait(false);
+    }
+
+    private RedisValue[] GetRedisValues(DistributedCacheEntryOptions? distributedCacheEntryOptions, Func<RedisValue[]>? func = null)
+    {
         var creationTime = DateTimeOffset.UtcNow;
         var absoluteExpiration = GetAbsoluteExpiration(creationTime, distributedCacheEntryOptions);
-
-        var values = new List<RedisValue>
-            {
-                absoluteExpiration?.Ticks ?? NOT_PRESENT,
-                distributedCacheEntryOptions?.SlidingExpiration?.Ticks ?? NOT_PRESENT,
-                GetExpirationInSeconds(creationTime, absoluteExpiration, distributedCacheEntryOptions) ?? NOT_PRESENT
-            };
-
-        values.AddRange(redisValues);
-
-        await _db.ScriptEvaluateAsync(SET_MULTIPLE_SCRIPT, keys, values.ToArray()).ConfigureAwait(false);
+        List<RedisValue> redisValues = new()
+        {
+            absoluteExpiration?.Ticks ?? NOT_PRESENT,
+            distributedCacheEntryOptions?.SlidingExpiration?.Ticks ?? NOT_PRESENT,
+            GetExpirationInSeconds(creationTime, absoluteExpiration, distributedCacheEntryOptions) ?? NOT_PRESENT,
+        };
+        if (func != null)
+        {
+            redisValues.AddRange(func.Invoke());
+        }
+        return redisValues.ToArray();
     }
 
     /// <inheritdoc />
@@ -328,7 +311,7 @@ public class RedisCacheClient : IDistributedCacheClient
         _subscriber.Subscribe(channel, (_, message) =>
         {
             var options = JsonSerializer.Deserialize<SubscribeOptions<T>>(message);
-            handler(options);
+            handler(options!);
         });
     }
 
@@ -338,7 +321,7 @@ public class RedisCacheClient : IDistributedCacheClient
         await _subscriber.SubscribeAsync(channel, (_, message) =>
         {
             var options = JsonSerializer.Deserialize<SubscribeOptions<T>>(message);
-            handler(options);
+            handler(options!);
         });
     }
 
@@ -469,9 +452,9 @@ end";
         }
 
         // Note Refresh has no effect if there is just an absolute expiration (or neither).
-        TimeSpan? expr = null;
         if (sldExpr.HasValue)
         {
+            TimeSpan? expr;
             if (absExpr.HasValue)
             {
                 var relExpr = absExpr.Value - DateTimeOffset.Now;
@@ -497,9 +480,9 @@ end";
         token.ThrowIfCancellationRequested();
 
         // Note Refresh has no effect if there is just an absolute expiration (or neither).
-        TimeSpan? expr = null;
         if (sldExpr.HasValue)
         {
+            TimeSpan? expr;
             if (absExpr.HasValue)
             {
                 var relExpr = absExpr.Value - DateTimeOffset.Now;
@@ -532,20 +515,27 @@ end";
         }
     }
 
-    private static long? GetExpirationInSeconds(DateTimeOffset creationTime, DateTimeOffset? absoluteExpiration,
-        DistributedCacheEntryOptions options)
+    private static long? GetExpirationInSeconds(
+        DateTimeOffset creationTime,
+        DateTimeOffset? absoluteExpiration,
+        DistributedCacheEntryOptions? options)
     {
+        if (options == null)
+            return null;
+
         if (absoluteExpiration.HasValue && options.SlidingExpiration.HasValue)
         {
             return (long)Math.Min(
                 (absoluteExpiration.Value - creationTime).TotalSeconds,
                 options.SlidingExpiration.Value.TotalSeconds);
         }
-        else if (absoluteExpiration.HasValue)
+
+        if (absoluteExpiration.HasValue)
         {
             return (long)(absoluteExpiration.Value - creationTime).TotalSeconds;
         }
-        else if ((options?.SlidingExpiration).HasValue)
+
+        if (options is { SlidingExpiration: { } })
         {
             return (long)options.SlidingExpiration.Value.TotalSeconds;
         }
@@ -553,9 +543,12 @@ end";
         return null;
     }
 
-    private static DateTimeOffset? GetAbsoluteExpiration(DateTimeOffset creationTime, DistributedCacheEntryOptions options)
+    private static DateTimeOffset? GetAbsoluteExpiration(DateTimeOffset creationTime, DistributedCacheEntryOptions? options)
     {
-        if ((options?.AbsoluteExpiration).HasValue && options?.AbsoluteExpiration <= creationTime)
+        if (options == null)
+            return null;
+
+        if (options.AbsoluteExpiration.HasValue && options.AbsoluteExpiration <= creationTime)
         {
             throw new ArgumentOutOfRangeException(
                 nameof(DistributedCacheEntryOptions.AbsoluteExpiration),
@@ -563,12 +556,12 @@ end";
                 "The absolute expiration value must be in the future.");
         }
 
-        if ((options?.AbsoluteExpirationRelativeToNow).HasValue)
+        if (options.AbsoluteExpirationRelativeToNow.HasValue)
         {
             return creationTime + options.AbsoluteExpirationRelativeToNow;
         }
 
-        return options?.AbsoluteExpiration;
+        return options.AbsoluteExpiration;
     }
 
     /// <inheritdoc />

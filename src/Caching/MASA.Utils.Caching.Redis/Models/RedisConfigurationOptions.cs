@@ -23,12 +23,12 @@ public class RedisConfigurationOptions : DistributedCacheEntryOptions
     /// <summary>
     /// The client name to use for all connections
     /// </summary>
-    public string ClientName { get; set; }
+    public string ClientName { get; set; } = default!;
 
     /// <summary>
     /// Automatically encodes and decodes channels.
     /// </summary>
-    public string ChannelPrefix { get; set; }
+    public string ChannelPrefix { get; set; } = default!;
 
     /// <summary>
     /// The number of times to repeat the initial connect cycle if no servers respond promptly.
@@ -48,7 +48,7 @@ public class RedisConfigurationOptions : DistributedCacheEntryOptions
     /// <summary>
     /// The password to use to authenticate with the server.
     /// </summary>
-    public string Password { get; set; }
+    public string Password { get; set; }= default!;
 
     /// <summary>
     /// Type of proxy to use (if any); for example Proxy.Twemproxy.

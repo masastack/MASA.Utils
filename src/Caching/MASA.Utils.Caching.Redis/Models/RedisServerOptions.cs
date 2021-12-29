@@ -15,7 +15,7 @@ public class RedisServerOptions
     /// <summary>
     /// Gets the port.
     /// </summary>
-    public int Port { get; set; } = default!;
+    public int Port { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RedisServerOptions"/> class.

@@ -11,7 +11,7 @@ public interface IMemoryCacheClient : ICacheClient
     /// <param name="key">A string identifying the request value.</param>
     /// <param name="valueChanged">The handler to invoke when the request value changed.</param>
     /// <returns>The located value or null.</returns>
-    T Get<T>(string key, Action<T> valueChanged);
+    T? Get<T>(string key, Action<T?> valueChanged);
 
     /// <summary>
     /// Gets a value with given key.
@@ -19,5 +19,5 @@ public interface IMemoryCacheClient : ICacheClient
     /// <param name="key">A string identifying the request value.</param>
     /// <param name="valueChanged">The handler to invoke when the request value changed.</param>
     /// <returns>The <see cref="Task"/> that represents the asynchronous opertion, containing the located value or null.</returns>
-    Task<T> GetAsync<T>(string key, Action<T> valueChanged);
+    Task<T?> GetAsync<T>(string key, Action<T?> valueChanged);
 }

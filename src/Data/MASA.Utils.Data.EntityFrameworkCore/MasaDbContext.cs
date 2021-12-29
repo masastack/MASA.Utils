@@ -2,9 +2,9 @@ namespace MASA.Utils.Data.EntityFrameworkCore;
 
 public class MasaDbContext : DbContext
 {
-    private readonly MasaDbContextOptions _options;
+    private readonly MasaDbContextOptions? _options;
 
-    public MasaDbContext() : base() { }
+    public MasaDbContext() { }
 
     public MasaDbContext(MasaDbContextOptions options)
         : base(options)
@@ -79,15 +79,18 @@ public class MasaDbContext : DbContext
 
     private void OnFilterExecuting()
     {
-        foreach (var filter in _options.SaveChangesFilters)
+        if (_options != null)
         {
-            try
+            foreach (var filter in _options.SaveChangesFilters)
             {
-                filter.OnExecuting(ChangeTracker);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occured when intercept SaveChanges(Async)", ex);
+                try
+                {
+                    filter.OnExecuting(ChangeTracker);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("An error occured when intercept SaveChanges(Async)", ex);
+                }
             }
         }
     }

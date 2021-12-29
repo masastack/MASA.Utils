@@ -1,8 +1,8 @@
-namespace MASA.Framework.Caching.Memory;
+namespace MASA.Utils.Caching.Memory;
 
-public class MemoryCache<TKey, TValue> : IDisposable
+public class MemoryCache<TKey, TValue> : IDisposable where TKey : notnull
 {
-    private ConcurrentDictionary<TKey, Lazy<TValue>> _dicCache = new()!;
+    private ConcurrentDictionary<TKey, Lazy<TValue>> _dicCache = new();
 
     public TKey[] Keys
     {
@@ -20,25 +20,25 @@ public class MemoryCache<TKey, TValue> : IDisposable
         }
     }
 
-    public bool Get(TKey key, out TValue value)
+    public bool Get(TKey key, out TValue? value)
     {
         bool result = _dicCache.TryGetValue(key, out var lazyValue);
-        value = lazyValue.Value;
+        value = lazyValue == null ? default : lazyValue.Value;
 
         return result;
     }
 
-    public bool TryGet(TKey key, out TValue value)
+    public bool TryGet(TKey key, out TValue? value)
     {
         var result = _dicCache.TryGetValue(key, out var lazyValue);
 
         if (result)
         {
-            value = lazyValue.Value;
+            value =  lazyValue == null ? default :lazyValue.Value;
         }
         else
         {
-            value = default(TValue);
+            value = default;
         }
 
         return result;
@@ -81,13 +81,13 @@ public class MemoryCache<TKey, TValue> : IDisposable
         (
             key,
             k => new Lazy<TValue>(() => valueFactory(k), LazyThreadSafetyMode.ExecutionAndPublication),
-            (oldkey, oldvalue) => new Lazy<TValue>(() => valueFactory(oldkey), LazyThreadSafetyMode.ExecutionAndPublication)
+            (oldkey, _) => new Lazy<TValue>(() => valueFactory(oldkey), LazyThreadSafetyMode.ExecutionAndPublication)
         ).Value;
     }
 
     public bool Remove(TKey key)
     {
-        return _dicCache.TryRemove(key, out var lazyValue);
+        return _dicCache.TryRemove(key, out _);
     }
 
     public bool ContainsKey(TKey key)
@@ -103,6 +103,5 @@ public class MemoryCache<TKey, TValue> : IDisposable
     public void Dispose()
     {
         _dicCache.Clear();
-        _dicCache = null;
     }
 }
