@@ -2,7 +2,7 @@
 
 public class CreateIndexOptions
 {
-    public IndexSettings? IndexSettings { get; set; } = null;
+    public IIndexSettings? IndexSettings { get; set; } = null;
 
     public IAliases? Aliases { get; set; } = null;
 
