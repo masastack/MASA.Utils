@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options.Alias;
+namespace MASA.Utils.Data.Elasticsearch.Options.Alias;
 
 public class BindAliasIndexOptions
 {
@@ -13,7 +13,7 @@ public class BindAliasIndexOptions
 
     public BindAliasIndexOptions(string alias, string? indexName = null) : this(alias)
     {
-        IndexNames = indexName == null ? null : new[] {indexName};
+        IndexNames = indexName == null ? null : new[] { indexName };
     }
 
     public BindAliasIndexOptions(string alias, string[] indexNames) : this(alias)

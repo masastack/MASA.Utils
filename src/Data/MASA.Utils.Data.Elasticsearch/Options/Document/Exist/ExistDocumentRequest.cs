@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options.Document.Exist;
+namespace MASA.Utils.Data.Elasticsearch.Options.Document.Exist;
 
 public class ExistDocumentRequest : DocumentOptions
 {

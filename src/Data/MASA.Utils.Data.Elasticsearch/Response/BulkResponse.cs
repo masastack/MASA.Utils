@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Response;
+namespace MASA.Utils.Data.Elasticsearch.Response;
 
 public class BulkResponse : ResponseBase
 {
@@ -6,7 +6,7 @@ public class BulkResponse : ResponseBase
 
     public BulkResponse(Nest.BulkResponse ret) : base(ret)
     {
-        Items = ret.Items.Select(item => new BulkResponseItems(item.Id, item.IsValid, item.Error?.ToString() ?? "")).ToList();
+        Items = ret.Items.Select(item => new BulkResponseItems(item.Id, item.IsValid, item.Error?.ToString() ?? string.Empty)).ToList();
     }
 
     public class BulkResponseItems

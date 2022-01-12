@@ -1,8 +1,8 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options;
+namespace MASA.Utils.Data.Elasticsearch.Options;
 
 public class ElasticsearchRelationsOptions
 {
-    internal List<ElasticsearchRelations> Relations = new();
+    internal Dictionary<string, ElasticsearchRelations> Relations = new();
 
     public ElasticsearchRelationsOptions AddRelation(string name, ElasticsearchOptions options)
     {
@@ -11,7 +11,7 @@ public class ElasticsearchRelationsOptions
             .UseStaticConnectionPoolOptions(options.StaticConnectionPoolOptions)
             .UseConnectionSettingsOptions(options.ConnectionSettingsOptions)
             .UseConnectionSettings(options.Action);
-        Relations.Add(relation);
+        Relations.Add(name, relation);
         return this;
     }
 }

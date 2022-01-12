@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Response.Alias;
+namespace MASA.Utils.Data.Elasticsearch.Response.Alias;
 
 public class GetAliasResponse : ResponseBase
 {

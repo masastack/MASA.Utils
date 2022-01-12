@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch;
+namespace MASA.Utils.Data.Elasticsearch;
 
 public class ElasticsearchOptions
 {

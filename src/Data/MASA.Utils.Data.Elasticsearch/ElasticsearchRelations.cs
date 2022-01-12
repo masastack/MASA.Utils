@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch;
+namespace MASA.Utils.Data.Elasticsearch;
 
 public class ElasticsearchRelations
 {
@@ -18,8 +18,8 @@ public class ElasticsearchRelations
 
     public ElasticsearchRelations(string name, bool useConnectionPool, Uri[] nodes)
     {
-        IsDefault = false;
         Name = name;
+        IsDefault = false;
         UseConnectionPool = useConnectionPool;
         Nodes = nodes;
         Action = null;

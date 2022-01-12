@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options.Document.Update;
+namespace MASA.Utils.Data.Elasticsearch.Options.Document.Update;
 
 public class UpdateDocumentBaseRequest<TDocument> where TDocument : class
 {

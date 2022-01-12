@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options.Document.Query;
+namespace MASA.Utils.Data.Elasticsearch.Options.Document.Query;
 
 public class PaginatedOptions<TDocument> : QueryBaseOptions<TDocument>
     where TDocument : class

@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options.Index;
+namespace MASA.Utils.Data.Elasticsearch.Options.Index;
 
 public class DeleteIndexOptions
 {

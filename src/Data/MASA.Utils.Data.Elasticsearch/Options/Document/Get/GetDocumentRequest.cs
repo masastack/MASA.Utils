@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options.Document.Get;
+namespace MASA.Utils.Data.Elasticsearch.Options.Document.Get;
 
 public class GetDocumentRequest : DocumentOptions
 {

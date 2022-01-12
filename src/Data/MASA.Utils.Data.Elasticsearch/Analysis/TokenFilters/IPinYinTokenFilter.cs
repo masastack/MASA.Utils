@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Analysis.TokenFilters;
+namespace MASA.Utils.Data.Elasticsearch.Analysis.TokenFilters;
 
 public interface IPinYinTokenFilter : ITokenFilter
 {

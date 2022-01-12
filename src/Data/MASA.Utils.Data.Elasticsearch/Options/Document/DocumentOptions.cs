@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options.Document;
+namespace MASA.Utils.Data.Elasticsearch.Options.Document;
 
 public class DocumentOptions
 {

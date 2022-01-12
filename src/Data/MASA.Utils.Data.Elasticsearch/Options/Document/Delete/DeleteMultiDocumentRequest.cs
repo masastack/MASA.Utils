@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options.Document.Delete;
+namespace MASA.Utils.Data.Elasticsearch.Options.Document.Delete;
 
 public class DeleteMultiDocumentRequest : DocumentOptions
 {

@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options;
+namespace MASA.Utils.Data.Elasticsearch.Options;
 
 public class StaticConnectionPoolOptions
 {

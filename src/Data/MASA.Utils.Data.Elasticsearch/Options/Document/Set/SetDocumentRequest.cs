@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options.Document.Set;
+namespace MASA.Utils.Data.Elasticsearch.Options.Document.Set;
 
 public class SetDocumentRequest<TDocument> : DocumentOptions where TDocument : class
 {

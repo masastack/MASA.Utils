@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Response;
+namespace MASA.Utils.Data.Elasticsearch.Response;
 
 public class ExistsResponse : ResponseBase
 {
@@ -6,7 +6,7 @@ public class ExistsResponse : ResponseBase
 
     public ExistsResponse(Nest.ExistsResponse ret) : base(
         ret.IsValid || ret.ApiCall.HttpStatusCode == 404,
-        ret.IsValid || ret.ApiCall.HttpStatusCode == 404 ? "success" : ret.ServerError?.ToString() ?? "")
+        ret.IsValid || ret.ApiCall.HttpStatusCode == 404 ? "success" : ret.ServerError?.ToString() ?? string.Empty)
     {
         Exists = ret.Exists;
     }

@@ -1,8 +1,8 @@
-﻿namespace MASA.Utils.Data.Elasticsearch;
+namespace MASA.Utils.Data.Elasticsearch;
 
 public class DefaultElasticsearchFactory : IElasticsearchFactory
 {
-    private readonly List<ElasticsearchRelations> _relations;
+    private readonly Dictionary<string, ElasticsearchRelations> _relations;
     private readonly ConcurrentDictionary<string, IElasticClient> _elasticClients;
 
     public DefaultElasticsearchFactory(ElasticsearchRelationsOptions options)
@@ -23,37 +23,28 @@ public class DefaultElasticsearchFactory : IElasticsearchFactory
 
     public IElasticClient CreateElasticClient()
     {
-        var elasticsearchRelation = _relations.SingleOrDefault(r => r.IsDefault) ?? _relations.FirstOrDefault();
+        var elasticsearchRelation = _relations.Values.SingleOrDefault(r => r.IsDefault) ?? _relations.Values.FirstOrDefault();
 
         if (elasticsearchRelation == null)
             throw new Exception("The default ElasticClient is not found, please check if Elasticsearch is added");
 
-        return GetOrAddElasticClient(elasticsearchRelation.Name ?? "");
+        return GetOrAddElasticClient(elasticsearchRelation.Name);
     }
 
     public IElasticClient CreateElasticClient(string name)
     {
-        if (_relations.All(r => r.Name != name))
+        if (!_relations.ContainsKey(name))
             throw new NotSupportedException($"The ElasticClient whose name is {name} is not found");
 
         return GetOrAddElasticClient(name);
     }
 
     private IElasticClient GetOrAddElasticClient(string name)
-    {
-        if (_elasticClients.ContainsKey(name))
-        {
-            return _elasticClients[name];
-        }
-
-        var client = Create(name);
-        _elasticClients.TryAdd(name, client);
-        return client;
-    }
+        => _elasticClients.GetOrAdd(name, name => Create(name));
 
     private IElasticClient Create(string name)
     {
-        var relation = _relations.Single(r => r.Name == name);
+        var relation = _relations[name];
 
         var settings = relation.UseConnectionPool
             ? GetConnectionSettingsConnectionPool(relation)
@@ -66,14 +57,18 @@ public class DefaultElasticsearchFactory : IElasticsearchFactory
 
     private ConnectionSettings GetConnectionSettingsConnectionPool(ElasticsearchRelations relation)
     {
-        var pool = new StaticConnectionPool(relation.Nodes, relation.StaticConnectionPoolOptions?.Randomize??true,
+        var pool = new StaticConnectionPool(
+            relation.Nodes,
+            relation.StaticConnectionPoolOptions?.Randomize ?? true,
             relation.StaticConnectionPoolOptions?.DateTimeProvider);
-        var settings = new ConnectionSettings(pool, relation.ConnectionSettingsOptions?.Connection,
-            relation.ConnectionSettingsOptions?.SourceSerializerFactory, relation.ConnectionSettingsOptions?.PropertyMappingProvider);
-        if (relation.Action != null)
-        {
-            relation.Action.Invoke(settings);
-        }
+
+        var settings = new ConnectionSettings(
+            pool,
+            relation.ConnectionSettingsOptions?.Connection,
+            relation.ConnectionSettingsOptions?.SourceSerializerFactory,
+            relation.ConnectionSettingsOptions?.PropertyMappingProvider);
+
+        relation.Action?.Invoke(settings);
         return settings;
     }
 }

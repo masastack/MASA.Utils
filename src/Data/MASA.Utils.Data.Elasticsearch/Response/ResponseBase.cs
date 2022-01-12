@@ -1,8 +1,8 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Response;
+namespace MASA.Utils.Data.Elasticsearch.Response;
 
 public class ResponseBase
 {
-    public bool IsValid { get;  }
+    public bool IsValid { get; }
 
     public string Message { get; }
 
@@ -12,7 +12,7 @@ public class ResponseBase
         Message = message;
     }
 
-    public ResponseBase(IResponse ret) : this(ret.IsValid, ret.IsValid ? "success" : ret.ServerError?.ToString() ?? "")
+    public ResponseBase(IResponse ret) : this(ret.IsValid, ret.IsValid ? "success" : ret.ServerError?.ToString() ?? string.Empty)
     {
     }
 }

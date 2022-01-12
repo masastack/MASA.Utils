@@ -15,4 +15,3 @@ global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Nest;
 global using System.Collections.Concurrent;
 global using System.Runtime.Serialization;
-

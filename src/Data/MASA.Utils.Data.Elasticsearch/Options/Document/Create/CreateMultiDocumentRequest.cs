@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Options.Document.Create;
+namespace MASA.Utils.Data.Elasticsearch.Options.Document.Create;
 
 public class CreateMultiDocumentRequest<TDocument> : DocumentOptions where TDocument : class
 {

@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Response;
+namespace MASA.Utils.Data.Elasticsearch.Response;
 
 public class SearchPaginatedResponse<TDocument> : SearchResponse<TDocument>
     where TDocument : class
@@ -14,6 +14,6 @@ public class SearchPaginatedResponse<TDocument> : SearchResponse<TDocument>
 
     public SearchPaginatedResponse(int pageSize, ISearchResponse<TDocument> ret) : this(ret)
     {
-        TotalPages = (int) Math.Ceiling(Total / (decimal) pageSize);
+        TotalPages = (int)Math.Ceiling(Total / (decimal)pageSize);
     }
 }

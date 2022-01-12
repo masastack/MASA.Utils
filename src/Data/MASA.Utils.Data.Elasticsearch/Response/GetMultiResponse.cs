@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch.Response;
+namespace MASA.Utils.Data.Elasticsearch.Response;
 
 public class GetMultiResponse<TDocument> : ResponseBase
     where TDocument : class
