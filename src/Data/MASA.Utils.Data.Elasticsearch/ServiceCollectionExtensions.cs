@@ -1,4 +1,4 @@
-namespace MASA.Utils.Data.Elasticsearch;
+﻿namespace MASA.Utils.Data.Elasticsearch;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -11,7 +11,7 @@ public static partial class ServiceCollectionExtensions
 
         AddElasticsearchCore(services);
 
-        services.TryAddElasticsearchRelation(string.Empty, new());
+        services.TryAddOrUpdateElasticsearchRelation(string.Empty, new());
 
         return services;
     }
@@ -41,7 +41,7 @@ public static partial class ServiceCollectionExtensions
 
         AddElasticsearchCore(services);
 
-        services.TryAddElasticsearchRelation(name, func.Invoke());
+        services.TryAddOrUpdateElasticsearchRelation(name, func.Invoke());
 
         return services;
     }
@@ -63,7 +63,7 @@ public static partial class ServiceCollectionExtensions
         return services;
     }
 
-    private static void TryAddElasticsearchRelation(this IServiceCollection services, string name, ElasticsearchOptions options)
+    private static void TryAddOrUpdateElasticsearchRelation(this IServiceCollection services, string name, ElasticsearchOptions options)
     {
         var serviceProvider = services.BuildServiceProvider();
         var relationsOptions = serviceProvider.GetRequiredService<ElasticsearchRelationsOptions>();
