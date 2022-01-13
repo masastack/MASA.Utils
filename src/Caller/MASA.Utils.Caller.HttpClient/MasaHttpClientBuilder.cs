@@ -6,10 +6,7 @@ public class MasaHttpClientBuilder
 
     public string Name
     {
-        get
-        {
-            return _name;
-        }
+        get => _name;
         set
         {
             if (value is null)
@@ -19,7 +16,7 @@ public class MasaHttpClientBuilder
         }
     }
 
-    public string BaseAPI { get; set; } = string.Empty;
+    public string BaseAPI { get; set; }
 
     public bool IsDefault { get; set; } = false;
 

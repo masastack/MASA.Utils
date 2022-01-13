@@ -19,15 +19,14 @@ public class HttpClientCallerProvider : AbstractCallerProvider
 
         if (typeof(TResponse).GetInterfaces().Any(type => type == typeof(IConvertible)))
         {
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
             return (TResponse)Convert.ChangeType(content, typeof(TResponse));
         }
         return await response.Content.ReadFromJsonAsync<TResponse>(this._jsonSerializerOptions, cancellationToken)
             ?? throw new ArgumentException("Response cannot be empty");
     }
 
-    public override HttpRequestMessage CreateRequest(HttpMethod method, string? methodName)
-        => new HttpRequestMessage(method, GetRequestUri(methodName));
+    public override HttpRequestMessage CreateRequest(HttpMethod method, string? methodName) => new(method, GetRequestUri(methodName));
 
     public override HttpRequestMessage CreateRequest<TRequest>(HttpMethod method, string? methodName, TRequest data)
     {

@@ -5,10 +5,10 @@ internal class DefaultCallerFactory : ICallerFactory
     private readonly IServiceProvider _serviceProvider;
     private readonly List<CallerRelations> _callers;
 
-    public DefaultCallerFactory(IServiceProvider serviceProvider, List<CallerRelations> callers)
+    public DefaultCallerFactory(IServiceProvider serviceProvider, CallerOptions options)
     {
         _serviceProvider = serviceProvider;
-        _callers = callers;
+        _callers = options.Callers;
     }
 
     public ICallerProvider CreateClient()

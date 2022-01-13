@@ -35,7 +35,7 @@ public class RedisCacheClient : IDistributedCacheClient
     private const string DATA_KEY = "data";
     private const long NOT_PRESENT = -1;
 
-    internal static readonly RedisConfigurationOptions RedisConfiguration = new RedisConfigurationOptions();
+    internal static readonly RedisConfigurationOptions RedisConfiguration = new();
 
     private readonly IConnectionMultiplexer? _connection;
     private readonly IDatabase _db;
