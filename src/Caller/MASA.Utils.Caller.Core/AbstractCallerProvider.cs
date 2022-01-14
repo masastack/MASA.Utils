@@ -45,21 +45,21 @@ public abstract class AbstractCallerProvider : ICallerProvider
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Get, methodName);
         HttpResponseMessage content = await SendAsync(request, cancellationToken);
-        return await content.Content.ReadAsStringAsync();
+        return await content.Content.ReadAsStringAsync(cancellationToken);
     }
 
     public virtual async Task<byte[]> GetByteArrayAsync(string? methodName, CancellationToken cancellationToken= default)
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Get, methodName);
         HttpResponseMessage content = await SendAsync(request, cancellationToken);
-        return await content.Content.ReadAsByteArrayAsync();
+        return await content.Content.ReadAsByteArrayAsync(cancellationToken);
     }
 
     public virtual async Task<Stream> GetStreamAsync(string? methodName, CancellationToken cancellationToken= default)
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Get, methodName);
         HttpResponseMessage content = await SendAsync(request, cancellationToken);
-        return await content.Content.ReadAsStreamAsync();
+        return await content.Content.ReadAsStreamAsync(cancellationToken);
     }
 
     public virtual Task<HttpResponseMessage> GetAsync(string? methodName, CancellationToken cancellationToken= default)
@@ -69,6 +69,12 @@ public abstract class AbstractCallerProvider : ICallerProvider
     {
         methodName = GetUrl(methodName ?? String.Empty, data);
         return GetAsync(methodName, cancellationToken);
+    }
+
+    public Task<TResponse> GetAsync<TResponse>(string? methodName, CancellationToken cancellationToken= default)
+    {
+        HttpRequestMessage request = CreateRequest(HttpMethod.Get, methodName);
+        return SendAsync<TResponse>(request, cancellationToken);
     }
 
     public Task<TResponse> GetAsync<TResponse>(string? methodName, Dictionary<string, string> data, CancellationToken cancellationToken= default)
