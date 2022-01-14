@@ -2,7 +2,7 @@ namespace MASA.Utils.Data.Elasticsearch.Options.Alias;
 
 public class UnBindAliasIndexOptions
 {
-    public string[]? IndexNames { get; }
+    public string[] IndexNames { get; } = default!;
 
     public string Alias { get; }
 
@@ -11,9 +11,12 @@ public class UnBindAliasIndexOptions
         Alias = alias;
     }
 
-    public UnBindAliasIndexOptions(string alias, string? indexName = null) : this(alias)
+    public UnBindAliasIndexOptions(string alias, string indexName) : this(alias)
     {
-        IndexNames = indexName == null ? null : new[] { indexName };
+        if (string.IsNullOrEmpty(indexName))
+            throw new ArgumentException("indexName cannot be empty", nameof(indexName));
+
+        IndexNames = new[] {indexName};
     }
 
     public UnBindAliasIndexOptions(string alias, string[] indexNames) : this(alias)

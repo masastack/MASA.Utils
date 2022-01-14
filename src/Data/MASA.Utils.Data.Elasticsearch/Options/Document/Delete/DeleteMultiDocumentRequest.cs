@@ -4,7 +4,7 @@ public class DeleteMultiDocumentRequest : DocumentOptions
 {
     public string[] DocumentIds { get; }
 
-    public DeleteMultiDocumentRequest(string[] documentIds, string? indexName = null) : base(indexName)
+    public DeleteMultiDocumentRequest(string indexName, string[] documentIds) : base(indexName)
     {
         DocumentIds = documentIds;
     }

@@ -4,12 +4,12 @@ public class CreateMultiDocumentRequest<TDocument> : DocumentOptions where TDocu
 {
     public List<SingleDocumentBaseRequest<TDocument>> Items { get; set; }
 
-    public CreateMultiDocumentRequest(string? indexName = null) : base(indexName)
+    public CreateMultiDocumentRequest(string indexName) : base(indexName)
     {
         Items = new();
     }
 
-    public CreateMultiDocumentRequest(TDocument document, string? documentId = null, string? indexName = null) : this(indexName)
+    public CreateMultiDocumentRequest(string indexName, TDocument document, string? documentId = null) : this(indexName)
     {
         this.AddDocument(document, documentId);
     }

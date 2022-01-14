@@ -13,12 +13,7 @@ public class QueryBaseOptions<TDocument> : DocumentOptions
 
     public Action<QueryStringQueryDescriptor<TDocument>>? Action { get; set; }
 
-    public QueryBaseOptions(string query, string? defaultField = null, Operator @operator = Operator.Or)
-        : this(null, query, defaultField, @operator)
-    {
-    }
-
-    public QueryBaseOptions(string? indexName, string query, string? defaultField = null, Operator @operator = Operator.Or)
+    public QueryBaseOptions(string indexName, string query, string? defaultField = null, Operator @operator = Operator.Or)
         : base(indexName)
     {
         DefaultField = defaultField;

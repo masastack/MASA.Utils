@@ -4,7 +4,7 @@ public class GetMultiDocumentRequest : DocumentOptions
 {
     public string[] Id { get; }
 
-    public GetMultiDocumentRequest(string[] id, string? indexName = null) : base(indexName)
+    public GetMultiDocumentRequest(string indexName, string[] id) : base(indexName)
     {
         Id = id;
     }

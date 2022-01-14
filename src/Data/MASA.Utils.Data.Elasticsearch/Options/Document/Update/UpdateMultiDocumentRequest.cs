@@ -4,7 +4,7 @@ public class UpdateMultiDocumentRequest<TDocument> : DocumentOptions where TDocu
 {
     public List<UpdateDocumentBaseRequest<TDocument>> Items { get; set; }
 
-    public UpdateMultiDocumentRequest(string? indexName = null) : base(indexName)
+    public UpdateMultiDocumentRequest(string indexName) : base(indexName)
     {
         Items = new();
     }

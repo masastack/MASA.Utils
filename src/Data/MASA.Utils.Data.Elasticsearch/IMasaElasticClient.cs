@@ -2,14 +2,10 @@
 
 public interface IMasaElasticClient
 {
-    bool ExistDefaultIndex { get; }
-
-    string DefaultIndex { get; }
-
     #region index manage
 
     Task<Response.ExistsResponse> IndexExistAsync(
-        string? indexName = null,
+        string indexName,
         CancellationToken cancellationToken = default);
 
     Task<Response.Index.CreateIndexResponse> CreateIndexAsync(
@@ -17,7 +13,7 @@ public interface IMasaElasticClient
         CreateIndexOptions? options = null,
         CancellationToken cancellationToken = default);
 
-    Task<MASA.Utils.Data.Elasticsearch.Response.Index.DeleteIndexResponse> DeleteIndexAsync(string? indexName = null,
+    Task<MASA.Utils.Data.Elasticsearch.Response.Index.DeleteIndexResponse> DeleteIndexAsync(string indexName,
         CancellationToken cancellationToken = default);
 
     Task<Response.Index.DeleteIndexResponse> DeleteMultiIndexAsync(
@@ -41,7 +37,7 @@ public interface IMasaElasticClient
     Task<MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse> GetAllAliasAsync(CancellationToken cancellationToken = default);
 
     Task<MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse> GetAliasByIndexAsync(
-        string? indexName = null,
+        string indexName,
         CancellationToken cancellationToken = default);
 
     Task<MASA.Utils.Data.Elasticsearch.Response.Alias.BulkAliasResponse> BindAliasAsync(

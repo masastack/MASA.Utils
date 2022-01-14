@@ -7,12 +7,7 @@ public class QueryOptions<TDocument> : QueryBaseOptions<TDocument>
 
     public int Take { get; }
 
-    public QueryOptions(string query, string defaultField, int skip, int take)
-        : this(null, query, defaultField, skip, take)
-    {
-    }
-
-    public QueryOptions(string? indexName, string query, string defaultField, int skip, int take)
+    public QueryOptions(string indexName, string query, string defaultField, int skip, int take)
         : base(indexName, query, defaultField)
     {
         Skip = skip;

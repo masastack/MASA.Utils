@@ -8,16 +8,7 @@ public class PaginatedOptions<TDocument> : QueryBaseOptions<TDocument>
     public int PageSize { get; }
 
     public PaginatedOptions(
-        string query,
-        string defaultField,
-        int page,
-        int pageSize)
-        : this(null, query, defaultField, page, pageSize)
-    {
-    }
-
-    public PaginatedOptions(
-        string? indexName,
+        string indexName,
         string query,
         string defaultField,
         int page,

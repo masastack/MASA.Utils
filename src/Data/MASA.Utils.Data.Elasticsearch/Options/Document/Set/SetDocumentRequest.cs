@@ -4,12 +4,12 @@ public class SetDocumentRequest<TDocument> : DocumentOptions where TDocument : c
 {
     public List<SingleDocumentBaseRequest<TDocument>> Items { get; set; }
 
-    public SetDocumentRequest(string? indexName = null) : base(indexName)
+    public SetDocumentRequest(string indexName) : base(indexName)
     {
         Items = new();
     }
 
-    public SetDocumentRequest(TDocument document, string? documentId = null, string? indexName = null) : this(indexName)
+    public SetDocumentRequest(string indexName, TDocument document, string? documentId = null) : this(indexName)
     {
         this.AddDocument(document, documentId);
     }

@@ -4,47 +4,40 @@ public class DefaultMasaElasticClient : IMasaElasticClient
 {
     private readonly IElasticClient _elasticClient;
 
-    public bool ExistDefaultIndex
-        => !string.IsNullOrWhiteSpace(_elasticClient.ConnectionSettings.DefaultIndex);
-
-    public string DefaultIndex
-        => ExistDefaultIndex
-            ? _elasticClient.ConnectionSettings.DefaultIndex
-            : throw new ArgumentNullException(nameof(DefaultIndex), "The default IndexName is not set");
-
     public DefaultMasaElasticClient(IElasticClient elasticClient)
         => _elasticClient = elasticClient;
 
     #region index manage
 
     public async Task<Response.ExistsResponse> IndexExistAsync(
-        string? indexName = null,
+        string indexName,
         CancellationToken cancellationToken = default)
     {
-        IIndexExistsRequest request = new IndexExistsRequest(GetIndices(indexName));
+        IIndexExistsRequest request = new IndexExistsRequest(indexName);
         return new Response.ExistsResponse(await _elasticClient.Indices.ExistsAsync(request, cancellationToken));
     }
 
     public async Task<Response.Index.CreateIndexResponse> CreateIndexAsync(
-        string? indexName = null,
+        string indexName,
         CreateIndexOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        ICreateIndexRequest request = new CreateIndexRequest(GetIndexName(indexName));
+        ICreateIndexRequest request = new CreateIndexRequest(indexName);
         if (options != null)
         {
             request.Settings = options.IndexSettings;
             request.Aliases = options.Aliases;
             request.Mappings = options.Mappings;
         }
+
         return new Response.Index.CreateIndexResponse(await _elasticClient.Indices.CreateAsync(request, cancellationToken));
     }
 
     public async Task<Response.Index.DeleteIndexResponse> DeleteIndexAsync(
-        string? indexName = null,
+        string indexName,
         CancellationToken cancellationToken = default)
     {
-        IDeleteIndexRequest request = new DeleteIndexRequest(GetIndices(indexName));
+        IDeleteIndexRequest request = new DeleteIndexRequest(indexName);
         return new Response.Index.DeleteIndexResponse(await _elasticClient.Indices.DeleteAsync(request, cancellationToken));
     }
 
@@ -101,10 +94,10 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     }
 
     public async Task<MASAGetAliasResponse> GetAliasByIndexAsync(
-        string? indexName = null,
+        string indexName,
         CancellationToken cancellationToken = default)
     {
-        IGetAliasRequest request = new GetAliasRequest(GetIndices(indexName));
+        IGetAliasRequest request = new GetAliasRequest((Indices) indexName);
         var response = await _elasticClient.Indices.GetAliasAsync(request, cancellationToken);
         return new MASAGetAliasResponse(response);
     }
@@ -114,8 +107,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         CancellationToken cancellationToken = default)
     {
         BulkAliasDescriptor request = new BulkAliasDescriptor();
-        var indexNames = options.IndexNames ?? new[] { DefaultIndex };
-        foreach (var indexName in indexNames)
+        foreach (var indexName in options.IndexNames)
         {
             request.Add(opt => opt.Aliases(options.Alias).Index(indexName));
         }
@@ -129,8 +121,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         CancellationToken cancellationToken = default)
     {
         BulkAliasDescriptor request = new BulkAliasDescriptor();
-        var indexNames = options.IndexNames ?? new[] { DefaultIndex };
-        foreach (var indexName in indexNames)
+        foreach (var indexName in options.IndexNames)
         {
             request.Remove(opt => opt.Aliases(options.Alias).Index(indexName));
         }
@@ -147,7 +138,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         ExistDocumentRequest request,
         CancellationToken cancellationToken = default)
     {
-        var documentExistsRequest = new DocumentExistsRequest(GetIndex(request.IndexName), request.DocumentId);
+        var documentExistsRequest = new DocumentExistsRequest(request.IndexName, request.DocumentId);
         return new Response.ExistsResponse(await _elasticClient.DocumentExistsAsync(documentExistsRequest, cancellationToken));
     }
 
@@ -164,7 +155,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         CancellationToken cancellationToken = default) where TDocument : class
     {
         ICreateRequest<TDocument> createRequest = request.Request.DocumentId != null
-            ? new CreateRequest<TDocument>(GetIndex(request.IndexName), new Id(request.Request.DocumentId))
+            ? new CreateRequest<TDocument>(request.IndexName, new Id(request.Request.DocumentId))
             : new CreateRequest<TDocument>(request.IndexName);
         createRequest.Document = request.Request.Document;
         return new Response.CreateResponse(await _elasticClient.CreateAsync(createRequest, cancellationToken));
@@ -182,14 +173,13 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         CreateMultiDocumentRequest<TDocument> request,
         CancellationToken cancellationToken = default) where TDocument : class
     {
-        var indexName = GetIndex(request.IndexName);
-        BulkDescriptor descriptor = new BulkDescriptor(indexName);
+        BulkDescriptor descriptor = new BulkDescriptor(request.IndexName);
         foreach (var item in request.Items)
         {
             descriptor
                 .Create<TDocument>(opt => opt.Document(item.Document)
-                .Index(indexName)
-                .Id(item.DocumentId));
+                    .Index(request.IndexName)
+                    .Id(item.DocumentId));
         }
 
         var response = await _elasticClient.BulkAsync(descriptor, cancellationToken);
@@ -208,14 +198,13 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         SetDocumentRequest<TDocument> request,
         CancellationToken cancellationToken = default) where TDocument : class
     {
-        var indexName = GetIndex(request.IndexName);
-        BulkDescriptor descriptor = new BulkDescriptor(indexName);
+        BulkDescriptor descriptor = new BulkDescriptor(request.IndexName);
         foreach (var item in request.Items)
         {
             descriptor
                 .Index<TDocument>(opt => opt.Document(item.Document)
-                .Index(indexName)
-                .Id(item.DocumentId));
+                    .Index(request.IndexName)
+                    .Id(item.DocumentId));
         }
 
         var response = await _elasticClient.BulkAsync(descriptor, cancellationToken);
@@ -226,7 +215,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         DeleteDocumentRequest request,
         CancellationToken cancellationToken = default)
     {
-        IDeleteRequest deleteRequest = new DeleteRequest(GetIndex(request.IndexName), new Id(request.DocumentId));
+        IDeleteRequest deleteRequest = new DeleteRequest(request.IndexName, new Id(request.DocumentId));
         return new Response.DeleteResponse(await _elasticClient.DeleteAsync(deleteRequest, cancellationToken));
     }
 
@@ -234,7 +223,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         DeleteMultiDocumentRequest request,
         CancellationToken cancellationToken = default)
     {
-        var response = await _elasticClient.DeleteManyAsync(request.DocumentIds, GetIndex(request.IndexName), cancellationToken);
+        var response = await _elasticClient.DeleteManyAsync(request.DocumentIds, request.IndexName, cancellationToken);
         return new DeleteMultiResponse(response);
     }
 
@@ -256,15 +245,16 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         {
             var response = await _elasticClient.UpdateAsync<TDocument>(
                 request.Request.DocumentId,
-                opt => opt.Doc(request.Request.Document).Index(GetIndex(request.IndexName)),
+                opt => opt.Doc(request.Request.Document).Index(request.IndexName),
                 cancellationToken);
             return new UpdateResponse(response);
         }
 
-        IUpdateRequest<TDocument, object> updateRequest = new UpdateRequest<TDocument, object>(GetIndex(request.IndexName), request.Request.DocumentId)
-        {
-            Doc = request.Request.PartialDocument!
-        };
+        IUpdateRequest<TDocument, object> updateRequest =
+            new UpdateRequest<TDocument, object>(request.IndexName, request.Request.DocumentId)
+            {
+                Doc = request.Request.PartialDocument!
+            };
         return new UpdateResponse(await _elasticClient.UpdateAsync(updateRequest, cancellationToken));
     }
 
@@ -281,22 +271,21 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         CancellationToken cancellationToken = default)
         where TDocument : class
     {
-        var indexName = GetIndex(request.IndexName);
-        BulkDescriptor descriptor = new BulkDescriptor(indexName);
+        BulkDescriptor descriptor = new BulkDescriptor(request.IndexName);
         foreach (var item in request.Items)
         {
             if (item.Document != null)
             {
                 descriptor
                     .Update<TDocument>(opt => opt.Doc(item.Document)
-                    .Index(indexName)
-                    .Id(item.DocumentId));
+                        .Index(request.IndexName)
+                        .Id(item.DocumentId));
             }
 
             descriptor
                 .Update<TDocument, object>(opt => opt.Doc(item.PartialDocument!)
-                .Index(indexName)
-                .Id(item.DocumentId));
+                    .Index(request.IndexName)
+                    .Id(item.DocumentId));
         }
 
         var response = await _elasticClient.BulkAsync(descriptor, cancellationToken);
@@ -307,7 +296,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         GetDocumentRequest request,
         CancellationToken cancellationToken = default) where TDocument : class
     {
-        IGetRequest getRequest = new GetRequest(GetIndex(request.IndexName), request.Id);
+        IGetRequest getRequest = new GetRequest(request.IndexName, request.Id);
         return new Response.GetResponse<TDocument>(await _elasticClient.GetAsync<TDocument>(getRequest, cancellationToken));
     }
 
@@ -315,8 +304,10 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         GetMultiDocumentRequest request,
         CancellationToken cancellationToken = default) where TDocument : class
     {
-        var response = (await _elasticClient.GetManyAsync<TDocument>(request.Id, GetIndex(request.IndexName), cancellationToken))?.ToList()
-                  ?? new List<IMultiGetHit<TDocument>>();
+        var response = (await
+                _elasticClient.GetManyAsync<TDocument>(request.Id, request.IndexName, cancellationToken)
+            )?.ToList() ?? new List<IMultiGetHit<TDocument>>();
+
         if (response.Count == request.Id.Length)
         {
             return new GetMultiResponse<TDocument>(true, "success", response);
@@ -360,7 +351,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         where TDocument : class
     {
         return _elasticClient.SearchAsync<TDocument>(s => s
-            .Index(GetIndex(indexName))
+            .Index(indexName)
             .From(skip)
             .Size(take)
             .Query(q => q
@@ -390,10 +381,4 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     }
 
     #endregion
-
-    private string GetIndex(string? indexName) => indexName ?? DefaultIndex;
-
-    private Indices GetIndices(string? indexName) => GetIndex(indexName);
-
-    private IndexName GetIndexName(string? indexName) => GetIndex(indexName);
 }

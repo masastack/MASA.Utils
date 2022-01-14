@@ -4,7 +4,7 @@ public class GetDocumentRequest : DocumentOptions
 {
     public string Id { get; }
 
-    public GetDocumentRequest(string id, string? indexName = null) : base(indexName)
+    public GetDocumentRequest(string indexName, string id) : base(indexName)
     {
         Id = id;
     }

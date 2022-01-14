@@ -4,7 +4,7 @@ public class DeleteDocumentRequest : DocumentOptions
 {
     public string DocumentId { get; }
 
-    public DeleteDocumentRequest(string documentId, string? indexName = null) : base(indexName)
+    public DeleteDocumentRequest(string indexName, string documentId) : base(indexName)
     {
         DocumentId = documentId;
     }
