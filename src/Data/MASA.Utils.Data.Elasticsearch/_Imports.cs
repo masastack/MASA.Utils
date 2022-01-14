@@ -15,3 +15,6 @@ global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Nest;
 global using System.Collections.Concurrent;
 global using System.Runtime.Serialization;
+global using MASABulkAliasResponse = MASA.Utils.Data.Elasticsearch.Response.Alias.BulkAliasResponse;
+global using MASAGetAliasResponse = MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse;
+global using MASADeleteIndexResponse = MASA.Utils.Data.Elasticsearch.Response.Index.DeleteIndexResponse;

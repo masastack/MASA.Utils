@@ -4,8 +4,8 @@ public class GetIndexResponse : ResponseBase
 {
     public string[] IndexNames { get; set; }
 
-    public GetIndexResponse(CatResponse<CatIndicesRecord> ret) : base(ret)
+    public GetIndexResponse(CatResponse<CatIndicesRecord> catResponse) : base(catResponse)
     {
-        IndexNames = ret.IsValid ? ret.Records.Select(r => r.Index).ToArray() : Array.Empty<string>();
+        IndexNames = catResponse.IsValid ? catResponse.Records.Select(r => r.Index).ToArray() : Array.Empty<string>();
     }
 }

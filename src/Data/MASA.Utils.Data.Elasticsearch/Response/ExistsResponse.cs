@@ -4,10 +4,10 @@ public class ExistsResponse : ResponseBase
 {
     public bool Exists { get; }
 
-    public ExistsResponse(Nest.ExistsResponse ret) : base(
-        ret.IsValid || ret.ApiCall.HttpStatusCode == 404,
-        ret.IsValid || ret.ApiCall.HttpStatusCode == 404 ? "success" : ret.ServerError?.ToString() ?? string.Empty)
+    public ExistsResponse(Nest.ExistsResponse existsResponse) : base(
+        existsResponse.IsValid || existsResponse.ApiCall.HttpStatusCode == 404,
+        existsResponse.IsValid || existsResponse.ApiCall.HttpStatusCode == 404 ? "success" : existsResponse.ServerError?.ToString() ?? string.Empty)
     {
-        Exists = ret.Exists;
+        Exists = existsResponse.Exists;
     }
 }

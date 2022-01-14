@@ -11,7 +11,7 @@ public static partial class ServiceCollectionExtensions
 
         AddElasticsearchCore(services);
 
-        services.TryAddOrUpdateElasticsearchRelation(string.Empty, new());
+        services.TryAddOrUpdateElasticsearchRelation(string.Empty, new("http://localhost:9200"));
 
         return services;
     }
@@ -26,7 +26,7 @@ public static partial class ServiceCollectionExtensions
     {
         return services.AddElasticsearch(name, () =>
         {
-            ElasticsearchOptions options = new();
+            ElasticsearchOptions options = new("http://localhost:9200");
             action.Invoke(options);
             return options;
         });

@@ -17,12 +17,7 @@ public class ElasticsearchOptions
     public ElasticsearchOptions(params string[] nodes)
     {
         if (nodes.Length == 0)
-        {
-            nodes = new[]
-            {
-                "http://localhost:9200"
-            };
-        }
+            throw new ArgumentException("Please specify the Elasticsearch node address");
 
         this.IsDefault = false;
         this.Nodes = nodes;

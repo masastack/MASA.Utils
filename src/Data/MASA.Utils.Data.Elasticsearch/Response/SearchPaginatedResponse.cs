@@ -7,12 +7,12 @@ public class SearchPaginatedResponse<TDocument> : SearchResponse<TDocument>
 
     public int TotalPages { get; set; }
 
-    public SearchPaginatedResponse(ISearchResponse<TDocument> ret) : base(ret)
+    public SearchPaginatedResponse(ISearchResponse<TDocument> searchResponse) : base(searchResponse)
     {
-        Total = ret.Hits.Count;
+        Total = searchResponse.Hits.Count;
     }
 
-    public SearchPaginatedResponse(int pageSize, ISearchResponse<TDocument> ret) : this(ret)
+    public SearchPaginatedResponse(int pageSize, ISearchResponse<TDocument> searchResponse) : this(searchResponse)
     {
         TotalPages = (int)Math.Ceiling(Total / (decimal)pageSize);
     }

@@ -5,8 +5,8 @@ public class GetResponse<TDocument> : ResponseBase
 {
     public TDocument Document { get; set; }
 
-    public GetResponse(IGetResponse<TDocument> ret) : base(ret)
+    public GetResponse(IGetResponse<TDocument> getResponse) : base(getResponse)
     {
-        Document = ret.Source;
+        Document = getResponse.Source;
     }
 }

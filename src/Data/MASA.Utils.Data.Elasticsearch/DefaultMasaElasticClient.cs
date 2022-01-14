@@ -71,7 +71,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
             return await DeleteMultiIndexAsync(response.IndexNames, cancellationToken);
         }
 
-        return new MASA.Utils.Data.Elasticsearch.Response.Index.DeleteIndexResponse(response.Message);
+        return new MASADeleteIndexResponse(response.Message);
     }
 
     public async Task<Response.Index.GetIndexResponse> GetAllIndexAsync(CancellationToken cancellationToken)
@@ -92,24 +92,24 @@ public class DefaultMasaElasticClient : IMasaElasticClient
 
     #region alias manage
 
-    public async Task<MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse> GetAllAliasAsync(
+    public async Task<MASAGetAliasResponse> GetAllAliasAsync(
         CancellationToken cancellationToken = default)
     {
         Func<CatAliasesDescriptor, ICatAliasesRequest>? selector = null;
         var response = await _elasticClient.Cat.AliasesAsync(selector, cancellationToken);
-        return new MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse(response);
+        return new MASAGetAliasResponse(response);
     }
 
-    public async Task<MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse> GetAliasByIndexAsync(
+    public async Task<MASAGetAliasResponse> GetAliasByIndexAsync(
         string? indexName = null,
         CancellationToken cancellationToken = default)
     {
         IGetAliasRequest request = new GetAliasRequest(GetIndices(indexName));
         var response = await _elasticClient.Indices.GetAliasAsync(request, cancellationToken);
-        return new MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse(response);
+        return new MASAGetAliasResponse(response);
     }
 
-    public async Task<MASA.Utils.Data.Elasticsearch.Response.Alias.BulkAliasResponse> BindAliasAsync(
+    public async Task<MASABulkAliasResponse> BindAliasAsync(
         BindAliasIndexOptions options,
         CancellationToken cancellationToken = default)
     {
@@ -121,10 +121,10 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         }
 
         var response = await _elasticClient.Indices.BulkAliasAsync(request, cancellationToken);
-        return new MASA.Utils.Data.Elasticsearch.Response.Alias.BulkAliasResponse(response);
+        return new MASABulkAliasResponse(response);
     }
 
-    public async Task<MASA.Utils.Data.Elasticsearch.Response.Alias.BulkAliasResponse> UnBindAliasAsync(
+    public async Task<MASABulkAliasResponse> UnBindAliasAsync(
         UnBindAliasIndexOptions options,
         CancellationToken cancellationToken = default)
     {
@@ -136,7 +136,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         }
 
         var response = await _elasticClient.Indices.BulkAliasAsync(request, cancellationToken);
-        return new MASA.Utils.Data.Elasticsearch.Response.Alias.BulkAliasResponse(response);
+        return new MASABulkAliasResponse(response);
     }
 
     #endregion

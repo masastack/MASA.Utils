@@ -12,7 +12,7 @@ public class ResponseBase
         Message = message;
     }
 
-    public ResponseBase(IResponse ret) : this(ret.IsValid, ret.IsValid ? "success" : ret.ServerError?.ToString() ?? string.Empty)
+    public ResponseBase(IResponse response) : this(response.IsValid, response.IsValid ? "success" : response.ServerError?.ToString() ?? string.Empty)
     {
     }
 }

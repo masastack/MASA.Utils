@@ -4,15 +4,15 @@ public class GetAliasResponse : ResponseBase
 {
     public string[] Aliases { get; }
 
-    public GetAliasResponse(CatResponse<CatAliasesRecord> ret) : base(ret)
+    public GetAliasResponse(CatResponse<CatAliasesRecord> catResponse) : base(catResponse)
     {
-        Aliases = ret.IsValid ? ret.Records.Select(r => r.Alias).ToArray() : Array.Empty<string>();
+        Aliases = catResponse.IsValid ? catResponse.Records.Select(r => r.Alias).ToArray() : Array.Empty<string>();
     }
 
-    public GetAliasResponse(Nest.GetAliasResponse ret) : base(ret)
+    public GetAliasResponse(Nest.GetAliasResponse getAliasResponse) : base(getAliasResponse)
     {
-        Aliases = ret.IsValid
-            ? ret.Indices
+        Aliases = getAliasResponse.IsValid
+            ? getAliasResponse.Indices
                 .Select(item => item.Value)
                 .SelectMany(indexAlias => indexAlias.Aliases)
                 .Select(alias => alias.Key).Distinct().ToArray()

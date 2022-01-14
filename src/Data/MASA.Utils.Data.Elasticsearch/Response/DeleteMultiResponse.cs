@@ -4,8 +4,8 @@ public class DeleteMultiResponse : ResponseBase
 {
     public List<DeleteRangeResponseItems> Data { get; set; }
 
-    public DeleteMultiResponse(Nest.BulkResponse ret) : base(ret)
+    public DeleteMultiResponse(Nest.BulkResponse bulkResponse) : base(bulkResponse)
     {
-        Data = ret.Items.Select(item => new DeleteRangeResponseItems(item.Id, item.IsValid, item.Error?.ToString() ?? string.Empty)).ToList();
+        Data = bulkResponse.Items.Select(item => new DeleteRangeResponseItems(item.Id, item.IsValid, item.Error?.ToString() ?? string.Empty)).ToList();
     }
 }

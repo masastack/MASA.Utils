@@ -4,9 +4,9 @@ public class GetIndexByAliasResponse : Response.ResponseBase
 {
     public string[] IndexNames { get; }
 
-    public GetIndexByAliasResponse(CatResponse<CatIndicesRecord> ret) : base(ret)
+    public GetIndexByAliasResponse(CatResponse<CatIndicesRecord> catResponse) : base(catResponse)
     {
-        IndexNames = ret.IsValid ? ret.Records.Select(r => r.Index).ToArray() : Array.Empty<string>();
-        IndexNames = ret.IsValid ? ret.Records.Select(r => r.Index).ToArray() : Array.Empty<string>();
+        IndexNames = catResponse.IsValid ? catResponse.Records.Select(r => r.Index).ToArray() : Array.Empty<string>();
+        IndexNames = catResponse.IsValid ? catResponse.Records.Select(r => r.Index).ToArray() : Array.Empty<string>();
     }
 }
