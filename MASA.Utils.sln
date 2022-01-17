@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASA.Utils.Caller.HttpClien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MASA.Utils.Caller.DaprClient", "src\Caller\MASA.Utils.Caller.DaprClient\MASA.Utils.Caller.DaprClient.csproj", "{68B51DE3-FEA2-4704-B1D0-B9924F754A76}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MASA.Utils.Exceptions", "src\MASA.Utils.Exceptions\MASA.Utils.Exceptions.csproj", "{A43369A4-ECFC-46C4-AC04-B981AF7FE35D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +123,10 @@ Global
 		{68B51DE3-FEA2-4704-B1D0-B9924F754A76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68B51DE3-FEA2-4704-B1D0-B9924F754A76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68B51DE3-FEA2-4704-B1D0-B9924F754A76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A43369A4-ECFC-46C4-AC04-B981AF7FE35D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A43369A4-ECFC-46C4-AC04-B981AF7FE35D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A43369A4-ECFC-46C4-AC04-B981AF7FE35D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A43369A4-ECFC-46C4-AC04-B981AF7FE35D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -147,6 +153,7 @@ Global
 		{3BEAA614-6327-485F-A81D-3937EC7E16B5} = {72E67141-9CD8-48A9-B27B-F0C924FD4A12}
 		{C19B010B-AA4D-46C0-A229-034C3F36C266} = {72E67141-9CD8-48A9-B27B-F0C924FD4A12}
 		{68B51DE3-FEA2-4704-B1D0-B9924F754A76} = {72E67141-9CD8-48A9-B27B-F0C924FD4A12}
+		{A43369A4-ECFC-46C4-AC04-B981AF7FE35D} = {D956582F-4071-47E6-A8E7-4C5A83770045}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7DAA0E6-098F-4B18-8775-64FDA96F1FF0}

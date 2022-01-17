@@ -1,31 +1,23 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿namespace System;
 
-namespace System
+public class MasaException : Exception
 {
-    public class MasaException : Exception
+    public MasaException()
     {
-        public MasaException()
-        {
+    }
 
-        }
+    public MasaException(string message)
+        : base(message)
+    {
+    }
 
-        public MasaException(string message)
-            : base(message)
-        {
+    public MasaException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        }
-
-        public MasaException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-
-        }
-
-        public MasaException(SerializationInfo serializationInfo, StreamingContext context)
-            : base(serializationInfo, context)
-        {
-
-        }
+    public MasaException(SerializationInfo serializationInfo, StreamingContext context)
+        : base(serializationInfo, context)
+    {
     }
 }
