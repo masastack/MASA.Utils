@@ -2,7 +2,7 @@ namespace MASA.Utils.Data.Elasticsearch.Options;
 
 public class ElasticsearchRelationsOptions
 {
-    internal Dictionary<string, ElasticsearchRelations> Relations = new();
+    internal readonly Dictionary<string, ElasticsearchRelations> Relations = new();
 
     public ElasticsearchRelationsOptions AddRelation(string name, ElasticsearchOptions options)
     {
