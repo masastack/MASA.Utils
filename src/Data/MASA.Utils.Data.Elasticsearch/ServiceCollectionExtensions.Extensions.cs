@@ -6,11 +6,11 @@ public static partial class ServiceCollectionExtensions
         => services.BuildServiceProvider().GetRequiredService<IElasticsearchFactory>().CreateElasticClient(name);
 
     public static IElasticClient AddElasticsearchClient(this IServiceCollection services)
-        => services.AddElasticsearch().CreateElasticsearchClient(string.Empty);
+        => services.AddElasticsearch().CreateElasticsearchClient(Const.DEFAULT_CLIENT_NAME);
 
-    public static IElasticClient AddElasticsearchClient(this IServiceCollection services, string[] nodes)
+    public static IElasticClient AddElasticsearchClient(this IServiceCollection services, string[]? nodes)
         => services
-            .AddElasticsearch(Const.DEFAULT_CLIENT_NAME, nodes)
+            .AddElasticsearch(Const.DEFAULT_CLIENT_NAME, nodes == null || nodes.Length == 0 ? new[] {"http://localhost:9200"} : nodes)
             .CreateElasticsearchClient(Const.DEFAULT_CLIENT_NAME);
 
     public static IElasticClient AddElasticsearchClient(this IServiceCollection services, string name, params string[] nodes)

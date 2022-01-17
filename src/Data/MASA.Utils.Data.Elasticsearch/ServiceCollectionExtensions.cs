@@ -2,22 +2,15 @@
 
 public static partial class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddElasticsearch(this IServiceCollection services)
+    public static IServiceCollection AddElasticsearch(this IServiceCollection services, string[]? nodes = null)
     {
-        if (services.Any(service => service.ImplementationType == typeof(ElasticsearchService)))
-            return services;
+        if (nodes == null || nodes.Length == 0)
+        {
+            nodes = new[] {"http://localhost:9200"};
+        }
 
-        services.AddSingleton<ElasticsearchService>();
-
-        AddElasticsearchCore(services);
-
-        services.TryAddOrUpdateElasticsearchRelation(string.Empty, new("http://localhost:9200"));
-
-        return services;
+        return services.AddElasticsearch(Const.DEFAULT_CLIENT_NAME, nodes);
     }
-
-    public static IServiceCollection AddElasticsearch(this IServiceCollection services, string[] nodes)
-        => services.AddElasticsearch(Const.DEFAULT_CLIENT_NAME, nodes);
 
     public static IServiceCollection AddElasticsearch(this IServiceCollection services, string name, params string[] nodes)
         => services.AddElasticsearch(name, options => options.UseNodes(nodes));
@@ -75,9 +68,5 @@ public static partial class ServiceCollectionExtensions
             throw new ArgumentNullException(nameof(ElasticsearchRelations.IsDefault), "ElasticClient can only have one default");
 
         relationsOptions.AddRelation(name, options);
-    }
-
-    private class ElasticsearchService
-    {
     }
 }
