@@ -1,4 +1,4 @@
-﻿namespace MASA.Utils.Data.Elasticsearch;
+namespace MASA.Utils.Data.Elasticsearch;
 
 public interface IMasaElasticClient
 {
@@ -13,7 +13,7 @@ public interface IMasaElasticClient
         CreateIndexOptions? options = null,
         CancellationToken cancellationToken = default);
 
-    Task<MASA.Utils.Data.Elasticsearch.Response.Index.DeleteIndexResponse> DeleteIndexAsync(string indexName,
+    Task<Response.Index.DeleteIndexResponse> DeleteIndexAsync(string indexName,
         CancellationToken cancellationToken = default);
 
     Task<Response.Index.DeleteIndexResponse> DeleteMultiIndexAsync(
@@ -34,17 +34,17 @@ public interface IMasaElasticClient
 
     #region alias manage
 
-    Task<MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse> GetAllAliasAsync(CancellationToken cancellationToken = default);
+    Task<Response.Alias.GetAliasResponse> GetAllAliasAsync(CancellationToken cancellationToken = default);
 
-    Task<MASA.Utils.Data.Elasticsearch.Response.Alias.GetAliasResponse> GetAliasByIndexAsync(
+    Task<Response.Alias.GetAliasResponse> GetAliasByIndexAsync(
         string indexName,
         CancellationToken cancellationToken = default);
 
-    Task<MASA.Utils.Data.Elasticsearch.Response.Alias.BulkAliasResponse> BindAliasAsync(
+    Task<Response.Alias.BulkAliasResponse> BindAliasAsync(
         BindAliasIndexOptions options,
         CancellationToken cancellationToken = default);
 
-    Task<MASA.Utils.Data.Elasticsearch.Response.Alias.BulkAliasResponse> UnBindAliasAsync(
+    Task<Response.Alias.BulkAliasResponse> UnBindAliasAsync(
         UnBindAliasIndexOptions options,
         CancellationToken cancellationToken = default);
 
@@ -76,7 +76,7 @@ public interface IMasaElasticClient
     /// <param name="cancellationToken"></param>
     /// <typeparam name="TDocument"></typeparam>
     /// <returns></returns>
-    Task<Response.CreateMultiResponse> CreateMultiDocumentAsync<TDocument>(
+    Task<CreateMultiResponse> CreateMultiDocumentAsync<TDocument>(
         CreateMultiDocumentRequest<TDocument> request,
         CancellationToken cancellationToken = default) where TDocument : class;
 
@@ -96,7 +96,7 @@ public interface IMasaElasticClient
         DeleteDocumentRequest request,
         CancellationToken cancellationToken = default);
 
-    Task<Response.DeleteMultiResponse> DeleteMultiDocumentAsync(
+    Task<DeleteMultiResponse> DeleteMultiDocumentAsync(
         DeleteMultiDocumentRequest request,
         CancellationToken cancellationToken = default);
 

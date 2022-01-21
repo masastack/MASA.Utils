@@ -6,7 +6,7 @@ public class DeleteIndexResponse : ResponseBase
     {
     }
 
-    public DeleteIndexResponse(Nest.BulkAliasResponse bulkAliasResponse) : base(bulkAliasResponse)
+    public DeleteIndexResponse(BulkAliasResponse bulkAliasResponse) : base(bulkAliasResponse)
     {
     }
 

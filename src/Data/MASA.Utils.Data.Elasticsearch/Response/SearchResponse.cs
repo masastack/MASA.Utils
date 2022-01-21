@@ -5,7 +5,7 @@ public class SearchResponse<TDocument> : ResponseBase
 {
     public List<TDocument> Data { get; }
 
-    public SearchResponse(Nest.ISearchResponse<TDocument> searchResponse) : base(searchResponse)
+    public SearchResponse(ISearchResponse<TDocument> searchResponse) : base(searchResponse)
     {
         Data = searchResponse.Hits.Select(hit => hit.Source).ToList();
     }

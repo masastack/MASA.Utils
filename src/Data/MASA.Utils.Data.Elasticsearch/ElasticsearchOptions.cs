@@ -19,17 +19,17 @@ public class ElasticsearchOptions
         if (nodes.Length == 0)
             throw new ArgumentException("Please specify the Elasticsearch node address");
 
-        this.IsDefault = false;
-        this.Nodes = nodes;
-        this.UseConnectionPool = nodes.Length > 1;
-        this.ConnectionSettingsOptions = new();
-        this.StaticConnectionPoolOptions = new();
-        this.Action = null;
+        IsDefault = false;
+        Nodes = nodes;
+        UseConnectionPool = nodes.Length > 1;
+        ConnectionSettingsOptions = new();
+        StaticConnectionPoolOptions = new();
+        Action = null;
     }
 
     public ElasticsearchOptions UseDefault()
     {
-        this.IsDefault = true;
+        IsDefault = true;
         return this;
     }
 
@@ -38,26 +38,26 @@ public class ElasticsearchOptions
         if (nodes == null || nodes.Length == 0)
             throw new ArgumentException("Please enter the Elasticsearch node address");
 
-        this.Nodes = nodes;
-        this.UseConnectionPool = nodes.Length > 1;
+        Nodes = nodes;
+        UseConnectionPool = nodes.Length > 1;
         return this;
     }
 
     public ElasticsearchOptions UseRandomize(bool randomize)
     {
-        this.StaticConnectionPoolOptions.UseRandomize(randomize);
+        StaticConnectionPoolOptions.UseRandomize(randomize);
         return this;
     }
 
     public ElasticsearchOptions UseDateTimeProvider(IDateTimeProvider dateTimeProvider)
     {
-        this.StaticConnectionPoolOptions.UseDateTimeProvider(dateTimeProvider);
+        StaticConnectionPoolOptions.UseDateTimeProvider(dateTimeProvider);
         return this;
     }
 
     public ElasticsearchOptions UseConnectionSettings(Action<ConnectionSettings> action)
     {
-        this.Action = action;
+        Action = action;
         return this;
     }
 }

@@ -14,13 +14,13 @@ public class StaticConnectionPoolOptions
 
     internal StaticConnectionPoolOptions UseRandomize(bool randomize)
     {
-        this.Randomize = randomize;
+        Randomize = randomize;
         return this;
     }
 
     internal StaticConnectionPoolOptions UseDateTimeProvider(IDateTimeProvider dateTimeProvider)
     {
-        this.DateTimeProvider = dateTimeProvider;
+        DateTimeProvider = dateTimeProvider;
         return this;
     }
 }

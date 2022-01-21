@@ -10,26 +10,26 @@ public class ConnectionSettingsOptions
 
     public ConnectionSettingsOptions()
     {
-        this.Connection = null;
-        this.SourceSerializerFactory = null;
-        this.PropertyMappingProvider = null;
+        Connection = null;
+        SourceSerializerFactory = null;
+        PropertyMappingProvider = null;
     }
 
     public ConnectionSettingsOptions UseConnection(IConnection? connection)
     {
-        this.Connection = connection;
+        Connection = connection;
         return this;
     }
 
     public ConnectionSettingsOptions UseSourceSerializerFactory(ConnectionSettings.SourceSerializerFactory? sourceSerializerFactory)
     {
-        this.SourceSerializerFactory = sourceSerializerFactory;
+        SourceSerializerFactory = sourceSerializerFactory;
         return this;
     }
 
     public ConnectionSettingsOptions UsePropertyMappingProvider(IPropertyMappingProvider? propertyMappingProvider)
     {
-        this.PropertyMappingProvider = propertyMappingProvider;
+        PropertyMappingProvider = propertyMappingProvider;
         return this;
     }
 }

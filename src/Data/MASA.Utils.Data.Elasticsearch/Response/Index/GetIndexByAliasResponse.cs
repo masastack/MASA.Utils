@@ -1,6 +1,6 @@
 namespace MASA.Utils.Data.Elasticsearch.Response.Index;
 
-public class GetIndexByAliasResponse : Response.ResponseBase
+public class GetIndexByAliasResponse : ResponseBase
 {
     public string[] IndexNames { get; }
 

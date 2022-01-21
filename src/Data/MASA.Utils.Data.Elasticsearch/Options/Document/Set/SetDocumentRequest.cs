@@ -11,12 +11,12 @@ public class SetDocumentRequest<TDocument> : DocumentOptions where TDocument : c
 
     public SetDocumentRequest(string indexName, TDocument document, string? documentId = null) : this(indexName)
     {
-        this.AddDocument(document, documentId);
+        AddDocument(document, documentId);
     }
 
     public SetDocumentRequest<TDocument> AddDocument(TDocument document, string? documentId = null)
     {
-        return this.AddDocument(new SingleDocumentBaseRequest<TDocument>(document, documentId));
+        return AddDocument(new SingleDocumentBaseRequest<TDocument>(document, documentId));
     }
 
     public SetDocumentRequest<TDocument> AddDocument(SingleDocumentBaseRequest<TDocument> item)

@@ -2,7 +2,7 @@ namespace MASA.Utils.Data.Elasticsearch.Response;
 
 public class UpdateResponse : ResponseBase
 {
-    public UpdateResponse(Nest.IUpdateResponse<object> updateResponse) : base(updateResponse)
+    public UpdateResponse(IUpdateResponse<object> updateResponse) : base(updateResponse)
     {
     }
 }
