@@ -43,7 +43,7 @@ public static class RedisHelper
             case TypeCode.Decimal:
             case TypeCode.Double:
             case TypeCode.Single:
-                return value;
+                return value!;
             case TypeCode.String:
                 return Compress(Encoding.UTF8.GetBytes(value?.ToString() ?? string.Empty));
             default:
