@@ -2,7 +2,35 @@ namespace MASA.Utils.Security.Cryptography;
 
 public class EncryptBase
 {
-    protected static string GetSpecifiedNumberString(string key, int number) => key.Length > number ? key.Substring(0, number) : key;
+    protected static string GetSpecifiedLengthString(
+        string key,
+        int length,
+        Func<Exception> func,
+        FillType fillType = FillType.NoFile,
+        char fillCharacter = ' ')
+    {
+        if (fillType == FillType.NoFile && key.Length < length)
+        {
+            throw func.Invoke();
+        }
+
+        if (key.Length >= length)
+        {
+            return key.Substring(0, length);
+        }
+
+        if (fillType == FillType.Left)
+        {
+            return key.PadLeft(length, fillCharacter);
+        }
+
+        if (fillType == FillType.Right)
+        {
+            return key.PadRight(length, fillCharacter);
+        }
+
+        throw new NotSupportedException($"... Unsupported {nameof(fillType)}");
+    }
 
     protected static Encoding GetSafeEncoding(Encoding? encoding = null)
         => GetSafeEncoding(() => Encoding.UTF8, encoding);
