@@ -5,5 +5,5 @@ public class MasaAuthOptions
     /// <summary>
     /// Your system code
     /// </summary>
-    public string SystemCode { get; set; }
+    public string SystemCode { get; set; } = string.Empty;
 }

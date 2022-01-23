@@ -67,7 +67,7 @@ namespace MASA.Utils.Data.DataAnnotations.Tests
             public Guid? NullableId { get; set; }
 
             [Required]
-            public string Name { get; set; }
+            public string Name { get; set; } = default!;
 
             [NonDefault]
             public int Age { get; set; }

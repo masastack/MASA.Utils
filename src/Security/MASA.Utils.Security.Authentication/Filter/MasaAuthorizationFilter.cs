@@ -3,11 +3,13 @@
 public class MasaAuthorizationFilter : IAuthorizationFilter
 {
     private readonly string _loginPermissionCode;
+    private readonly IMasaUserClaims _masaUserClaims;
     private readonly MemoryCache<string, List<object>> _mcMasaAuthAtributes = new();
 
-    public MasaAuthorizationFilter(IOptionsSnapshot<MasaAuthOptions> options)
+    public MasaAuthorizationFilter(IOptionsSnapshot<MasaAuthOptions> options,IMasaUserClaims claims)
     {
         _loginPermissionCode = $"{options.Value.SystemCode}00010001";
+        _masaUserClaims = claims;
     }
 
     public void OnAuthorization(AuthorizationFilterContext context)
@@ -55,7 +57,7 @@ public class MasaAuthorizationFilter : IAuthorizationFilter
         var userPermissions = userPermissionClaim.Select(c => c.Value).ToList();
 
         //Admin
-        if (MasaUser.IsAdministrator) return;
+        if (_masaUserClaims.IsAdministrator) return;
 
         //No MasaAttribute
         if (authorizeAttributes.Count == 0) return;
