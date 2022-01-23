@@ -1,32 +1,31 @@
-﻿namespace MASA.Utils.Security.Cryptography
+﻿namespace MASA.Utils.Security.Cryptography;
+
+/// <summary>
+/// Base64 encryption and decryption
+/// </summary>
+public class Base64Utils : EncryptBase
 {
     /// <summary>
-    /// Base64 encryption and decryption
+    /// Base64 encryption
     /// </summary>
-    public class Base64Utils : EncryptBase
+    /// <param name="content">String to be encrypted</param>
+    /// <param name="encoding">Encoding format, default UTF-8</param>
+    /// <returns>encrypted data</returns>
+    public static string Encrypt(string content, Encoding? encoding = null)
     {
-        /// <summary>
-        /// Base64 encryption
-        /// </summary>
-        /// <param name="content">String to be encrypted</param>
-        /// <param name="encoding">Encoding format, default UTF-8</param>
-        /// <returns>encrypted data</returns>
-        public static string Encrypt(string content, Encoding? encoding = null)
-        {
-            byte[] buffers = GetSafeEncoding(encoding).GetBytes(content);
-            return Convert.ToBase64String(buffers);
-        }
+        byte[] buffers = GetSafeEncoding(encoding).GetBytes(content);
+        return Convert.ToBase64String(buffers);
+    }
 
-        /// <summary>
-        /// Base64 decryption
-        /// </summary>
-        /// <param name="content">String to decrypt</param>
-        /// <param name="encoding">Encoding format, default UTF-8</param>
-        /// <returns>decrypted data</returns>
-        public static string Decrypt(string content, Encoding? encoding = null)
-        {
-            byte[] buffers = Convert.FromBase64String(content);
-            return GetSafeEncoding(encoding).GetString(buffers);
-        }
+    /// <summary>
+    /// Base64 decryption
+    /// </summary>
+    /// <param name="content">String to decrypt</param>
+    /// <param name="encoding">Encoding format, default UTF-8</param>
+    /// <returns>decrypted data</returns>
+    public static string Decrypt(string content, Encoding? encoding = null)
+    {
+        byte[] buffers = Convert.FromBase64String(content);
+        return GetSafeEncoding(encoding).GetString(buffers);
     }
 }
