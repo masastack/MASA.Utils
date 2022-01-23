@@ -121,7 +121,7 @@ public static class JsonSerializerExtensions
         public override void SetValue(object value)
         {
             _value = value;
-            _type = value?.GetType();
+            _type = value.GetType();
         }
 
         protected override bool TryConvert(Type returnType, out object result)
@@ -469,7 +469,7 @@ public static class JsonSerializerExtensions
                 typeof(JsonDynamicType).IsAssignableFrom(typeToConvert);
         }
 
-        public sealed override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public sealed override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             switch (reader.TokenType)
             {
@@ -499,8 +499,7 @@ public static class JsonSerializerExtensions
 
         public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
         {
-            JsonDynamicType dynamicType = value as JsonDynamicType;
-            if (dynamicType != null)
+            if (value is JsonDynamicType dynamicType)
             {
                 value = dynamicType.Value;
             }
@@ -538,7 +537,7 @@ public static class JsonSerializerExtensions
                     throw new JsonException();
                 }
 
-                string key = reader.GetString();
+                string key = reader.GetString()??string.Empty;
 
                 reader.Read();
                 object value = Read(ref reader, typeof(object), options);
