@@ -1,5 +1,3 @@
-﻿using MASA.Utils.Development.Dapr.Internal;
-
 namespace MASA.Utils.Development.Dapr;
 
 /// <summary>
@@ -8,12 +6,24 @@ namespace MASA.Utils.Development.Dapr;
 /// </summary>
 public class DaprOptions
 {
+    private string _appid = DefaultOptions.DefaultAppId;
+
     /// <summary>
     /// The id for your application, used for service discovery
+    /// Required, no blanks allowed
     /// </summary>
-    public string AppId { get; }
+    public string AppId
+    {
+        get => _appid;
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value, nameof(AppId));
 
-    private string _appIdDelimiter = "-";
+            _appid = value;
+        }
+    }
+
+    private string _appIdDelimiter = Const.DEFAULT_APPID_DELIMITER;
 
     /// <summary>
     /// Separator used to splice AppId and AppIdSuffix
@@ -26,38 +36,38 @@ public class DaprOptions
         {
             if (value == ".")
             {
-                throw new NotSupportedException("AppIdDelimiter does not support assignment.");
+                throw new NotSupportedException("AppIdDelimiter is not supported as .");
             }
+
+            _appIdDelimiter = value;
         }
     }
 
     /// <summary>
-    /// Appid suffix, the default is the current MAC address
+    /// Appid suffix
+    /// optional. the default is the current MAC address
     /// </summary>
-    public string? AppIdSuffix { get; }
+    public string AppIdSuffix { get; set; } = DefaultOptions.DefaultAppidSuffix;
 
     /// <summary>
     /// The concurrency level of the application, otherwise is unlimited
-    /// default: unlimited
     /// </summary>
-    public string? MaxConcurrency { get; }
+    public string? MaxConcurrency { get; set; }
 
     /// <summary>
     /// The port your application is listening on
     /// </summary>
-    public string AppPort { get; }
+    public int? AppPort { get; set; }
 
     /// <summary>
     /// The protocol (gRPC or HTTP) Dapr uses to talk to the application. Valid values are: http or grpc
-    /// default: http
     /// </summary>
-    public Protocol? AppProtocol { get; }
+    public Protocol? AppProtocol { get; set; }
 
     /// <summary>
     /// Enable https when Dapr invokes the application
-    /// default: false
     /// </summary>
-    public bool? EnableSsl { get; }
+    public bool? EnableSsl { get; set; }
 
     /// <summary>
     /// Dapr configuration file
@@ -65,7 +75,7 @@ public class DaprOptions
     /// Linux & Mac: $HOME/.dapr/config.yaml
     /// Windows: %USERPROFILE%\.dapr\config.yaml
     /// </summary>
-    public string? Config { get; }
+    public string? Config { get; set; }
 
     /// <summary>
     /// The path for components directory
@@ -73,136 +83,60 @@ public class DaprOptions
     /// Linux & Mac: $HOME/.dapr/components
     /// Windows: %USERPROFILE%\.dapr\components
     /// </summary>
-    public string? ComponentPath { get; }
+    public string? ComponentPath { get; set; }
 
     /// <summary>
     /// The gRPC port for Dapr to listen on
-    /// default: 50001
     /// </summary>
-    public int? DaprGrpcPort { get; }
+    public int? DaprGrpcPort { get; set; }
 
     /// <summary>
     /// The HTTP port for Dapr to listen on
-    /// default: 3500
     /// </summary>
-    public int? DaprHttpPort { get; }
+    public int? DaprHttpPort { get; set; }
 
     /// <summary>
     /// Enable pprof profiling via an HTTP endpoint
-    /// default: false
     /// </summary>
-    public bool? EnableProfiling { get; }
+    public bool? EnableProfiling { get; set; }
+
+    /// <summary>
+    /// The image to build the code in. Input is: repository/image
+    /// </summary>
+    public string? Image { get; set; }
 
     /// <summary>
     /// The log verbosity. Valid values are: debug, info, warn, error, fatal, or panic
     /// default: info
     /// </summary>
-    public LogLevel? LogLevel { get; }
+    public LogLevel? LogLevel { get; set; }
 
     /// <summary>
     /// default: localhost
     /// </summary>
-    public string? PlacementHostAddress { get; }
+    public string? PlacementHostAddress { get; set; }
 
     /// <summary>
     /// The port that Dapr sends its metrics information to
-    /// default: DAPR_METRICS_PORT
     /// </summary>
-    public string? MetricsPort { get; }
+    public string? MetricsPort { get; set; }
 
     /// <summary>
     /// The port for the profile server to listen on
-    /// default: 7777
     /// </summary>
-    public int? ProfilePort { get; }
+    public int? ProfilePort { get; set; }
 
     /// <summary>
     /// Path to a unix domain socket dir mount. If specified
     /// communication with the Dapr sidecar uses unix domain sockets for lower latency and greater throughput when compared to using TCP ports
     /// Not available on Windows OS
     /// </summary>
-    public string UnixDomainSocket { get; }
+    public string? UnixDomainSocket { get; set; }
 
     /// <summary>
     /// Max size of request body in MB.
-    /// default: 4
     /// </summary>
-    public int? DaprMaxRequestSize { get; }
+    public int? DaprMaxRequestSize { get; set; }
 
-    public DaprOptions(string appId, string appPort)
-    {
-        AppId = appId;
-        AppPort = appPort;
-    }
-
-    private string GetAppId()
-    {
-        var appid = AppId;
-        var appIdSuffix = AppIdSuffix ?? NetworkUtils.GetPhysicalAddress();
-        if (string.IsNullOrEmpty(appIdSuffix))
-        {
-            return appid;
-        }
-        return $"{appid}{AppIdDelimiter}{appIdSuffix}";
-    }
-
-    private string AppendMaxConcurrency()
-        => MaxConcurrency != null ? $" --app-max-concurrency {MaxConcurrency}" : "";
-
-    private string AppendAppProtocol()
-        => AppProtocol != null ? $" --app-protocol {AppProtocol.Value.ToString().ToLower()}" : "";
-
-    private string AppendAppSsl()
-        => EnableSsl != null ? $" --app-ssl {EnableSsl.Value.ToString().ToLower()}" : "";
-
-    private string AppendComponentsPath()
-        => ComponentPath != null ? $" --components-path {ComponentPath!}" : "";
-
-    private string AppendConfig()
-        => Config != null ? $" --config {Config!}" : "";
-
-    private string AppendGrpcPort()
-        => DaprGrpcPort != null ? $" --dapr-grpc-port {DaprGrpcPort.Value}" : "";
-
-    private string AppendHttpPort()
-        => DaprHttpPort != null ? $" --dapr-http-port {DaprHttpPort.Value}" : "";
-
-    private string AppendLogLevel()
-        => LogLevel != null ? $" --log-level {LogLevel.Value.ToString().ToLower()}" : "";
-
-    private string AppendPlacementHostAddress()
-        => PlacementHostAddress != null ? $" --placement-host-address {PlacementHostAddress}" : "";
-
-    private string AppendProfiling()
-        => EnableProfiling != null ? $" --enable-profiling {EnableProfiling.Value.ToString().ToLower()}" : "";
-
-    private string AppendProfilePort()
-        => ProfilePort != null ? $" --profile-port {ProfilePort.Value}" : "";
-
-    private string AppendMetricsPort()
-        => MetricsPort != null ? $" --metrics-port {MetricsPort}" : "";
-
-    private string AppendHttpMaxRequestSize() =>
-        DaprMaxRequestSize != null ? $" --dapr-http-max-request-size {DaprMaxRequestSize.Value}" : "";
-
-    public override string ToString()
-    {
-        return $"--app-id {GetAppId()} --app-port {AppPort}{AppendMaxConcurrency()}";
-    }
-}
-
-public enum Protocol
-{
-    Http = 1,
-    GRpc
-}
-
-public enum LogLevel
-{
-    Debug = 1,
-    Info,
-    Warn,
-    Error,
-    Fatal,
-    Panic
+    public bool CreateNoWindow { get; set; } = true;
 }
