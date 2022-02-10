@@ -72,10 +72,10 @@ namespace MASA.Utils.Data.DataAnnotations.Tests
         public class User
         {
             [Required]
-            public string Name { get; set; }
+            public string Name { get; set; } = default!;
 
             [MinCount(1)]
-            public List<string> Favorites { get; set; }
+            public List<string> Favorites { get; set; } = default!;
         }
     }
 }
