@@ -8,7 +8,7 @@ public class GlobalExceptionFilter : IExceptionFilter
     private readonly ILogger<GlobalExceptionFilter> _logger;
     private readonly MasaExceptionHandlingOptions _options;
 
-    public GlobalExceptionFilter(ILogger<GlobalExceptionFilter> logger, 
+    public GlobalExceptionFilter(ILogger<GlobalExceptionFilter> logger,
         IOptions<MasaExceptionHandlingOptions> optionsAccesser)
     {
         _logger = logger;

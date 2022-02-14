@@ -1,5 +1,4 @@
 global using MASA.Utils.Exceptions.Handling;
-global using MASA.Utils.Exceptions.Handling.Extensions;
 global using MASA.Utils.Exceptions.Results;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
