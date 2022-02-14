@@ -8,7 +8,7 @@ public class RedisConfigurationOptions : DistributedCacheEntryOptions
     /// <summary>
     /// Gets the servers.
     /// </summary>
-    public List<RedisServerOptions> Servers { get; set; } = new List<RedisServerOptions>();
+    public List<RedisServerOptions> Servers { get; set; } = new();
 
     /// <summary>
     /// Gets or sets whether connect/configuration timeouts should be explicitly notified via a TimeoutException.

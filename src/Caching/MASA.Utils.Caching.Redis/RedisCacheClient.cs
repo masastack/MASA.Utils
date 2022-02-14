@@ -219,7 +219,7 @@ public class RedisCacheClient : IDistributedCacheClient
         await _db.ScriptEvaluateAsync(
             SET_SCRIPT,
             new RedisKey[] { key },
-            GetRedisValues(options.DistributedCacheEntryOptions, () => bytesValue)
+            GetRedisValues(options.DistributedCacheEntryOptions, () => new[] { (RedisValue)bytesValue })
         ).ConfigureAwait(false);
     }
 
