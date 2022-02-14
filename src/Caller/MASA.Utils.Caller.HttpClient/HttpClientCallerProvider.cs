@@ -3,27 +3,20 @@ namespace MASA.Utils.Caller.HttpClient;
 public class HttpClientCallerProvider : AbstractCallerProvider
 {
     private readonly System.Net.Http.HttpClient _httpClient;
+    private readonly IRequestMessage _requestMessage;
     private string _baseAPI;
-    private JsonSerializerOptions? _jsonSerializerOptions;
 
-    public HttpClientCallerProvider(System.Net.Http.HttpClient httpClient, string baseAPI, JsonSerializerOptions? jsonSerializerOptions)
+    public HttpClientCallerProvider(System.Net.Http.HttpClient httpClient,IRequestMessage requestMessage, string baseAPI)
     {
         _httpClient = httpClient;
+        _requestMessage = requestMessage;
         _baseAPI = baseAPI;
-        _jsonSerializerOptions = jsonSerializerOptions;
     }
 
     public override async Task<TResponse> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
     {
         HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
-
-        if (typeof(TResponse).GetInterfaces().Any(type => type == typeof(IConvertible)))
-        {
-            var content = await response.Content.ReadAsStringAsync(cancellationToken);
-            return (TResponse)Convert.ChangeType(content, typeof(TResponse));
-        }
-        return await response.Content.ReadFromJsonAsync<TResponse>(this._jsonSerializerOptions, cancellationToken)
-            ?? throw new ArgumentException("Response cannot be empty");
+        return await _requestMessage.ProcessResponseAsync<TResponse>(response, cancellationToken);
     }
 
     public override HttpRequestMessage CreateRequest(HttpMethod method, string? methodName) => new(method, GetRequestUri(methodName));

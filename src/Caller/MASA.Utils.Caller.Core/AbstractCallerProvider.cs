@@ -59,6 +59,8 @@ public abstract class AbstractCallerProvider : ICallerProvider
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Get, methodName);
         HttpResponseMessage content = await SendAsync(request, cancellationToken);
+
+
         return await content.Content.ReadAsStreamAsync(cancellationToken);
     }
 

@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
 
         services.TryOrUpdateCallerOptions(callerOption);
         services.TryAddSingleton<ICallerFactory, DefaultCallerFactory>();
+        services.TryAddSingleton<IRequestMessage, DefaultRequestMessage>();
         services.TryAddTransient(serviceProvider => serviceProvider.GetRequiredService<ICallerFactory>().CreateClient());
         return services;
     }

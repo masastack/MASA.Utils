@@ -6,13 +6,11 @@ public interface ICallerProvider
 
     Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> SendAsync(HttpMethod method, string? methodName, HttpContent? content,
-        CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> SendAsync(HttpMethod method, string? methodName, HttpContent? content, CancellationToken cancellationToken = default);
 
     Task<HttpResponseMessage> SendAsync<TRequest>(HttpMethod method, string? methodName, TRequest data, CancellationToken cancellationToken = default);
 
-    Task<TResponse> SendAsync<TRequest, TResponse>(HttpMethod method, string? methodName, TRequest data,
-        CancellationToken cancellationToken = default);
+    Task<TResponse> SendAsync<TRequest, TResponse>(HttpMethod method, string? methodName, TRequest data, CancellationToken cancellationToken = default);
 
     Task SendGrpcAsync(string methodName, CancellationToken cancellationToken = default);
 
