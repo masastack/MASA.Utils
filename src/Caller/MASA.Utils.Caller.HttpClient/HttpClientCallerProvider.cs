@@ -13,7 +13,7 @@ public class HttpClientCallerProvider : AbstractCallerProvider
         _baseAPI = baseAPI;
     }
 
-    public override async Task<TResponse> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
+    public override async Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default) where TResponse : default
     {
         HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
         return await _requestMessage.ProcessResponseAsync<TResponse>(response, cancellationToken);
@@ -38,7 +38,6 @@ public class HttpClientCallerProvider : AbstractCallerProvider
 
     public override Task<TResponse> SendGrpcAsync<TResponse>(string methodName, CancellationToken cancellationToken = default)
     {
-
         throw new NotImplementedException();
     }
 

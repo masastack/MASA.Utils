@@ -13,7 +13,7 @@ public class DaprCallerProvider : AbstractCallerProvider
         _daprClient = daprClient;
     }
 
-    public override async Task<TResponse> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
+    public override async Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default) where TResponse : default
     {
         var response = await _daprClient.InvokeMethodWithResponseAsync(request, cancellationToken);
         return await _requestMessage.ProcessResponseAsync<TResponse>(response, cancellationToken);
@@ -37,7 +37,6 @@ public class DaprCallerProvider : AbstractCallerProvider
     public override Task SendGrpcAsync<TRequest>(string methodName, TRequest request, CancellationToken cancellationToken = default)
         => _daprClient.InvokeMethodGrpcAsync(AppId, methodName, request, cancellationToken);
 
-    public override Task<TResponse> SendGrpcAsync<TRequest, TResponse>(string methodName, TRequest request,
-        CancellationToken cancellationToken = default)
+    public override Task<TResponse> SendGrpcAsync<TRequest, TResponse>(string methodName, TRequest request, CancellationToken cancellationToken = default)
         => _daprClient.InvokeMethodGrpcAsync<TResponse>(AppId, methodName, cancellationToken);
 }

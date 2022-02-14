@@ -9,8 +9,7 @@ public class DefaultRequestMessage : IRequestMessage
         _callerOptions = callerOptions;
     }
 
-    public async Task<TResponse> ProcessResponseAsync<TResponse>(HttpResponseMessage response,
-        CancellationToken cancellationToken = default)
+    public async Task<TResponse?> ProcessResponseAsync<TResponse>(HttpResponseMessage response, CancellationToken cancellationToken = default)
     {
         if (response.IsSuccessStatusCode)
         {

@@ -2,7 +2,7 @@ namespace MASA.Utils.Caller.Core;
 
 public abstract class AbstractCallerProvider : ICallerProvider
 {
-    public abstract Task<TResponse> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default);
+    public abstract Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default);
 
     public abstract HttpRequestMessage CreateRequest(HttpMethod method, string? methodName);
 
@@ -20,10 +20,10 @@ public abstract class AbstractCallerProvider : ICallerProvider
     public virtual Task<HttpResponseMessage> SendAsync<TRequest>(HttpMethod method, string? methodName, TRequest data, CancellationToken cancellationToken = default)
     {
         HttpRequestMessage request = CreateRequest(method, methodName, data);
-        return SendAsync(request);
+        return SendAsync(request, cancellationToken);
     }
 
-    public virtual Task<TResponse> SendAsync<TRequest, TResponse>(HttpMethod method, string? methodName, TRequest data, CancellationToken cancellationToken = default)
+    public virtual Task<TResponse?> SendAsync<TRequest, TResponse>(HttpMethod method, string? methodName, TRequest data, CancellationToken cancellationToken = default)
     {
         HttpRequestMessage request = CreateRequest(method, methodName, data);
         return SendAsync<TResponse>(request, cancellationToken);
@@ -59,8 +59,6 @@ public abstract class AbstractCallerProvider : ICallerProvider
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Get, methodName);
         HttpResponseMessage content = await SendAsync(request, cancellationToken);
-
-
         return await content.Content.ReadAsStreamAsync(cancellationToken);
     }
 
@@ -73,13 +71,13 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return GetAsync(methodName, cancellationToken);
     }
 
-    public Task<TResponse> GetAsync<TResponse>(string? methodName, CancellationToken cancellationToken= default)
+    public Task<TResponse?> GetAsync<TResponse>(string? methodName, CancellationToken cancellationToken= default)
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Get, methodName);
         return SendAsync<TResponse>(request, cancellationToken);
     }
 
-    public Task<TResponse> GetAsync<TResponse>(string? methodName, Dictionary<string, string> data, CancellationToken cancellationToken= default)
+    public Task<TResponse?> GetAsync<TResponse>(string? methodName, Dictionary<string, string> data, CancellationToken cancellationToken= default)
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Get, methodName, data);
         return SendAsync<TResponse>(request, cancellationToken);
@@ -108,7 +106,7 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return SendAsync(request, cancellationToken);
     }
 
-    public virtual Task<TResponse> PostAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken= default)
+    public virtual Task<TResponse?> PostAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken= default)
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Post, methodName, data);
         return SendAsync<TResponse>(request, cancellationToken);
@@ -123,7 +121,7 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return SendAsync(request, cancellationToken);
     }
 
-    public virtual Task<TResponse> PatchAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken= default)
+    public virtual Task<TResponse?> PatchAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken= default)
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Post, methodName, data);
         return SendAsync<TResponse>(request, cancellationToken);
@@ -138,7 +136,7 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return SendAsync(request, cancellationToken);
     }
 
-    public virtual Task<TResponse> PutAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken= default)
+    public virtual Task<TResponse?> PutAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken= default)
     {
         var request = CreateRequest(HttpMethod.Put, methodName, data);
         return SendAsync<TResponse>(request, cancellationToken);
@@ -153,7 +151,7 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return SendAsync(request, cancellationToken);
     }
 
-    public virtual Task<TResponse> DeleteAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken= default)
+    public virtual Task<TResponse?> DeleteAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken= default)
     {
         var request = CreateRequest(HttpMethod.Delete, methodName, data);
         return SendAsync<TResponse>(request, cancellationToken);
