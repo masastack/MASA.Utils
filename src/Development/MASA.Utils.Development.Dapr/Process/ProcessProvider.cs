@@ -33,6 +33,14 @@ public class ProcessProvider : IProcessProvider
     }
 
     /// <summary>
+    /// Is the port available
+    /// </summary>
+    /// <param name="port"></param>
+    /// <returns></returns>
+    public bool IsAvailablePorts(ushort port)
+        => !GetPortsByUsed().Contains(port);
+
+    /// <summary>
     /// get the currently used port
     /// </summary>
     /// <returns>Port set that has been used</returns>

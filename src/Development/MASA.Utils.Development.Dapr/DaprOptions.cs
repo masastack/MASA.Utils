@@ -138,5 +138,10 @@ public class DaprOptions
     /// </summary>
     public int? DaprMaxRequestSize { get; set; }
 
+    /// <summary>
+    /// stop dapr after project is closed
+    /// </summary>
+    public bool StopByApplicationClosed { get; set; } = true;
+
     public bool CreateNoWindow { get; set; } = true;
 }

@@ -18,4 +18,11 @@ public interface IProcessProvider
     /// <param name="maxPort">Maximum ports (including maximum ports), default: 65535</param>
     /// <returns></returns>
     int GetAvailablePorts(ushort? minPort = null, ushort? maxPort = null);
+
+    /// <summary>
+    /// Is the port available
+    /// </summary>
+    /// <param name="port"></param>
+    /// <returns></returns>
+    bool IsAvailablePorts(ushort port);
 }

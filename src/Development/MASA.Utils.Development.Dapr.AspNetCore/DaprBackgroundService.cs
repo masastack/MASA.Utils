@@ -48,4 +48,12 @@ public class DaprBackgroundService : BackgroundService
                 || address.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
             .Select(address => address.Port).FirstOrDefault();
     }
+
+    public override void Dispose()
+    {
+        if (_options.Value.StopByApplicationClosed)
+            _daprProcess.Stop();
+
+        base.Dispose();
+    }
 }
