@@ -1,7 +1,20 @@
-﻿namespace MASA.Utils.Development.Dapr.Process;
+﻿using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+
+namespace MASA.Utils.Development.Dapr.Process;
 
 public class ProcessProvider : IProcessProvider
 {
+    private readonly CommandLineBuilder _commandLineBuilder;
+    private readonly ProcessUtils _processUtils;
+    private readonly ILogger<ProcessProvider>? _logger;
+
+    public ProcessProvider(ILoggerFactory loggerFactory)
+    {
+        _logger = loggerFactory.CreateLogger<ProcessProvider>();
+        _processUtils = new ProcessUtils(loggerFactory);
+    }
+
     /// <summary>
     /// Get process collection based on process name
     /// </summary>
@@ -21,8 +34,8 @@ public class ProcessProvider : IProcessProvider
     /// <returns></returns>
     public int GetAvailablePorts(ushort? minPort = null, ushort? maxPort = null)
     {
-        minPort = minPort ?? ushort.MinValue;
-        maxPort = maxPort ?? ushort.MaxValue;
+        minPort ??= ushort.MinValue;
+        maxPort ??= ushort.MaxValue;
         var usePorts = GetPortsByUsed();
 
         var effectivePorts = Enumerable.Range(minPort.Value, maxPort.Value).Except(usePorts).ToList();
@@ -39,6 +52,98 @@ public class ProcessProvider : IProcessProvider
     /// <returns></returns>
     public bool IsAvailablePorts(ushort port)
         => !GetPortsByUsed().Contains(port);
+
+    public List<int> GetPidByPort(ushort port)
+    {
+        List<int> pIdList = new();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            List<string> output = GetResponse("netstat", $"-a -n -o", "\r\n");
+
+            foreach (var line in output)
+            {
+                if (line.Trim().StartsWith("Proto") || line.Trim().StartsWith("协议"))
+                    continue;
+
+                var parts = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                var len = parts.Length;
+                if (len > 2)
+                {
+                    var pId = int.Parse(parts[len - 1].Split('/')[0]);
+                    if (int.Parse(parts[1].Split(':').Last()) == port && !pIdList.Contains(pId))
+                    {
+                        pIdList.Add(pId);
+                    }
+                }
+            }
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            List<string> output = GetResponse("netstat", $"-tunlp", "\n");
+
+            Console.WriteLine("result: " + output.Count);
+            Console.WriteLine("result2: " + System.Text.Json.JsonSerializer.Serialize(output));
+            foreach (var line in output)
+            {
+                Console.WriteLine("line: " + line);
+                if (!line.Trim().StartsWith("tcp", StringComparison.OrdinalIgnoreCase) &&
+                    !line.Trim().StartsWith("udp", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                var len = parts.Length;
+                if (len > 2)
+                {
+                    var pId = int.Parse(parts[GetIndex(parts, "LISTEN") + 1].Split('/')[0]);
+                    if (int.Parse(parts[3].Split(':').Last()) == port && !pIdList.Contains(pId))
+                    {
+                        pIdList.Add(pId);
+                    }
+                }
+            }
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            _logger?.LogError("unsupported operating system");
+        }
+        else
+        {
+            _logger?.LogError("unsupported operating system");
+        }
+        return pIdList;
+    }
+
+    private int GetIndex(string[] array, string content)
+    {
+        for (var index = 0; index < array.Length; index++)
+        {
+            if (array[index].Equals(content, StringComparison.OrdinalIgnoreCase))
+                return index;
+        }
+        return 0;
+    }
+
+    private List<string> GetResponse(string fileName, string arguments, string pattern)
+    {
+        var process = new System.Diagnostics.Process()
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = fileName,
+                Arguments = arguments,
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            }
+        };
+        process.Start();
+
+        var output = process.StandardOutput.ReadToEnd();
+        return Regex.Split(output, pattern).ToList();
+    }
 
     /// <summary>
     /// get the currently used port

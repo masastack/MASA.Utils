@@ -25,4 +25,6 @@ public interface IProcessProvider
     /// <param name="port"></param>
     /// <returns></returns>
     bool IsAvailablePorts(ushort port);
+
+    List<int> GetPidByPort(ushort port);
 }

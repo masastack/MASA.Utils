@@ -21,5 +21,5 @@ public class DaprRuntimeOptions
     public string Command { get; set; }
 
     [JsonPropertyName("pid")]
-    public int Pid { get; set; }
+    public int PId { get; set; }
 }

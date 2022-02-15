@@ -32,7 +32,7 @@ public class DaprProcess : IDaprProcess
             {
                 foreach (var dapr in daprList)
                 {
-                    _process = _processProvider.GetProcess(dapr.Pid);
+                    _process = _processProvider.GetProcess(dapr.PId);
                     if (dapr.AppPort == GetAppPort(options) &&
                         (options.DaprHttpPort == null || options.DaprHttpPort == dapr.HttpPort) &&
                         (options.DaprGrpcPort == null || options.DaprGrpcPort == dapr.GrpcPort))
@@ -155,7 +155,7 @@ public class DaprProcess : IDaprProcess
     {
         if (status != Status)
         {
-            _loggerFactory?.CreateLogger<DaprProcess>()?.LogInformation("Dapr Process Status Change: {DaprProcessPreviousStatus} -> {DaprProcessStatus}", Status, status);
+            _loggerFactory?.CreateLogger<DaprProcess>().LogInformation("Dapr Process Status Change: {DaprProcessPreviousStatus} -> {DaprProcessStatus}", Status, status);
             Status = status;
         }
     }
