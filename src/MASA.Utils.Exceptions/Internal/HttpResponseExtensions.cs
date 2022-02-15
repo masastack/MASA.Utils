@@ -1,4 +1,4 @@
-namespace MASA.Utils.Exceptions.Handling.Extensions;
+namespace MASA.Utils.Exceptions.Internal;
 
 internal static class HttpResponseExtensions
 {

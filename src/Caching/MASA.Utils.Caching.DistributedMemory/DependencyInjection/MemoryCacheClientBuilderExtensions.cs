@@ -23,7 +23,7 @@ public static class MemoryCacheClientBuilderExtensions
             throw new ArgumentNullException(nameof(configureOptions));
         }
 
-        builder.Services.Configure<MasaMemoryCacheOptions>(builder.Name, configureOptions);
+        builder.Services.Configure(builder.Name, configureOptions);
 
         return builder;
     }
