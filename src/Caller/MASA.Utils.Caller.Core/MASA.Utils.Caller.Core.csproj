@@ -8,7 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.19.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\MASA.Utils.Exceptions\MASA.Utils.Exceptions.csproj" />
   </ItemGroup>
 
 </Project>

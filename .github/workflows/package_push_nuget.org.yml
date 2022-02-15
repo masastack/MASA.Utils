@@ -1,8 +1,7 @@
-
-name: Packege CI
+name: Package Push Nuget
 on:
   create:
-    ref_type: [ tag ]
+    ref_type: [ tags ]
   # push:
   #   branches: [ develop ]
   # pull_request:
@@ -20,19 +19,27 @@ jobs:
     steps:
     - name: git pull
       uses: actions/checkout@v2
+
     - name: run a one-line script
       run: env
+
     - name: setting dotnet version 
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '6.0.x'
         include-prerelease: true
+
+    - name: restore
+      run: dotnet restore
+
+    - name: build
+      run: dotnet build --no-restore 
+
+    - name: pack
+      run: dotnet pack --include-symbols  -p:PackageVersion=0.0.$GITHUB_RUN_ID     
+
     - name: package push
-      run: |
-        env
-        echo "------------------------------------------------------"
-        ls
-        dotnet build
-        dotnet pack  --include-symbols  -p:PackageVersion=0.0.$GITHUB_RUN_ID
-        dotnet nuget push "**/*.symbols.nupkg" -k  ${{secrets.NUGET_TOKEN}}  -s https://api.nuget.org/v3/index.json
+      run: dotnet nuget push "**/*.symbols.nupkg" -k  ${{secrets.NUGET_TOKEN}}  -s https://api.nuget.org/v3/index.json
+        
+
         

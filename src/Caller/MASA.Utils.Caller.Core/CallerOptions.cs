@@ -6,7 +6,7 @@ public class CallerOptions
 
     public IServiceCollection Services { get; }
 
-    public JsonSerializerOptions? JsonSerializerOptions { get; }
+    public JsonSerializerOptions? JsonSerializerOptions { get; set; }
 
     public CallerOptions(IServiceCollection services, JsonSerializerOptions? jsonSerializerOptions = null)
     {

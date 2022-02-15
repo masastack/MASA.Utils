@@ -6,10 +6,7 @@ public class MasaHttpClientBuilder
 
     public string Name
     {
-        get
-        {
-            return _name;
-        }
+        get => _name;
         set
         {
             if (value is null)
@@ -19,34 +16,26 @@ public class MasaHttpClientBuilder
         }
     }
 
-    public string BaseAPI { get; set; } = string.Empty;
+    public string BaseAPI { get; set; }
 
     public bool IsDefault { get; set; } = false;
 
     public Action<System.Net.Http.HttpClient>? Configure { get; set; }
-
-    public JsonSerializerOptions? JsonSerializerOptions { get; set; }
 
     public MasaHttpClientBuilder() : this("http", null)
     {
     }
 
     public MasaHttpClientBuilder(string name, Action<System.Net.Http.HttpClient>? configure)
-        : this(name, configure, null)
+        : this(name, string.Empty, configure)
     {
     }
 
-    public MasaHttpClientBuilder(string name, Action<System.Net.Http.HttpClient>? configure, JsonSerializerOptions? jsonSerializerOptions = null)
-        : this(name, string.Empty, configure, jsonSerializerOptions)
-    {
-    }
-
-    public MasaHttpClientBuilder(string name, string baseAPI, Action<System.Net.Http.HttpClient>? configure, JsonSerializerOptions? jsonSerializerOptions = null)
+    public MasaHttpClientBuilder(string name, string baseAPI, Action<System.Net.Http.HttpClient>? configure)
     {
         Name = name;
         BaseAPI = baseAPI;
         Configure = configure;
-        JsonSerializerOptions = jsonSerializerOptions;
     }
 }
 

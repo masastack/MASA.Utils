@@ -13,7 +13,11 @@ public static class CallerOptionsExtensions
         callerOptions.AddCaller(builder.Name, builder.IsDefault, (serviceProvider) =>
         {
             var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(builder.Name);
-            return new HttpClientCallerProvider(httpClient, builder.BaseAPI, builder.JsonSerializerOptions ?? callerOptions.JsonSerializerOptions);
+            var requestMessage = serviceProvider.GetRequiredService<IRequestMessage>();
+            return new HttpClientCallerProvider(
+                httpClient,
+                requestMessage,
+                builder.BaseAPI);
         });
         return httpClientBuilder;
     }
