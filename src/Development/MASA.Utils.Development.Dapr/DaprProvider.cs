@@ -2,13 +2,11 @@ namespace MASA.Utils.Development.Dapr;
 
 public class DaprProvider : IDaprProvider
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<DaprProvider>? _logger = null;
-    private readonly ProcessUtils _processUtils;
+    private readonly ILogger<DaprProvider>? _logger;
+    private  ProcessUtils _processUtils;
 
-    public DaprProvider(IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
+    public DaprProvider(ILoggerFactory? loggerFactory)
     {
-        _serviceProvider = serviceProvider;
         _logger = loggerFactory?.CreateLogger<DaprProvider>();
         _processUtils = new ProcessUtils(loggerFactory);
     }
@@ -16,21 +14,21 @@ public class DaprProvider : IDaprProvider
     public List<DaprRuntimeOptions> GetDaprList(string appId)
     {
         var stringBuilder = new StringBuilder();
-        _processUtils.OutputDataReceived += delegate (object? sender, DataReceivedEventArgs args)
-            {
-                if (args.Data != null)
-                {
-                    lock (stringBuilder)
-                    {
-                        stringBuilder.AppendLine(args.Data);
-                    }
-                }
-            };
-        _processUtils.Exit += delegate
+        _processUtils.OutputDataReceived += delegate(object? sender, DataReceivedEventArgs args)
         {
-
+            if (args.Data != null)
+            {
+                lock (stringBuilder)
+                {
+                    stringBuilder.AppendLine(args.Data);
+                }
+            }
         };
         _processUtils.Run(Const.DEFAULT_FILE_NAME, "list -o json", true, true);
+        _processUtils.Exit += delegate
+        {
+            _logger?.LogInformation("{Name} process has exited", Const.DEFAULT_FILE_NAME);
+        };
         string response = stringBuilder.ToString().Trim();
         List<DaprRuntimeOptions> daprList = new();
         if (response.StartsWith("["))
@@ -45,7 +43,15 @@ public class DaprProvider : IDaprProvider
                 daprList.Add(option);
             }
         }
-        _logger?.LogWarning("----- Failed to get currently running dapr collection");
+        else
+        {
+            _logger?.LogWarning("----- Failed to get currently running dapr");
+        }
         return daprList.Where(dapr => dapr.AppId == appId).ToList();
+    }
+
+    public bool IsExist(string appId)
+    {
+        return GetDaprList(appId).Any();
     }
 }

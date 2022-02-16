@@ -3,23 +3,23 @@
 public class DaprRuntimeOptions
 {
     [JsonPropertyName("appId")]
-    public string AppId { get; set; }
+    public string AppId { get; set; } = default!;
 
     [JsonPropertyName("httpPort")]
-    public int HttpPort { get; set; }
+    public ushort HttpPort { get; set; } = default!;
 
     [JsonPropertyName("grpcPort")]
-    public int GrpcPort { get; set; }
+    public ushort GrpcPort { get; set; } = default!;
 
     [JsonPropertyName("appPort")]
-    public int AppPort { get; set; }
+    public ushort AppPort { get; set; } = default!;
 
     [JsonPropertyName("metricsEnabled")]
-    public bool MetricsEnabled { get; set; }
+    public bool MetricsEnabled { get; set; } = default!;
 
     [JsonPropertyName("command")]
-    public string Command { get; set; }
+    public string Command { get; set; } = default!;
 
     [JsonPropertyName("pid")]
-    public int PId { get; set; }
+    public int PId { get; set; } = default!;
 }

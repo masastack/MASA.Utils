@@ -1,37 +1,25 @@
 namespace MASA.Utils.Development.Dapr.AspNetCore;
 
-public class DaprBackgroundService : BackgroundService
+public class DaprBackgroundService : IHostedService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IDaprProcess _daprProcess;
     private readonly IOptions<DaprOptions> _options;
+    private readonly ILogger<DaprBackgroundService>? _logger;
 
     public DaprBackgroundService(
         IServiceProvider serviceProvider,
         IDaprProcess daprProcess,
-        IOptions<DaprOptions> options)
+        IOptions<DaprOptions> options,
+        ILogger<DaprBackgroundService>? logger)
     {
         _serviceProvider = serviceProvider;
         _daprProcess = daprProcess;
         _options = options;
+        _logger = logger;
     }
 
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        System.Timers.Timer timer = new System.Timers.Timer(3000);
-        timer.Elapsed += delegate
-        {
-            var options = _options.Value;
-            options.AppPort ??= GetAppPort(options);
-            _daprProcess.Start(options, stoppingToken);
-        };
-        timer.AutoReset = false;
-        timer.Enabled = true;
-        timer.Start();
-        return Task.CompletedTask;
-    }
-
-    private int GetAppPort(DaprOptions options)
+    private ushort GetAppPort(DaprOptions options)
     {
         var server = _serviceProvider.GetRequiredService<IServer>();
         var addresses = server.Features.Get<IServerAddressesFeature>()?.Addresses;
@@ -46,14 +34,29 @@ public class DaprBackgroundService : BackgroundService
                 => (options.EnableSsl != null && options.EnableSsl == true &&
                     address.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
                 || address.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
-            .Select(address => address.Port).FirstOrDefault();
+            .Select(address => (ushort)address.Port).FirstOrDefault();
     }
 
-    public override void Dispose()
+    public Task StartAsync(CancellationToken cancellationToken)
     {
-        if (_options.Value.StopByApplicationClosed)
-            _daprProcess.Stop();
+        _logger?.LogInformation("{Name} is Starting ...",nameof(DaprBackgroundService));
+        System.Timers.Timer timer = new System.Timers.Timer(3000);
+        timer.Elapsed += delegate
+        {
+            var options = _options.Value;
+            options.AppPort ??= GetAppPort(options);
+            _daprProcess.Start(options, cancellationToken);
+        };
+        timer.AutoReset = false;
+        timer.Enabled = true;
+        timer.Start();
+        return Task.CompletedTask;
+    }
 
-        base.Dispose();
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        _logger?.LogInformation("{Name} is Stopping...",nameof(DaprBackgroundService));
+        _daprProcess.Stop();
+        return Task.CompletedTask;
     }
 }

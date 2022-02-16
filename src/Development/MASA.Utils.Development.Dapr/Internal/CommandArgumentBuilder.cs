@@ -9,7 +9,7 @@ public class CommandArgumentBuilder
 
     public string ArgumemtPrefix { get; }
 
-    private string _argumentSeparator;
+    private string _argumentSeparator = default!;
 
     public string ArgumentSeparator
     {

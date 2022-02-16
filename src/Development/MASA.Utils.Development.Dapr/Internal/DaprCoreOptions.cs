@@ -1,73 +1,46 @@
-namespace MASA.Utils.Development.Dapr;
+﻿namespace MASA.Utils.Development.Dapr.Internal;
 
-/// <summary>
-/// dapr startup configuration information
-/// When the specified attribute is configured as null, the default value of the parameter is subject to the default value of dapr of the current version
-/// </summary>
-public class DaprOptions
+internal class DaprCoreOptions
 {
-    private string _appid = DefaultOptions.DefaultAppId;
-
     /// <summary>
     /// The id for your application, used for service discovery
     /// Required, no blanks allowed
     /// </summary>
-    public string AppId
-    {
-        get => _appid;
-        set
-        {
-            ArgumentNullException.ThrowIfNull(value, nameof(AppId));
-
-            _appid = value;
-        }
-    }
-
-    private string _appIdDelimiter = Const.DEFAULT_APPID_DELIMITER;
+    public string AppId { get; }
 
     /// <summary>
-    /// Separator used to splice AppId and AppIdSuffix
-    /// default:- , AppIdDelimiter not support .
+    /// The port your application is listening on
     /// </summary>
-    public string AppIdDelimiter
-    {
-        get => _appIdDelimiter;
-        set
-        {
-            if (value == ".")
-            {
-                throw new NotSupportedException("AppIdDelimiter is not supported as .");
-            }
-
-            _appIdDelimiter = value;
-        }
-    }
+    public ushort AppPort { get; }
 
     /// <summary>
-    /// Appid suffix
-    /// optional. the default is the current MAC address
+    /// The protocol (gRPC or HTTP) Dapr uses to talk to the application. Valid values are: http or grpc
     /// </summary>
-    public string AppIdSuffix { get; set; } = DefaultOptions.DefaultAppidSuffix;
+    public Protocol? AppProtocol { get; }
+
+    /// <summary>
+    /// Enable https when Dapr invokes the application
+    /// </summary>
+    public bool? EnableSsl { get; }
+
+    /// <summary>
+    /// The gRPC port for Dapr to listen on
+    /// </summary>
+    public ushort? DaprGrpcPort { get; private set; }
+
+    /// <summary>
+    /// The HTTP port for Dapr to listen on
+    /// </summary>
+    public ushort? DaprHttpPort { get; private set; }
+
+    public int HeartBeatInterval { get; }
+
+    public bool CreateNoWindow { get; } = true;
 
     /// <summary>
     /// The concurrency level of the application, otherwise is unlimited
     /// </summary>
     public string? MaxConcurrency { get; set; }
-
-    /// <summary>
-    /// The port your application is listening on
-    /// </summary>
-    public ushort? AppPort { get; set; }
-
-    /// <summary>
-    /// The protocol (gRPC or HTTP) Dapr uses to talk to the application. Valid values are: http or grpc
-    /// </summary>
-    public Protocol? AppProtocol { get; set; }
-
-    /// <summary>
-    /// Enable https when Dapr invokes the application
-    /// </summary>
-    public bool? EnableSsl { get; set; }
 
     /// <summary>
     /// Dapr configuration file
@@ -84,16 +57,6 @@ public class DaprOptions
     /// Windows: %USERPROFILE%\.dapr\components
     /// </summary>
     public string? ComponentPath { get; set; }
-
-    /// <summary>
-    /// The gRPC port for Dapr to listen on
-    /// </summary>
-    public ushort? DaprGrpcPort { get; set; }
-
-    /// <summary>
-    /// The HTTP port for Dapr to listen on
-    /// </summary>
-    public ushort? DaprHttpPort { get; set; }
 
     /// <summary>
     /// Enable pprof profiling via an HTTP endpoint
@@ -138,11 +101,29 @@ public class DaprOptions
     /// </summary>
     public int? DaprMaxRequestSize { get; set; }
 
-    /// <summary>
-    /// Heartbeat detection interval, used to detect dapr status
-    /// default: 5000 ms
-    /// </summary>
-    public int? HeartBeatInterval { get; set; }
+    public DaprCoreOptions(
+        string appId,
+        ushort appPort,
+        Protocol? appProtocol,
+        bool? enableSsl,
+        ushort? daprGrpcPort,
+        ushort? daprHttpPort,
+        int heartBeatInterval,
+        bool createNoWindow)
+    {
+        AppId = appId;
+        AppPort = appPort;
+        AppProtocol = appProtocol;
+        EnableSsl = enableSsl;
+        DaprGrpcPort = daprGrpcPort;
+        DaprHttpPort = daprHttpPort;
+        HeartBeatInterval = heartBeatInterval;
+        CreateNoWindow = createNoWindow;
+    }
 
-    public bool CreateNoWindow { get; set; } = true;
+    public void SetPort(ushort httpPort, ushort rpcPort)
+    {
+        DaprHttpPort ??= httpPort;
+        DaprGrpcPort ??= rpcPort;
+    }
 }

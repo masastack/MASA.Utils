@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<DaprService>();
 
         services.AddHostedService<DaprBackgroundService>();
+        services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
         return services.AddDaprCore(func);
     }
 

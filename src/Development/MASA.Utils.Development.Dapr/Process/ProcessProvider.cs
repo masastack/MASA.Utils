@@ -1,18 +1,12 @@
-﻿using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-
-namespace MASA.Utils.Development.Dapr.Process;
+﻿namespace MASA.Utils.Development.Dapr.Process;
 
 public class ProcessProvider : IProcessProvider
 {
-    private readonly CommandLineBuilder _commandLineBuilder;
-    private readonly ProcessUtils _processUtils;
     private readonly ILogger<ProcessProvider>? _logger;
 
     public ProcessProvider(ILoggerFactory loggerFactory)
     {
         _logger = loggerFactory.CreateLogger<ProcessProvider>();
-        _processUtils = new ProcessUtils(loggerFactory);
     }
 
     /// <summary>
@@ -106,13 +100,34 @@ public class ProcessProvider : IProcessProvider
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            _logger?.LogError("unsupported operating system");
+            List<string> output = GetResponse("lsof", $"-nP -iTCP -sTCP:LISTEN", "\n");
+
+            Console.WriteLine("result: " + output.Count);
+            Console.WriteLine("result2: " + System.Text.Json.JsonSerializer.Serialize(output));
+            foreach (var line in output)
+            {
+                Console.WriteLine("line: " + line);
+                if (line.Trim().StartsWith("COMMAND", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                var len = parts.Length;
+                if (len > 2)
+                {
+                    var pId = int.Parse(parts[1]);
+                    if (int.Parse(parts[parts.Length - 2].Split(':').Last()) == port && !pIdList.Contains(pId))
+                    {
+                        pIdList.Add(pId);
+                    }
+                }
+            }
         }
         else
         {
             _logger?.LogError("unsupported operating system");
         }
-        return pIdList;
+        return pIdList.Where(pid => pid > 0).ToList();
     }
 
     private int GetIndex(string[] array, string content)
