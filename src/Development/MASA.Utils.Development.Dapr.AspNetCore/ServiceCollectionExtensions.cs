@@ -22,6 +22,18 @@ public static class ServiceCollectionExtensions
         return services.AddDaprCore(func);
     }
 
+    public static IServiceCollection AddDapr(this IServiceCollection services, IConfiguration configuration)
+    {
+        if (services.Any(service => service.ImplementationType == typeof(DaprService)))
+        {
+            return services;
+        }
+        services.AddSingleton<DaprService>();
+
+        services.AddHostedService<DaprBackgroundService>();
+        return services.AddDaprCore(configuration);
+    }
+
     private class DaprService
     {
 

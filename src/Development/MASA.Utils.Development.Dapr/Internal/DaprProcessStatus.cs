@@ -3,7 +3,8 @@
 public enum DaprProcessStatus
 {
     Starting = 1,
-    Started = 2,
-    Stopping = 3,
-    Stopped = 4
+    Started,
+    Stopping,
+    Stopped,
+    Restarting
 }

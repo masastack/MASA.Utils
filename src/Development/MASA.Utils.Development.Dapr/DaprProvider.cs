@@ -3,7 +3,7 @@ namespace MASA.Utils.Development.Dapr;
 public class DaprProvider : IDaprProvider
 {
     private readonly ILogger<DaprProvider>? _logger;
-    private  ProcessUtils _processUtils;
+    private ProcessUtils _processUtils;
 
     public DaprProvider(ILoggerFactory? loggerFactory)
     {
@@ -31,21 +31,29 @@ public class DaprProvider : IDaprProvider
         };
         string response = stringBuilder.ToString().Trim();
         List<DaprRuntimeOptions> daprList = new();
-        if (response.StartsWith("["))
+        try
         {
-            daprList = System.Text.Json.JsonSerializer.Deserialize<List<DaprRuntimeOptions>>(response) ?? new();
-        }
-        else if (response.StartsWith("{"))
-        {
-            var option = System.Text.Json.JsonSerializer.Deserialize<DaprRuntimeOptions>(response);
-            if (option != null)
+            if (response.StartsWith("["))
             {
-                daprList.Add(option);
+                daprList = System.Text.Json.JsonSerializer.Deserialize<List<DaprRuntimeOptions>>(response) ?? new();
+            }
+            else if (response.StartsWith("{"))
+            {
+                var option = System.Text.Json.JsonSerializer.Deserialize<DaprRuntimeOptions>(response);
+                if (option != null)
+                {
+                    daprList.Add(option);
+                }
+            }
+            else
+            {
+                _logger?.LogWarning("----- Failed to get currently running dapr");
             }
         }
-        else
+        catch (Exception e)
         {
-            _logger?.LogWarning("----- Failed to get currently running dapr");
+            _logger?.LogWarning("----- Error getting list of running dapr, response message is {response}", response);
+            return new List<DaprRuntimeOptions>();
         }
         return daprList.Where(dapr => dapr.AppId == appId).ToList();
     }

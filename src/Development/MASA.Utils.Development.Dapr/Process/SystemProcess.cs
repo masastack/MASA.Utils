@@ -9,13 +9,15 @@ public class SystemProcess : IProcess
         _process = process;
     }
 
-    public int PId => _process.Id;
+    public int PId => IsRun ? _process.Id : 0;
 
-    public string Name => _process.ProcessName;
+    public string Name => IsRun ? _process.ProcessName : string.Empty;
+
+    public bool IsRun => !_process.HasExited;
 
     public void Kill()
     {
-        if (!_process.HasExited)
+        if (IsRun)
             _process.Kill();
     }
 
@@ -27,11 +29,7 @@ public class SystemProcess : IProcess
         {
             _process.WaitForExit(milliseconds.Value);
         }
-        else if (!_process.HasExited)
-        {
-            _process.WaitForExit();
-        }
-        else
+        else if (IsRun)
         {
             _process.Kill();
         }

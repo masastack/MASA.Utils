@@ -78,23 +78,51 @@ public class DaprProcess : IDaprProcess
 
     public void Stop(CancellationToken cancellationToken = default)
     {
-        _process?.WaitForExit();
+        lock (_lock)
+        {
+            _process?.WaitForExit();
+            if (_successDaprOptions != null)
+            {
+                List<DaprRuntimeOptions> daprList = _daprProvider.GetDaprList(_successDaprOptions.AppId);
+                if (daprList.Any())
+                {
+                    foreach (var dapr in daprList)
+                    {
+                        _process = _processProvider.GetProcess(dapr.PId);
+                        _process.Kill();
+                    }
+                }
+                if (_successDaprOptions.DaprHttpPort != null)
+                    CheckPortAndKill(_successDaprOptions.DaprHttpPort.Value);
+                if (_successDaprOptions.DaprGrpcPort != null)
+                    CheckPortAndKill(_successDaprOptions.DaprGrpcPort.Value);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Refresh the dapr configuration, the source dapr process will be killed and the new dapr process will be restarted
+    /// todo: At present, there are no restrictions on HttpPort and GrpcPort, but if the configuration update changes HttpPort and GrpcPort, the port obtained by DaprClient will be inconsistent with the actual operation, which needs to be adjusted later.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="cancellationToken"></param>
+    public void Refresh(DaprOptions options, CancellationToken cancellationToken = default)
+    {
+        _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, please wait...", _successDaprOptions!.AppId);
+
         if (_successDaprOptions != null)
         {
-            List<DaprRuntimeOptions> daprList = _daprProvider.GetDaprList(_successDaprOptions.AppId);
-            if (daprList.Any())
-            {
-                foreach (var dapr in daprList)
-                {
-                    _process = _processProvider.GetProcess(dapr.PId);
-                    _process.Kill();
-                }
-            }
-            if (_successDaprOptions.DaprHttpPort != null)
-                CheckPortAndKill(_successDaprOptions.DaprHttpPort.Value);
-            if (_successDaprOptions.DaprGrpcPort != null)
-                CheckPortAndKill(_successDaprOptions.DaprGrpcPort.Value);
+            UpdateStatus(DaprProcessStatus.Restarting);
+            _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, closing dapr, please wait...",
+                _successDaprOptions!.AppId);
+            Stop(cancellationToken);
         }
+
+        isFirst = true;
+        _successDaprOptions = null;
+        _process = null;
+        _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, restarting dapr, please wait...", options.AppId);
+        Start(options, cancellationToken);
     }
 
     private void CheckPortAndKill(ushort port)
@@ -123,7 +151,7 @@ public class DaprProcess : IDaprProcess
             {
                 if (Status == DaprProcessStatus.Started || Status == DaprProcessStatus.Stopped)
                 {
-                    _logger?.LogWarning("dapr stopped, restarting, please wait...");
+                    _logger?.LogWarning("Dapr stopped, restarting, please wait...");
                     Initialize(_successDaprOptions, cancellationToken);
                 }
                 else
@@ -247,7 +275,7 @@ public class DaprProcess : IDaprProcess
                     retry++;
                     goto again;
                 }
-                _logger?.LogWarning("dapr failed to start, appid is {appid}", _successDaprOptions!.AppId);
+                _logger?.LogWarning("Dapr failed to start, appid is {appid}", _successDaprOptions!.AppId);
                 return;
             }
         }
