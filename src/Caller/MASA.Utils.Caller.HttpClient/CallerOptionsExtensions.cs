@@ -17,7 +17,7 @@ public static class CallerOptionsExtensions
             return new HttpClientCallerProvider(
                 httpClient,
                 requestMessage,
-                builder.BaseAPI);
+                builder.BaseApi);
         });
         return httpClientBuilder;
     }
