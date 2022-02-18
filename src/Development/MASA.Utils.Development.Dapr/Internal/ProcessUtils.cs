@@ -32,8 +32,8 @@ internal class ProcessUtils
             processStartInfo.RedirectStandardError = true;
             processStartInfo.RedirectStandardOutput = true;
 
-            daprProcess.OutputDataReceived += (sender, args) => OnOutputDataReceived(args);
-            daprProcess.ErrorDataReceived += (sender, args) => OnErrorDataReceived(args);
+            daprProcess.OutputDataReceived += (_, args) => OnOutputDataReceived(args);
+            daprProcess.ErrorDataReceived += (_, args) => OnErrorDataReceived(args);
         }
         daprProcess.Start();
         if (createNoWindow)
@@ -41,7 +41,7 @@ internal class ProcessUtils
             daprProcess.BeginOutputReadLine();
             daprProcess.BeginErrorReadLine();
         }
-        daprProcess.Exited += (sender, args) => OnExited();
+        daprProcess.Exited += (_, _) => OnExited();
         _logger?.LogInformation("Process {ProcessName} PID:{ProcessId} started successfully", daprProcess.ProcessName, daprProcess.Id);
 
         if (isWait)
@@ -51,15 +51,15 @@ internal class ProcessUtils
         return daprProcess;
     }
 
-    public event EventHandler<System.Diagnostics.DataReceivedEventArgs> OutputDataReceived = default!;
+    public event EventHandler<DataReceivedEventArgs> OutputDataReceived = default!;
 
-    public event EventHandler<System.Diagnostics.DataReceivedEventArgs> ErrorDataReceived = default!;
+    public event EventHandler<DataReceivedEventArgs> ErrorDataReceived = default!;
 
     public event EventHandler Exit = default!;
 
-    protected virtual void OnOutputDataReceived(System.Diagnostics.DataReceivedEventArgs args) => OutputDataReceived?.Invoke(this, args);
+    protected virtual void OnOutputDataReceived(DataReceivedEventArgs args) => OutputDataReceived(this, args);
 
-    protected virtual void OnErrorDataReceived(System.Diagnostics.DataReceivedEventArgs args) => ErrorDataReceived?.Invoke(this, args);
+    protected virtual void OnErrorDataReceived(DataReceivedEventArgs args) => ErrorDataReceived(this, args);
 
     protected virtual void OnExited() => Exit(this, EventArgs.Empty);
 }

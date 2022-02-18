@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MASA.Utils.Development.Dapr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MASA.Utils.Development.Dapr.AspNetCore", "src\Development\MASA.Utils.Development.Dapr.AspNetCore\MASA.Utils.Development.Dapr.AspNetCore.csproj", "{C91175C6-68E8-4EC8-8C92-BC6087F53EF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "webTest\WebApplication1\WebApplication1.csproj", "{F7425AC5-F501-4590-8BF7-76B4F3833642}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -185,6 +187,10 @@ Global
 		{C91175C6-68E8-4EC8-8C92-BC6087F53EF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C91175C6-68E8-4EC8-8C92-BC6087F53EF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C91175C6-68E8-4EC8-8C92-BC6087F53EF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7425AC5-F501-4590-8BF7-76B4F3833642}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7425AC5-F501-4590-8BF7-76B4F3833642}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7425AC5-F501-4590-8BF7-76B4F3833642}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7425AC5-F501-4590-8BF7-76B4F3833642}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -223,6 +229,7 @@ Global
 		{598A7DA7-898E-429B-992A-B0E586DADA35} = {D956582F-4071-47E6-A8E7-4C5A83770045}
 		{BA436D03-972D-4B6A-B526-9C44D0FE5E48} = {598A7DA7-898E-429B-992A-B0E586DADA35}
 		{C91175C6-68E8-4EC8-8C92-BC6087F53EF1} = {598A7DA7-898E-429B-992A-B0E586DADA35}
+		{F7425AC5-F501-4590-8BF7-76B4F3833642} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7DAA0E6-098F-4B18-8775-64FDA96F1FF0}
