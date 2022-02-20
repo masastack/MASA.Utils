@@ -53,13 +53,13 @@ internal class ProcessUtils
 
     public event EventHandler<DataReceivedEventArgs> OutputDataReceived = default!;
 
-    public event EventHandler<DataReceivedEventArgs> ErrorDataReceived = default!;
+    public event EventHandler<DataReceivedEventArgs>? ErrorDataReceived;
 
     public event EventHandler Exit = default!;
 
     protected virtual void OnOutputDataReceived(DataReceivedEventArgs args) => OutputDataReceived(this, args);
 
-    protected virtual void OnErrorDataReceived(DataReceivedEventArgs args) => ErrorDataReceived(this, args);
+    protected virtual void OnErrorDataReceived(DataReceivedEventArgs args) => ErrorDataReceived?.Invoke(this, args);
 
     protected virtual void OnExited() => Exit(this, EventArgs.Empty);
 }

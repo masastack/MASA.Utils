@@ -24,11 +24,11 @@ public class DaprProvider : IDaprProvider
                 }
             }
         };
-        _processUtils.Run(Const.DEFAULT_FILE_NAME, "list -o json", true, true);
         _processUtils.Exit += delegate
         {
             _logger?.LogInformation("{Name} process has exited", Const.DEFAULT_FILE_NAME);
         };
+        _processUtils.Run(Const.DEFAULT_FILE_NAME, "list -o json", true, true);
         string response = stringBuilder.ToString().Trim();
         List<DaprRuntimeOptions> daprList = new();
         try
