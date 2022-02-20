@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-
 namespace MASA.Utils.Development.Dapr;
 
 public static class ServiceCollectionExtensions
@@ -14,7 +12,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddDaprCore(this IServiceCollection services, Func<DaprOptions> func)
     {
         services.AddSingleton(Options.Create(func.Invoke()));
-        return services;
+        return services.AddDaprCore();
     }
 
     public static IServiceCollection AddDaprCore(this IServiceCollection services, IConfiguration configuration)
