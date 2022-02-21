@@ -50,9 +50,9 @@ public class DaprProvider : IDaprProvider
                 _logger?.LogWarning("----- Failed to get currently running dapr");
             }
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            _logger?.LogWarning("----- Error getting list of running dapr, response message is {response}", response);
+            _logger?.LogWarning(exception, "----- Error getting list of running dapr, response message is {response}", response);
             return new List<DaprRuntimeOptions>();
         }
         return daprList.Where(dapr => dapr.AppId == appId).ToList();
