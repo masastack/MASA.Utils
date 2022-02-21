@@ -25,7 +25,7 @@ public class HashAlgorithmBase : EncryptBase
 
     protected static string Encrypt(EncryptType encryptType, byte[] buffer, HashAlgorithm? hashAlgorithm = null, bool isToLower = false)
     {
-        using (hashAlgorithm = hashAlgorithm ?? HashAlgorithm.Create(encryptType.ToString()))
+        using (hashAlgorithm ??= HashAlgorithm.Create(encryptType.ToString()))
         {
             if (hashAlgorithm == null)
                 throw new NotSupportedException("Unsupported encryptType");
