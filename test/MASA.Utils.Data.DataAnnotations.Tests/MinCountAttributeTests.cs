@@ -1,7 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace MASA.Utils.Data.DataAnnotations.Tests
 {
@@ -74,10 +72,10 @@ namespace MASA.Utils.Data.DataAnnotations.Tests
         public class User
         {
             [Required]
-            public string Name { get; set; }
+            public string Name { get; set; } = default!;
 
             [MinCount(1)]
-            public List<string> Favorites { get; set; }
+            public List<string> Favorites { get; set; } = default!;
         }
     }
 }
