@@ -2,26 +2,26 @@ namespace MASA.Utils.Development.Dapr;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDaprCore(this IServiceCollection services, Action<DaprOptions>? action = null)
+    public static IServiceCollection AddDaprStartCore(this IServiceCollection services, Action<DaprOptions>? action = null)
     {
         DaprOptions daprOptions = new();
         action?.Invoke(daprOptions);
-        return services.AddDaprCore(() => daprOptions);
+        return services.AddDaprStartCore(() => daprOptions);
     }
 
-    public static IServiceCollection AddDaprCore(this IServiceCollection services, Func<DaprOptions> func)
+    public static IServiceCollection AddDaprStartCore(this IServiceCollection services, Func<DaprOptions> func)
     {
         services.AddSingleton(Options.Create(func.Invoke()));
-        return services.AddDaprCore();
+        return services.AddDaprStartCore();
     }
 
-    public static IServiceCollection AddDaprCore(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDaprStartCore(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<DaprOptions>(configuration);
-        return services.AddDaprCore();
+        return services.AddDaprStartCore();
     }
 
-    private static IServiceCollection AddDaprCore(this IServiceCollection services)
+    private static IServiceCollection AddDaprStartCore(this IServiceCollection services)
     {
         if (services.Any(service => service.ImplementationType == typeof(DaprService)))
         {
