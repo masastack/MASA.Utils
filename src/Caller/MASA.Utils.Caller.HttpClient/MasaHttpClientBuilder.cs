@@ -16,7 +16,7 @@ public class MasaHttpClientBuilder
         }
     }
 
-    public string BaseAPI { get; set; }
+    public string BaseApi { get; set; }
 
     public bool IsDefault { get; set; } = false;
 
@@ -31,10 +31,10 @@ public class MasaHttpClientBuilder
     {
     }
 
-    public MasaHttpClientBuilder(string name, string baseAPI, Action<System.Net.Http.HttpClient>? configure)
+    public MasaHttpClientBuilder(string name, string baseApi, Action<System.Net.Http.HttpClient>? configure)
     {
         Name = name;
-        BaseAPI = baseAPI;
+        BaseApi = baseApi;
         Configure = configure;
     }
 }

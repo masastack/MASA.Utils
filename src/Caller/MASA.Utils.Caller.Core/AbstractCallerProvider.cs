@@ -79,7 +79,7 @@ public abstract class AbstractCallerProvider : ICallerProvider
 
     public Task<TResponse?> GetAsync<TResponse>(string? methodName, Dictionary<string, string> data, CancellationToken cancellationToken= default)
     {
-        HttpRequestMessage request = CreateRequest(HttpMethod.Get, methodName, data);
+        HttpRequestMessage request = CreateRequest(HttpMethod.Get,  GetUrl(methodName ?? String.Empty, data));
         return SendAsync<TResponse>(request, cancellationToken);
     }
 
