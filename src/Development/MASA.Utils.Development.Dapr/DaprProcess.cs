@@ -191,7 +191,7 @@ public class DaprProcess : IDaprProcess
     }
 
     private string GetAppId(DaprOptions options) =>
-        options.AppIdSuffix != null ? options.AppId : $"{options.AppId}{options.AppIdDelimiter}{options.AppIdSuffix}";
+        options.AppIdSuffix == string.Empty ? options.AppId : $"{options.AppId}{options.AppIdDelimiter}{options.AppIdSuffix}";
 
     private ushort GetAppPort(DaprOptions options) =>
         options.AppPort ?? throw new ArgumentNullException(nameof(options.AppPort));
