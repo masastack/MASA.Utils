@@ -1,9 +1,0 @@
-﻿global using MASA.Utils.Security.Token.Model;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.IdentityModel.Tokens;
-global using System.IdentityModel.Tokens.Jwt;
-global using System.Security.Claims;
-global using System.Text;
-global using Microsoft.Extensions.DependencyInjection.Extensions;
-global using Microsoft.Extensions.Logging;
-global using Microsoft.Extensions.Options;
