@@ -2,17 +2,17 @@
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDaprStart(
+    public static IServiceCollection AddDaprStarter(
         this IServiceCollection services,
         Action<DaprOptions>? action = null,
         Action<DaprBackgroundOptions>? daprBackgroundOptionsAction = null)
     {
         DaprOptions daprOptions = new();
         action?.Invoke(daprOptions);
-        return services.AddDaprStart(() => daprOptions, daprBackgroundOptionsAction);
+        return services.AddDaprStarter(() => daprOptions, daprBackgroundOptionsAction);
     }
 
-    public static IServiceCollection AddDaprStart(this IServiceCollection services,
+    public static IServiceCollection AddDaprStarter(this IServiceCollection services,
         Func<DaprOptions> func,
         Action<DaprBackgroundOptions>? action = null)
     {
@@ -27,10 +27,10 @@ public static class ServiceCollectionExtensions
 
         services.AddHostedService<DaprBackgroundService>();
         services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
-        return services.AddDaprStartCore(func);
+        return services.AddDaprStarterCore(func);
     }
 
-    public static IServiceCollection AddDaprStart(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDaprStarter(this IServiceCollection services, IConfiguration configuration)
     {
         if (services.Any(service => service.ImplementationType == typeof(DaprService)))
         {
@@ -39,7 +39,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<DaprService>();
         services.AddHostedService<DaprBackgroundService>();
         services.Configure<DaprBackgroundOptions>(configuration);
-        return services.AddDaprStartCore(configuration);
+        return services.AddDaprStarterCore(configuration);
     }
 
     private class DaprService
