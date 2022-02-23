@@ -47,7 +47,7 @@ public class DaprOptions
     /// Appid suffix
     /// optional. the default is the current MAC address
     /// </summary>
-    public string AppIdSuffix { get; set; } = DefaultOptions.DefaultAppidSuffix;
+    public string? AppIdSuffix { get; set; } = DefaultOptions.DefaultAppidSuffix;
 
     /// <summary>
     /// The concurrency level of the application, otherwise is unlimited
