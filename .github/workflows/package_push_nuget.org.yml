@@ -31,6 +31,3 @@ jobs:
 
     - name: package push
       run: dotnet nuget push "**/*.symbols.nupkg" -k  ${{secrets.NUGET_TOKEN}}  -s https://api.nuget.org/v3/index.json
-        
-
-        
