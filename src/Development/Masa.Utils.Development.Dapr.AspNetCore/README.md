@@ -41,7 +41,7 @@ first step:
 ``` appsettings.json
 {
   "DaprOptions": {
-    "AppId": "masa.dapr.test",
+    "AppId": "masa-dapr-test",
     "AppPort": 5001,
     "AppIdSuffix": "",
     "DaprHttpPort": 8080,
