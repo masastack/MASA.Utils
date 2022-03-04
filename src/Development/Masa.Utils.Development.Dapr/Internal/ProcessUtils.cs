@@ -15,6 +15,7 @@ internal class ProcessUtils
         bool createNoWindow = true,
         bool isWait = false)
     {
+        _logger?.LogDebug("FileName: {FileName}, Arguments: {Arguments}", fileName, arguments);
         var processStartInfo = new ProcessStartInfo
         {
             FileName = fileName,
@@ -57,9 +58,29 @@ internal class ProcessUtils
 
     public event EventHandler Exit = default!;
 
-    protected virtual void OnOutputDataReceived(DataReceivedEventArgs args) => OutputDataReceived(this, args);
+    protected virtual void OnOutputDataReceived(DataReceivedEventArgs args)
+    {
+        try
+        {
+            OutputDataReceived(this, args);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError("ProcessUtils: error in output information ", ex);
+        }
+    }
 
-    protected virtual void OnErrorDataReceived(DataReceivedEventArgs args) => ErrorDataReceived?.Invoke(this, args);
+    protected virtual void OnErrorDataReceived(DataReceivedEventArgs args)
+    {
+        try
+        {
+            ErrorDataReceived?.Invoke(this, args);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError("execution error", ex);
+        }
+    }
 
     protected virtual void OnExited() => Exit(this, EventArgs.Empty);
 }

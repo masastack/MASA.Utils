@@ -1,6 +1,6 @@
-﻿namespace Masa.Utils.Development.Dapr;
+namespace Masa.Utils.Development.Dapr;
 
-public interface IDaprProcess
+public interface IDaprProcess : IDisposable
 {
     void Start(DaprOptions options, CancellationToken cancellationToken = default);
 

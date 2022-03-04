@@ -43,21 +43,61 @@ public class DaprOptions
         }
     }
 
+    private string _appIdSuffix = DefaultOptions.DefaultAppidSuffix;
+
     /// <summary>
     /// Appid suffix
     /// optional. the default is the current MAC address
     /// </summary>
-    public string AppIdSuffix { get; set; } = DefaultOptions.DefaultAppidSuffix;
+    public string AppIdSuffix
+    {
+        get => _appIdSuffix;
+        set
+        {
+            if (value == ".")
+            {
+                throw new NotSupportedException("AppIdSuffix is not supported as .");
+            }
+
+            _appIdSuffix = value;
+        }
+    }
+
+    private int? _maxConcurrency;
 
     /// <summary>
     /// The concurrency level of the application, otherwise is unlimited
     /// </summary>
-    public string? MaxConcurrency { get; set; }
+    public int? MaxConcurrency
+    {
+        get => _maxConcurrency;
+        set
+        {
+            if (value is <= 0)
+            {
+                throw new NotSupportedException($"{nameof(MaxConcurrency)} must be greater than 0 .");
+            }
+
+            _maxConcurrency = value;
+        }
+    }
+
+    private ushort? _appPort;
 
     /// <summary>
     /// The port your application is listening on
     /// </summary>
-    public ushort? AppPort { get; set; }
+    public ushort? AppPort
+    {
+        get => _appPort;
+        set
+        {
+            if (value is <= 0)
+                throw new NotSupportedException($"{nameof(AppPort)} must be greater than 0 .");
+
+            _appPort = value;
+        }
+    }
 
     /// <summary>
     /// The protocol (gRPC or HTTP) Dapr uses to talk to the application. Valid values are: http or grpc
@@ -85,15 +125,39 @@ public class DaprOptions
     /// </summary>
     public string? ComponentPath { get; set; }
 
+    private ushort? _daprGrpcPort;
+
     /// <summary>
     /// The gRPC port for Dapr to listen on
     /// </summary>
-    public ushort? DaprGrpcPort { get; set; }
+    public ushort? DaprGrpcPort
+    {
+        get => _daprGrpcPort;
+        set
+        {
+            if (value is <= 0)
+                throw new NotSupportedException($"{nameof(DaprGrpcPort)} must be greater than 0 .");
+
+            _daprGrpcPort = value;
+        }
+    }
+
+    private ushort? _daprHttpPort;
 
     /// <summary>
     /// The HTTP port for Dapr to listen on
     /// </summary>
-    public ushort? DaprHttpPort { get; set; }
+    public ushort? DaprHttpPort
+    {
+        get => _daprHttpPort;
+        set
+        {
+            if (value is <= 0)
+                throw new NotSupportedException($"{nameof(DaprHttpPort)} must be greater than 0 .");
+
+            _daprHttpPort = value;
+        }
+    }
 
     /// <summary>
     /// Enable pprof profiling via an HTTP endpoint
@@ -117,14 +181,43 @@ public class DaprOptions
     public string? PlacementHostAddress { get; set; }
 
     /// <summary>
+    /// Address for the Sentry CA service
+    /// </summary>
+    public string? SentryAddress { get; set; }
+
+    private ushort? _metricsPort;
+
+    /// <summary>
     /// The port that Dapr sends its metrics information to
     /// </summary>
-    public string? MetricsPort { get; set; }
+    public ushort? MetricsPort
+    {
+        get => _metricsPort;
+        set
+        {
+            if (value is <= 0)
+                throw new NotSupportedException($"{nameof(MetricsPort)} must be greater than 0 .");
+
+            _metricsPort = value;
+        }
+    }
+
+    private ushort? _profilePort;
 
     /// <summary>
     /// The port for the profile server to listen on
     /// </summary>
-    public int? ProfilePort { get; set; }
+    public ushort? ProfilePort
+    {
+        get => _profilePort;
+        set
+        {
+            if (value is <= 0)
+                throw new NotSupportedException($"{nameof(ProfilePort)} must be greater than 0 .");
+
+            _profilePort = value;
+        }
+    }
 
     /// <summary>
     /// Path to a unix domain socket dir mount. If specified
@@ -133,16 +226,46 @@ public class DaprOptions
     /// </summary>
     public string? UnixDomainSocket { get; set; }
 
+    private int? _daprMaxRequestSize;
+
     /// <summary>
     /// Max size of request body in MB.
     /// </summary>
-    public int? DaprMaxRequestSize { get; set; }
+    public int? DaprMaxRequestSize
+    {
+        get => _daprMaxRequestSize;
+        set
+        {
+            if (value is <= 0)
+                throw new NotSupportedException($"{nameof(DaprMaxRequestSize)} must be greater than 0 .");
+
+            _daprMaxRequestSize = value;
+        }
+    }
+
+    private int _heartBeatInterval = Const.DEFAULT_HEARTBEATINTERVAL;
 
     /// <summary>
     /// Heartbeat detection interval, used to detect dapr status
     /// default: 5000 ms
     /// </summary>
-    public int? HeartBeatInterval { get; set; }
+    public int? HeartBeatInterval
+    {
+        get => _heartBeatInterval;
+        set
+        {
+            if (value < 0)
+                throw new NotSupportedException($"{nameof(DaprMaxRequestSize)} must be greater than or equal to 0 .");
+
+            _heartBeatInterval = value ?? Const.DEFAULT_HEARTBEATINTERVAL;
+        }
+    }
+
+    /// <summary>
+    /// Start the heartbeat check to ensure that the dapr program is active.
+    /// When the heartbeat check is turned off, dapr will not start automatically after it exits abnormally.
+    /// </summary>
+    public bool EnableHeartBeat { get; set; } = true;
 
     public bool CreateNoWindow { get; set; } = true;
 }
