@@ -57,15 +57,3 @@ builder.Services.AddDaprStarter(builder.Configuration.GetSection("DaprOptions");
 ```
 
 Advantages: After the configuration is changed, the dapr process is restarted and updated, and the project does not need to be restarted
-
-### rule
-
-dapr AppId naming rules default:
-
-AppId + "-" + AppIdSuffix
-
-AppId default: Appid.Replace(".","-")
-
-AppIdSuffix default: network card address
-
-When AppIdSuffix is empty, the appid of dapr is equal to AppId

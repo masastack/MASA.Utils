@@ -57,15 +57,3 @@ builder.Services.AddDaprStarter(builder.Configuration.GetSection("DaprOptions"))
 ```
 
 优势：支持配置变更后，dapr 进程重启更新，项目无需重新启动
-
-### 规则
-
-dapr AppId命名规则默认：
-
-AppId + "-" +  AppIdSuffix
-
-AppId默认：Appid.Replace(".","-")
-
-AppIdSuffix默认：网卡地址
-
-当AppIdSuffix为空时，dapr的appid等于AppId

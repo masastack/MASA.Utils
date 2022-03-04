@@ -77,3 +77,19 @@ Example: ubuntu:
 ````
 apt-get install net-tools
 ````
+
+2. AppId, AppIdSuffix strongly recommend not to enter a string containing ., otherwise it will cause problems with the dapr call. It is recommended to use -
+    1. Dapr AppID follows the FQDN format, which includes the target namespace
+    2. FQDN is spliced with the symbol .
+
+### rule
+
+dapr AppId naming rules default:
+
+AppId + "-" + AppIdSuffix
+
+AppId default: Appid.Replace(".","-")
+
+AppIdSuffix default: network card address
+
+When AppIdSuffix is empty, the appid of dapr is equal to AppId

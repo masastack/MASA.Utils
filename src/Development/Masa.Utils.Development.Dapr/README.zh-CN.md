@@ -60,7 +60,7 @@ public class DaprController : ControllerBase
 
 ## 注意
 
-库中有使用到netstat命令，请确保netstat命令是可用的
+1. 库中有使用到netstat命令，请确保netstat命令是可用的
 
 > Windows系统默认支持netstat命令无需特殊安装
 >
@@ -77,3 +77,19 @@ netstat -h
 ```
 apt-get install net-tools
 ```
+
+2. AppId、AppIdSuffix强烈建议不要输入含.的字符串，否则会导致dapr调用出现问题，推荐使用-
+   1. Dapr AppID遵循FQDN格式，其中包括目标命名空间
+   2. FQDN是通过符号.来拼接域名的
+
+### 规则
+
+dapr AppId命名规则默认：
+
+AppId + "-" +  AppIdSuffix
+
+AppId默认：Appid.Replace(".","-")
+
+AppIdSuffix默认：网卡地址
+
+当AppIdSuffix为空时，dapr的appid等于AppId
