@@ -23,7 +23,7 @@ Install-Package Masa.Utils.Development.Dapr.AspNetCore
 builder.Services.AddDaprStarterCore();
 ```
 
-3. Inject IDaprProcess at the specified location as needed, and then call the Start method to start the dapr process or hand it over to Masa.Utils.Development.Dapr.AspNetCore to manage the dapr process. Related documents can be found at [View](../Masa.Utils.Development .Dapr.AspNetCore/README.zh-CN.md)
+3. Inject IDaprProcess at the specified location as needed, and then call the Start method to start the dapr process or hand it over to Masa.Utils.Development.Dapr.AspNetCore to manage the dapr process. Related documents can be found at [View](../Masa.Utils.Development.Dapr.AspNetCore/README.md)
 
 Example：
 
