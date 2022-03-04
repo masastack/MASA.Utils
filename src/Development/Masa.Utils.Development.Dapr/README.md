@@ -60,7 +60,7 @@ public class DaprController : ControllerBase
 
 ## Notice
 
-The netstat command is used in the library, please make sure the netstat command is available
+1. The netstat command is used in the library, please make sure the netstat command is available
 
 > Windows system supports netstat command by default without special installation
 >
