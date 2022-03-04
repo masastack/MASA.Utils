@@ -82,7 +82,7 @@ apt-get install net-tools
     1. Dapr AppID follows the FQDN format, which includes the target namespace
     2. FQDN is spliced with the symbol .
 
-### rule
+### Rule
 
 dapr AppId naming rules default:
 
