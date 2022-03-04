@@ -26,7 +26,7 @@ builder.Services.AddDaprStarter();
 ``` C#
 builder.Services.AddDaprStarter(opt =>
 {
-    opt.AppId = "masa.dapr.test";
+    opt.AppId = "masa-dapr-test";
     opt.AppPort = 5001;
     opt.AppIdSuffix = "";
     opt.DaprHttpPort = 8080;
