@@ -2,7 +2,7 @@
 
 public abstract class CallerBase
 {
-    public string Name { get; set; } = default!;
+    public abstract string Name { get; set; }
 
     protected CallerOptions CallerOptions { get; private set; } = default!;
 
