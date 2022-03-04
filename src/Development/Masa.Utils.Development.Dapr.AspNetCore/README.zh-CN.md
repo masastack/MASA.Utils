@@ -26,7 +26,7 @@ builder.Services.AddDaprStarter();
 ```C#
 builder.Services.AddDaprStarter(opt =>
 {
-    opt.AppId = "masa.dapr.test";
+    opt.AppId = "masa-dapr-test";
     opt.AppPort = 5001;
     opt.AppIdSuffix = "";
     opt.DaprHttpPort = 8080;
@@ -41,7 +41,7 @@ builder.Services.AddDaprStarter(opt =>
 ``` appsettings.json
 {
   "DaprOptions": {
-    "AppId": "masa.dapr.test",
+    "AppId": "masa-dapr-test",
     "AppPort": 5001,
     "AppIdSuffix": "",
     "DaprHttpPort": 8080,
