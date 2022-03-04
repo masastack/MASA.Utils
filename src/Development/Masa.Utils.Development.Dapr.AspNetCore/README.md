@@ -36,7 +36,7 @@ builder.Services.AddDaprStarter(opt =>
 
 2. The configuration file specifies the configuration
 
-first step:
+First step:
 
 ``` appsettings.json
 {
