@@ -1,42 +1,38 @@
-﻿namespace Masa.Utils.Development.Dapr.AspNetCore;
+namespace Masa.Utils.Development.Dapr.AspNetCore;
 
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDaprStarter(
         this IServiceCollection services,
-        Action<DaprOptions>? action = null,
-        Action<DaprBackgroundOptions>? daprBackgroundOptionsAction = null)
+        Action<DaprOptions>? daprOptionAction = null)
     {
-        DaprOptions daprOptions = new();
-        action?.Invoke(daprOptions);
-        return services.AddDaprStarter(() => daprOptions, daprBackgroundOptionsAction);
+        return services.AddDaprStarter(opt =>
+        {
+            daprOptionAction?.Invoke(opt);
+        }, _ => { });
     }
 
     public static IServiceCollection AddDaprStarter(this IServiceCollection services,
-        Func<DaprOptions> func,
-        Action<DaprBackgroundOptions>? action = null)
+    Action<DaprOptions> daprOptionAction,
+    Action<DaprBackgroundOptions> action)
     {
         if (services.Any(service => service.ImplementationType == typeof(DaprService)))
-        {
             return services;
-        }
         services.AddSingleton<DaprService>();
 
-        if (action != null)
-            services.Configure(action);
+        services.Configure(action);
 
         services.AddHostedService<DaprBackgroundService>();
         services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
-        return services.AddDaprStarterCore(func);
+        return services.AddDaprStarterCore(daprOptionAction);
     }
 
     public static IServiceCollection AddDaprStarter(this IServiceCollection services, IConfiguration configuration)
     {
         if (services.Any(service => service.ImplementationType == typeof(DaprService)))
-        {
             return services;
-        }
         services.AddSingleton<DaprService>();
+
         services.AddHostedService<DaprBackgroundService>();
         services.Configure<DaprBackgroundOptions>(configuration);
         return services.AddDaprStarterCore(configuration);

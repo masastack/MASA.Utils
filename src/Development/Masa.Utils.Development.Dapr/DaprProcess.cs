@@ -16,7 +16,7 @@ public class DaprProcess : IDaprProcess
     /// <summary>
     /// record whether dapr is initialized for the first time
     /// </summary>
-    private bool isFirst = true;
+    private bool _isFirst = true;
 
     public DaprProcess(IDaprProvider daprProvider, IProcessProvider processProvider, ILoggerFactory? loggerFactory)
     {
@@ -30,8 +30,46 @@ public class DaprProcess : IDaprProcess
     {
         lock (_lock)
         {
-            Initialize(GetDaprOptions(options), cancellationToken);
+            StartCore(GetDaprOptions(options), cancellationToken);
         }
+    }
+
+    private void StartCore(DaprCoreOptions options, CancellationToken cancellationToken = default)
+    {
+        UpdateStatus(DaprProcessStatus.Starting);
+        var commandLineBuilder = Initialize(options, cancellationToken);
+        StopCore(_successDaprOptions, cancellationToken);
+
+        var utils = new ProcessUtils(_loggerFactory);
+
+        utils.OutputDataReceived += delegate(object? sender, DataReceivedEventArgs args)
+        {
+            if (_isFirst)
+            {
+                CompleteDaprOptions();
+                _isFirst = false;
+            }
+            DaprProcess_OutputDataReceived(sender, args);
+        };
+        utils.ErrorDataReceived += DaprProcess_ErrorDataReceived;
+        utils.Exit += delegate
+        {
+            UpdateStatus(DaprProcessStatus.Stopped);
+            _logger?.LogInformation("{Name} process has exited", Const.DEFAULT_FILE_NAME);
+        };
+        var process = utils.Run(Const.DEFAULT_FILE_NAME, $"run {commandLineBuilder}", options.CreateNoWindow);
+        _process = new SystemProcess(process);
+        if (_heartBeatTimer == null && options.EnableHeartBeat)
+        {
+            _heartBeatTimer = new System.Timers.Timer
+            {
+                AutoReset = true,
+                Interval = options.HeartBeatInterval
+            };
+            _heartBeatTimer.Elapsed += (sender, args) => HeartBeat(cancellationToken);
+            _heartBeatTimer.Start();
+        }
+        UpdateStatus(DaprProcessStatus.Started);
     }
 
     private static void DaprProcess_OutputDataReceived(object? sender, DataReceivedEventArgs e)
@@ -80,23 +118,28 @@ public class DaprProcess : IDaprProcess
     {
         lock (_lock)
         {
-            _process?.WaitForExit();
-            if (_successDaprOptions != null)
+            StopCore(_successDaprOptions, cancellationToken);
+        }
+    }
+
+    private void StopCore(DaprCoreOptions? options, CancellationToken cancellationToken = default)
+    {
+        _process?.WaitForExit();
+        if (options != null)
+        {
+            List<DaprRuntimeOptions> daprList = _daprProvider.GetDaprList(options.AppId);
+            if (daprList.Any())
             {
-                List<DaprRuntimeOptions> daprList = _daprProvider.GetDaprList(_successDaprOptions.AppId);
-                if (daprList.Any())
+                foreach (var dapr in daprList)
                 {
-                    foreach (var dapr in daprList)
-                    {
-                        _process = _processProvider.GetProcess(dapr.PId);
-                        _process.Kill();
-                    }
+                    _process = _processProvider.GetProcess(dapr.PId);
+                    _process.Kill();
                 }
-                if (_successDaprOptions.DaprHttpPort != null)
-                    CheckPortAndKill(_successDaprOptions.DaprHttpPort.Value);
-                if (_successDaprOptions.DaprGrpcPort != null)
-                    CheckPortAndKill(_successDaprOptions.DaprGrpcPort.Value);
             }
+            if (options.DaprHttpPort != null)
+                CheckPortAndKill(options.DaprHttpPort.Value);
+            if (options.DaprGrpcPort != null)
+                CheckPortAndKill(options.DaprGrpcPort.Value);
         }
     }
 
@@ -108,21 +151,24 @@ public class DaprProcess : IDaprProcess
     /// <param name="cancellationToken"></param>
     public void Refresh(DaprOptions options, CancellationToken cancellationToken = default)
     {
-        _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, please wait...", _successDaprOptions!.AppId);
-
-        if (_successDaprOptions != null)
+        lock (_lock)
         {
-            UpdateStatus(DaprProcessStatus.Restarting);
-            _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, closing dapr, please wait...",
-                _successDaprOptions!.AppId);
-            Stop(cancellationToken);
-        }
+            _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, please wait...", _successDaprOptions!.AppId);
 
-        isFirst = true;
-        _successDaprOptions = null;
-        _process = null;
-        _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, restarting dapr, please wait...", options.AppId);
-        Start(options, cancellationToken);
+            if (_successDaprOptions != null)
+            {
+                UpdateStatus(DaprProcessStatus.Restarting);
+                _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, closing dapr, please wait...",
+                    _successDaprOptions!.AppId);
+                StopCore(_successDaprOptions, cancellationToken);
+            }
+
+            _isFirst = true;
+            _successDaprOptions = null;
+            _process = null;
+            _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, restarting dapr, please wait...", options.AppId);
+            StartCore(GetDaprOptions(options), cancellationToken);
+        }
     }
 
     private void CheckPortAndKill(ushort port)
@@ -152,7 +198,7 @@ public class DaprProcess : IDaprProcess
                 if (Status == DaprProcessStatus.Started || Status == DaprProcessStatus.Stopped)
                 {
                     _logger?.LogWarning("Dapr stopped, restarting, please wait...");
-                    Initialize(_successDaprOptions, cancellationToken);
+                    StartCore(_successDaprOptions, cancellationToken);
                 }
                 else
                 {
@@ -173,7 +219,8 @@ public class DaprProcess : IDaprProcess
             options.EnableSsl,
             options.DaprGrpcPort,
             options.DaprHttpPort,
-            options.HeartBeatInterval ?? Const.DEFAULT_HEARTBEATINTERVAL,
+            options.EnableHeartBeat,
+            options.HeartBeatInterval!.Value,
             options.CreateNoWindow)
         {
             MaxConcurrency = options.MaxConcurrency,
@@ -183,6 +230,7 @@ public class DaprProcess : IDaprProcess
             Image = options.Image,
             LogLevel = options.LogLevel,
             PlacementHostAddress = options.PlacementHostAddress,
+            SentryAddress = options.PlacementHostAddress,
             MetricsPort = options.MetricsPort,
             ProfilePort = options.ProfilePort,
             UnixDomainSocket = options.UnixDomainSocket,
@@ -191,14 +239,13 @@ public class DaprProcess : IDaprProcess
     }
 
     private string GetAppId(DaprOptions options) =>
-        options.AppIdSuffix == string.Empty ? options.AppId : $"{options.AppId}{options.AppIdDelimiter}{options.AppIdSuffix}";
+        options.AppIdSuffix.Trim() == string.Empty ? options.AppId : $"{options.AppId}{options.AppIdDelimiter}{options.AppIdSuffix}";
 
     private ushort GetAppPort(DaprOptions options) =>
         options.AppPort ?? throw new ArgumentNullException(nameof(options.AppPort));
 
-    private void Initialize(DaprCoreOptions options, CancellationToken cancellationToken)
+    private CommandLineBuilder Initialize(DaprCoreOptions options, CancellationToken cancellationToken)
     {
-        UpdateStatus(DaprProcessStatus.Starting);
         var commandLineBuilder = new CommandLineBuilder(Const.DEFAULT_ARGUMENT_PREFIX);
         commandLineBuilder
             .Add("app-id", options.AppId)
@@ -206,50 +253,22 @@ public class DaprProcess : IDaprProcess
             .Add("app-protocol", options.AppProtocol?.ToString().ToLower() ?? string.Empty, options.AppProtocol == null)
             .Add("app-ssl", options.EnableSsl?.ToString().ToLower() ?? "", options.EnableSsl == null)
             .Add("components-path", options.ComponentPath ?? string.Empty, options.ComponentPath == null)
+            .Add("app-max-concurrency", options.MaxConcurrency?.ToString() ?? string.Empty, options.MaxConcurrency == null)
             .Add("config", options.Config ?? string.Empty, options.Config == null)
             .Add("dapr-grpc-port", options.DaprGrpcPort?.ToString() ?? string.Empty, options.DaprGrpcPort == null)
             .Add("dapr-http-port", options.DaprHttpPort?.ToString() ?? string.Empty, options.DaprHttpPort == null)
             .Add("enable-profiling", options.EnableProfiling?.ToString().ToLower() ?? string.Empty, options.EnableProfiling == null)
             .Add("image", options.Image ?? string.Empty, options.Image == null)
             .Add("log-level", options.LogLevel?.ToString().ToLower() ?? string.Empty, options.LogLevel == null)
-            .Add("metrics-port", options.MetricsPort ?? string.Empty, options.MetricsPort == null)
+            .Add("placement-host-address", options.PlacementHostAddress ?? string.Empty, options.PlacementHostAddress == null)
+            .Add("sentry-address", options.SentryAddress ?? string.Empty, options.SentryAddress == null)
+            .Add("metrics-port", options.MetricsPort?.ToString() ?? string.Empty, options.MetricsPort == null)
             .Add("profile-port", options.ProfilePort?.ToString() ?? string.Empty, options.ProfilePort == null)
             .Add("unix-domain-socket", options.UnixDomainSocket ?? string.Empty, options.UnixDomainSocket == null)
             .Add("dapr-http-max-request-size", options.DaprMaxRequestSize?.ToString() ?? string.Empty, options.DaprMaxRequestSize == null);
 
         _successDaprOptions ??= options;
-        Stop(cancellationToken);
-
-        var utils = new ProcessUtils(_loggerFactory);
-
-        utils.OutputDataReceived += delegate(object? sender, DataReceivedEventArgs args)
-        {
-            if (isFirst)
-            {
-                CompleteDaprOptions();
-                isFirst = false;
-            }
-            DaprProcess_OutputDataReceived(sender, args);
-        };
-        utils.ErrorDataReceived += DaprProcess_ErrorDataReceived;
-        utils.Exit += delegate
-        {
-            UpdateStatus(DaprProcessStatus.Stopped);
-            _logger?.LogInformation("{Name} process has exited", Const.DEFAULT_FILE_NAME);
-        };
-        var process = utils.Run(Const.DEFAULT_FILE_NAME, $"run {commandLineBuilder}", options.CreateNoWindow);
-        _process = new SystemProcess(process);
-        if (_heartBeatTimer == null)
-        {
-            _heartBeatTimer = new System.Timers.Timer
-            {
-                AutoReset = true,
-                Interval = options.HeartBeatInterval
-            };
-            _heartBeatTimer.Elapsed += (sender, args) => HeartBeat(cancellationToken);
-            _heartBeatTimer.Start();
-        }
-        UpdateStatus(DaprProcessStatus.Started);
+        return commandLineBuilder;
     }
 
     /// <summary>
@@ -275,14 +294,14 @@ public class DaprProcess : IDaprProcess
                     retry++;
                     goto again;
                 }
-                _logger?.LogWarning("Dapr failed to start, appid is {appid}", _successDaprOptions!.AppId);
+                _logger?.LogWarning("Dapr failed to start, appid is {Appid}", _successDaprOptions!.AppId);
                 return;
             }
         }
         CompleteDaprEnvironment(_successDaprOptions.DaprHttpPort.ToString()!, _successDaprOptions.DaprGrpcPort!.ToString()!);
     }
 
-    public void UpdateStatus(DaprProcessStatus status)
+    private void UpdateStatus(DaprProcessStatus status)
     {
         if (status != Status)
         {
@@ -293,7 +312,12 @@ public class DaprProcess : IDaprProcess
 
     private static void CompleteDaprEnvironment(string daprHttpPort, string daprGrpcPort)
     {
-        EnvironmentUtils.TryAdd("DAPR_GRPC_PORT", () => daprHttpPort);
-        EnvironmentUtils.TryAdd("DAPR_HTTP_PORT", () => daprGrpcPort);
+        EnvironmentUtils.TryAdd("DAPR_GRPC_PORT", () => daprGrpcPort);
+        EnvironmentUtils.TryAdd("DAPR_HTTP_PORT", () => daprHttpPort);
+    }
+
+    public void Dispose()
+    {
+        Stop();
     }
 }

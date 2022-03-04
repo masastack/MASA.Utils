@@ -33,6 +33,8 @@ internal class DaprCoreOptions
     /// </summary>
     public ushort? DaprHttpPort { get; private set; }
 
+    public bool EnableHeartBeat { get; private set; }
+
     public int HeartBeatInterval { get; }
 
     public bool CreateNoWindow { get; } = true;
@@ -40,7 +42,7 @@ internal class DaprCoreOptions
     /// <summary>
     /// The concurrency level of the application, otherwise is unlimited
     /// </summary>
-    public string? MaxConcurrency { get; set; }
+    public int? MaxConcurrency { get; set; }
 
     /// <summary>
     /// Dapr configuration file
@@ -80,14 +82,19 @@ internal class DaprCoreOptions
     public string? PlacementHostAddress { get; set; }
 
     /// <summary>
+    /// Address for the Sentry CA service
+    /// </summary>
+    public string? SentryAddress { get; set; }
+
+    /// <summary>
     /// The port that Dapr sends its metrics information to
     /// </summary>
-    public string? MetricsPort { get; set; }
+    public ushort? MetricsPort { get; set; }
 
     /// <summary>
     /// The port for the profile server to listen on
     /// </summary>
-    public int? ProfilePort { get; set; }
+    public ushort? ProfilePort { get; set; }
 
     /// <summary>
     /// Path to a unix domain socket dir mount. If specified
@@ -108,6 +115,7 @@ internal class DaprCoreOptions
         bool? enableSsl,
         ushort? daprGrpcPort,
         ushort? daprHttpPort,
+        bool enableHeartBeat,
         int heartBeatInterval,
         bool createNoWindow)
     {
@@ -117,6 +125,7 @@ internal class DaprCoreOptions
         EnableSsl = enableSsl;
         DaprGrpcPort = daprGrpcPort;
         DaprHttpPort = daprHttpPort;
+        EnableHeartBeat = enableHeartBeat;
         HeartBeatInterval = heartBeatInterval;
         CreateNoWindow = createNoWindow;
     }
