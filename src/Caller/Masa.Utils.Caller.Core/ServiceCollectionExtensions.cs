@@ -2,17 +2,33 @@ namespace Masa.Utils.Caller.Core;
 
 public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection AddCaller(this IServiceCollection services)
+        => services.AddCaller(AppDomain.CurrentDomain.GetAssemblies());
+
+    public static IServiceCollection AddCaller(this IServiceCollection services, params Assembly[] assemblies)
+        => services.AddCaller(options => options.Assemblies = assemblies);
+
+    private static IServiceCollection AddCaller(this IServiceCollection services,
+        ServiceLifetime lifetime = ServiceLifetime.Scoped,
+        params Assembly[] assemblies)
+        => services.AddCaller(options =>
+        {
+            options.Assemblies = assemblies;
+            options.CallerLifetime = lifetime;
+        });
+
     public static IServiceCollection AddCaller(this IServiceCollection services, Action<CallerOptions> options)
     {
         CallerOptions callerOption = new CallerOptions(services);
         options.Invoke(callerOption);
 
         if (callerOption.Callers.Count == 0)
-            throw new ArgumentNullException("Caller provider is not found, check if Caller is used", (Exception?) null);
+            throw new ArgumentNullException("Caller provider is not found, check if Caller is used", (Exception?)null);
 
         if (callerOption.Callers.Count(c => c.IsDefault) > 1)
-            throw new ArgumentNullException("Caller provider can only have one default", (Exception?) null);
+            throw new ArgumentNullException("Caller provider can only have one default", (Exception?)null);
 
+        services.AddAutomaticCaller(callerOption);
         services.TryOrUpdateCallerOptions(callerOption);
         services.TryAddSingleton<ICallerFactory, DefaultCallerFactory>();
         services.TryAddSingleton<IRequestMessage, DefaultRequestMessage>();
@@ -41,32 +57,22 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddCaller(this IServiceCollection services,
-        params Assembly[]? assemblies)
-        => services.AddCaller(ServiceLifetime.Scoped, assemblies);
-
-    public static IServiceCollection AddCaller(this IServiceCollection services,
-        ServiceLifetime lifetime = ServiceLifetime.Scoped,
-        params Assembly[]? assemblies)
+    private static void AddAutomaticCaller(this IServiceCollection services, CallerOptions callerOptions)
     {
-        if (assemblies == null || assemblies.Length == 0)
+        var callerTypes = callerOptions.Assemblies.SelectMany(x => x.GetTypes())
+            .Where(type => typeof(CallerBase).IsAssignableFrom(type) && !type.IsAbstract).ToList();
+        callerTypes.ForEach(type =>
         {
-            assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        }
+            ServiceDescriptor serviceDescriptor = new ServiceDescriptor(type, type, callerOptions.CallerLifetime);
+            services.TryAdd(serviceDescriptor);
+        });
 
-        return services.AddCaller(options =>
+        callerTypes.ForEach(type =>
         {
-            var callerTypes = assemblies.SelectMany(x => x.GetTypes())
-                .Where(type => typeof(CallerBase).IsAssignableFrom(type) && !type.IsAbstract).ToList();
-            callerTypes.ForEach(type =>
-            {
-                ServiceDescriptor serviceDescriptor = new ServiceDescriptor(type, type, lifetime);
-                services.Add(serviceDescriptor);
-                var serviceProvider = services.BuildServiceProvider();
-                var callerBase = (CallerBase) serviceProvider.GetRequiredService(type);
-                callerBase.SetCallerOptions(options);
-                callerBase.UseCallerExtension();
-            });
+            var serviceProvider = services.BuildServiceProvider();
+            var callerBase = (CallerBase)serviceProvider.GetRequiredService(type);
+            callerBase.SetCallerOptions(callerOptions);
+            callerBase.UseCallerExtension();
         });
     }
 }

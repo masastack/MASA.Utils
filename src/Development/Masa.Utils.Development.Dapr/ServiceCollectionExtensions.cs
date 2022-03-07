@@ -4,14 +4,10 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDaprStarterCore(this IServiceCollection services, Action<DaprOptions>? action = null)
     {
-        DaprOptions daprOptions = new();
-        action?.Invoke(daprOptions);
-        return services.AddDaprStarterCore(() => daprOptions);
-    }
-
-    public static IServiceCollection AddDaprStarterCore(this IServiceCollection services, Func<DaprOptions> func)
-    {
-        services.AddSingleton(Options.Create(func.Invoke()));
+        if (action != null)
+            services.Configure(action);
+        else
+            services.Configure<DaprOptions>(_ => { });
         return services.AddDaprStarterCore();
     }
 
@@ -24,9 +20,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddDaprStarterCore(this IServiceCollection services)
     {
         if (services.Any(service => service.ImplementationType == typeof(DaprService)))
-        {
             return services;
-        }
         services.AddSingleton<DaprService>();
 
         services.TryAddSingleton(typeof(IDaprProcess), typeof(DaprProcess));
