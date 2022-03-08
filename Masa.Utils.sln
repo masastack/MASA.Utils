@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Data.DataAnnotat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Security.Cryptography.Tests", "test\Masa.Utils.Security.Cryptography.Tests\Masa.Utils.Security.Cryptography.Tests.csproj", "{1A8FBE3D-B004-4D25-8FE0-A3632A0FDE9E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Caller.Core.Tests", "test\Masa.Utils.Caller.Core.Tests\Masa.Utils.Caller.Core.Tests.csproj", "{4B351F95-5919-46A9-A02F-F4409C9EA79A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -185,6 +187,10 @@ Global
 		{1A8FBE3D-B004-4D25-8FE0-A3632A0FDE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A8FBE3D-B004-4D25-8FE0-A3632A0FDE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A8FBE3D-B004-4D25-8FE0-A3632A0FDE9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B351F95-5919-46A9-A02F-F4409C9EA79A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B351F95-5919-46A9-A02F-F4409C9EA79A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B351F95-5919-46A9-A02F-F4409C9EA79A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B351F95-5919-46A9-A02F-F4409C9EA79A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -223,6 +229,7 @@ Global
 		{4A3B1928-5014-4D81-BB83-FDCD0652D067} = {4FB3BD6D-D4C1-4BEF-AD62-8FD6EAEEB4DF}
 		{52B3A8FE-A553-4D65-8660-447F120616AB} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 		{1A8FBE3D-B004-4D25-8FE0-A3632A0FDE9E} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
+		{4B351F95-5919-46A9-A02F-F4409C9EA79A} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7DAA0E6-098F-4B18-8775-64FDA96F1FF0}
