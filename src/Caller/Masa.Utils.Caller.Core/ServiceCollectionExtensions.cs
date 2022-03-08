@@ -22,17 +22,18 @@ public static class ServiceCollectionExtensions
         CallerOptions callerOption = new CallerOptions(services);
         options.Invoke(callerOption);
 
-        if (callerOption.Callers.Count == 0)
-            throw new ArgumentNullException("Caller provider is not found, check if Caller is used", (Exception?)null);
-
-        if (callerOption.Callers.Count(c => c.IsDefault) > 1)
-            throw new ArgumentNullException("Caller provider can only have one default", (Exception?)null);
-
         services.AddAutomaticCaller(callerOption);
         services.TryOrUpdateCallerOptions(callerOption);
         services.TryAddSingleton<ICallerFactory, DefaultCallerFactory>();
         services.TryAddSingleton<IRequestMessage, DefaultRequestMessage>();
         services.TryAddTransient(serviceProvider => serviceProvider.GetRequiredService<ICallerFactory>().CreateClient());
+
+        if (callerOption.Callers.Count == 0)
+            throw new ArgumentException("Caller provider is not found, check if Caller is used");
+
+        if (callerOption.Callers.Count(c => c.IsDefault) > 1)
+            throw new ArgumentException("Caller provider can only have one default");
+
         return services;
     }
 
