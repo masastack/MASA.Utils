@@ -13,8 +13,8 @@ public static class ServiceCollectionExtensions
     }
 
     public static IServiceCollection AddDaprStarter(this IServiceCollection services,
-    Action<DaprOptions> daprOptionAction,
-    Action<DaprBackgroundOptions> action)
+        Action<DaprOptions> daprOptionAction,
+        Action<DaprBackgroundOptions> action)
     {
         if (services.Any(service => service.ImplementationType == typeof(DaprService)))
             return services;
