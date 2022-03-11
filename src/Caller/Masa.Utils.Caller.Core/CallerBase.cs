@@ -2,7 +2,7 @@
 
 public abstract class CallerBase
 {
-    public abstract string Name { get; set; }
+    protected virtual string Name { get; set; } = string.Empty;
 
     protected CallerOptions CallerOptions { get; private set; } = default!;
 
@@ -19,8 +19,10 @@ public abstract class CallerBase
 
     public abstract void UseCallerExtension();
 
-    public void SetCallerOptions(CallerOptions options)
+    public void SetCallerOptions(CallerOptions options, string name)
     {
         CallerOptions = options;
+        if (Name == string.Empty)
+            Name = name;
     }
 }

@@ -6,7 +6,7 @@ public class CustomCaller: HttpClientCallerBase
     {
     }
 
-    public override string Name { get; set; } = nameof(CustomCaller);
+    protected override string Name { get; set; } = nameof(CustomCaller);
 
     protected override string BaseAddress { get; set; }
 }

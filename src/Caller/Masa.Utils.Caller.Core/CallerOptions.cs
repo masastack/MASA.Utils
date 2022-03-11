@@ -28,12 +28,4 @@ public class CallerOptions
         Services = services;
         CallerLifetime = ServiceLifetime.Scoped;
     }
-
-    public void AddCaller(string name, bool isDefault, Func<IServiceProvider, ICallerProvider> func)
-    {
-        if (Callers.Any(c => c.Name == name))
-            throw new ArgumentException("The current name already exists, please change the name");
-
-        Callers.Add(new CallerRelations(name, isDefault, func));
-    }
 }
