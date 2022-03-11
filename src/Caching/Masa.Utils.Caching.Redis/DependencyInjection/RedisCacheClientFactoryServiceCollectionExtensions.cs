@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration;
+
 namespace Masa.Utils.Caching.Redis.DependencyInjection;
 
 /// <summary>
@@ -13,29 +15,13 @@ public static class RedisCacheClientFactoryServiceCollectionExtensions
     /// <returns>The <see cref="IServiceCollection"/>.</returns>
     public static ICachingBuilder AddMasaRedisCache(this IServiceCollection services, Action<RedisConfigurationOptions> configureOptions)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
-
-        if (configureOptions == null)
-        {
-            throw new ArgumentNullException(nameof(configureOptions));
-        }
-
-        services.TryAddSingleton<IDistributedCacheClientFactory, RedisCacheClientFactory>();
-
         services.TryAddSingleton(serviceProvider =>
         {
             var factory = serviceProvider.GetRequiredService<IDistributedCacheClientFactory>();
             return factory.CreateClient(string.Empty);
         });
 
-        var builder = new CachingBuilder(services, string.Empty);
-
-        builder.ConfigureDistributedCacheClient(configureOptions);
-
-        return builder;
+        return services.AddMasaRedisCache(string.Empty, configureOptions);
     }
 
     /// <summary>
@@ -45,22 +31,14 @@ public static class RedisCacheClientFactoryServiceCollectionExtensions
     /// <param name="name">The logical name of the <see cref="IDistributedCacheClient"/> to configure.</param>
     /// <param name="configureOptions">A delegate that is used to configure an <see cref="IDistributedCacheClient"/>.</param>
     /// <returns>The <see cref="IServiceCollection"/>.</returns>
-    public static ICachingBuilder AddMasaRedisCache(this IServiceCollection services, string name, Action<RedisConfigurationOptions> configureOptions)
+    public static ICachingBuilder AddMasaRedisCache(
+        this IServiceCollection services,
+        string name,
+        Action<RedisConfigurationOptions> configureOptions)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
-
-        if (name == null)
-        {
-            throw new ArgumentNullException(nameof(name));
-        }
-
-        if (configureOptions == null)
-        {
-            throw new ArgumentNullException(nameof(configureOptions));
-        }
+        ArgumentNullException.ThrowIfNull(services, nameof(services));
+        ArgumentNullException.ThrowIfNull(name, nameof(name));
+        ArgumentNullException.ThrowIfNull(configureOptions, nameof(configureOptions));
 
         services.TryAddSingleton<IDistributedCacheClientFactory, RedisCacheClientFactory>();
 
@@ -75,12 +53,50 @@ public static class RedisCacheClientFactoryServiceCollectionExtensions
     /// Adds the <see cref="IDistributedCacheClientFactory"/> and related services to the <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/>.</param>
+    /// <param name="configuration"></param>
+    /// <returns>The <see cref="IServiceCollection"/>.</returns>
+    public static ICachingBuilder AddMasaRedisCache(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.TryAddSingleton(serviceProvider =>
+        {
+            var factory = serviceProvider.GetRequiredService<IDistributedCacheClientFactory>();
+            return factory.CreateClient(string.Empty);
+        });
+
+        return services.AddMasaRedisCache(string.Empty, configuration);
+    }
+
+    /// <summary>
+    /// Adds the <see cref="IDistributedCacheClientFactory"/> and related services to the <see cref="IServiceCollection"/> and configures a named <see cref="IDistributedCacheClient"/>.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/>.</param>
+    /// <param name="name">The logical name of the <see cref="IDistributedCacheClient"/> to configure.</param>
+    /// <param name="configuration"></param>
+    /// <returns>The <see cref="IServiceCollection"/>.</returns>
+    public static ICachingBuilder AddMasaRedisCache(
+        this IServiceCollection services,
+        string name,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(services, nameof(services));
+        ArgumentNullException.ThrowIfNull(name, nameof(name));
+        ArgumentNullException.ThrowIfNull(configuration, nameof(configuration));
+
+        services.TryAddSingleton<IDistributedCacheClientFactory, RedisCacheClientFactory>();
+
+        var builder = new CachingBuilder(services, name);
+        builder.ConfigureDistributedCacheClient<RedisConfigurationOptions>(configuration);
+        return builder;
+    }
+
+    /// <summary>
+    /// Adds the <see cref="IDistributedCacheClientFactory"/> and related services to the <see cref="IServiceCollection"/>.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/>.</param>
     /// <param name="options">The <see cref="RedisConfigurationOptions"/> to configure an <see cref="IDistributedCacheClient"/>.</param>
     /// <returns>The <see cref="IServiceCollection"/>.</returns>
     public static ICachingBuilder AddMasaRedisCache(this IServiceCollection services, RedisConfigurationOptions options)
-    {
-        return services.AddMasaRedisCache(o => o.Initialize(options));
-    }
+        => services.AddMasaRedisCache(o => o.Initialize(options));
 
     /// <summary>
     /// Adds the <see cref="IDistributedCacheClientFactory"/> and related services to the <see cref="IServiceCollection"/> and configures a named <see cref="IDistributedCacheClient"/>.
@@ -90,7 +106,5 @@ public static class RedisCacheClientFactoryServiceCollectionExtensions
     /// <param name="options">The <see cref="RedisConfigurationOptions"/> to configure an <see cref="IDistributedCacheClient"/>.</param>
     /// <returns>The <see cref="IServiceCollection"/>.</returns>
     public static ICachingBuilder AddMasaRedisCache(this IServiceCollection services, string name, RedisConfigurationOptions options)
-    {
-        return services.AddMasaRedisCache(name, o => o.Initialize(options));
-    }
+        => services.AddMasaRedisCache(name, o => o.Initialize(options));
 }
