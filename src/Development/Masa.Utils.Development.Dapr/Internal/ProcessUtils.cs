@@ -43,7 +43,8 @@ internal class ProcessUtils
             daprProcess.BeginErrorReadLine();
         }
         daprProcess.Exited += (_, _) => OnExited();
-        _logger?.LogInformation("Process {ProcessName} PID:{ProcessId} started successfully", daprProcess.ProcessName, daprProcess.Id);
+        string command = daprProcess.ProcessName + arguments;
+        _logger?.LogInformation("Process: {ProcessName} ,Command: {Command} ,PID: {ProcessId} executed successfully", daprProcess.ProcessName, command, daprProcess.Id);
 
         if (isWait)
         {
