@@ -30,7 +30,7 @@ public class DaprBackgroundOptions
         set
         {
             if (value <= 0)
-                throw new ArgumentException($"{nameof(MaxRetryTimes)} Must be greater than 0");
+                throw new ArgumentException($"{nameof(Time)} Must be greater than 0");
 
             _defaultTime = value;
         }
