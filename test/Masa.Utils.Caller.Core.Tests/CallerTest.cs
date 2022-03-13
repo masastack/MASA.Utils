@@ -1,6 +1,4 @@
-﻿using Masa.Utils.Caller.DaprClient;
-
-namespace Masa.Utils.Caller.Core.Tests;
+﻿namespace Masa.Utils.Caller.Core.Tests;
 
 [TestClass]
 public class CallerTest
