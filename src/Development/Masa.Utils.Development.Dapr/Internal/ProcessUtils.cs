@@ -44,7 +44,7 @@ internal class ProcessUtils
         }
         daprProcess.Exited += (_, _) => OnExited();
         string command = daprProcess.ProcessName + arguments;
-        _logger?.LogInformation("Process: {ProcessName} ,Command: {Command} ,PID: {ProcessId} executed successfully", daprProcess.ProcessName, command, daprProcess.Id);
+        _logger?.LogInformation("Process: {ProcessName}, Command: {Command}, PID: {ProcessId} executed successfully", daprProcess.ProcessName, command, daprProcess.Id);
 
         if (isWait)
         {
