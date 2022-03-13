@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-
 namespace Masa.Utils.Caching.Redis.DependencyInjection;
 
 /// <summary>

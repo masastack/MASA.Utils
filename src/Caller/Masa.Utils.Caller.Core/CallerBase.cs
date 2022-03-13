@@ -1,8 +1,8 @@
-﻿namespace Masa.Utils.Caller.Core;
+namespace Masa.Utils.Caller.Core;
 
 public abstract class CallerBase
 {
-    protected virtual string Name { get; set; } = string.Empty;
+    public virtual string Name { get; set; } = string.Empty;
 
     protected CallerOptions CallerOptions { get; private set; } = default!;
 
