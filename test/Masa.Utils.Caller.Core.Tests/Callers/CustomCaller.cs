@@ -1,6 +1,6 @@
 ﻿namespace Masa.Utils.Caller.Core.Tests.Callers;
 
-public class CustomCaller: HttpClientCallerBase
+public class CustomCaller : HttpClientCallerBase
 {
     public CustomCaller(IServiceProvider serviceProvider) : base(serviceProvider)
     {

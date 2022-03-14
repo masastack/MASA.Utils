@@ -2,11 +2,10 @@ namespace Masa.Utils.Data.EntityFrameworkCore;
 
 public abstract class MasaDbContextOptionsBuilder : DbContextOptionsBuilder
 {
-    public MasaDbContextOptionsBuilder(DbContextOptions options)
-        : base(options)
-    {
+    public readonly IServiceCollection Services;
 
-    }
+    protected MasaDbContextOptionsBuilder(IServiceCollection services, DbContextOptions options) : base(options)
+        => Services = services;
 
     public abstract MasaDbContextOptionsBuilder UseQueryFilterProvider<TProvider>()
         where TProvider : class, IQueryFilterProvider;

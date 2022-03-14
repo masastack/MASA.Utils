@@ -5,6 +5,7 @@ global using Masa.Utils.Caching.Core.Models;
 global using Masa.Utils.Caching.Redis.Extensions;
 global using Masa.Utils.Caching.Redis.Models;
 global using Microsoft.Extensions.Caching.Distributed;
+global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Options;

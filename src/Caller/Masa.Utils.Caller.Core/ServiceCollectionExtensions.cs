@@ -28,12 +28,6 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton<IRequestMessage, DefaultRequestMessage>();
         services.TryAddTransient(serviceProvider => serviceProvider.GetRequiredService<ICallerFactory>().CreateClient());
 
-        if (callerOption.Callers.Count == 0)
-            throw new ArgumentException("Caller provider is not found, check if Caller is used");
-
-        if (callerOption.Callers.Count(c => c.IsDefault) > 1)
-            throw new ArgumentException("Caller provider can only have one default");
-
         return services;
     }
 
@@ -47,10 +41,17 @@ public static class ServiceCollectionExtensions
         {
             if (callerOptions.Callers.Any(relation => relation.Name == caller.Name))
                 throw new ArgumentException(
-                    $"The current name already exists, please change the name, the repeat caller name is {caller.Name}");
+                    $"The caller name already exists, please change the name, the repeat name is {caller.Name}");
 
             if (callerOptions.Callers.Any(relation => relation.IsDefault && caller.IsDefault))
-                throw new ArgumentException($"Caller provider can only have one default, the caller name is {caller.Name}");
+            {
+                string errorCallerNames = string.Join("、", callerOptions.Callers
+                    .Where(relation => relation.IsDefault)
+                    .Select(relation => relation.Name)
+                    .Concat(options.Callers.Where(relation => relation.IsDefault).Select(relation => relation.Name))
+                    .Distinct());
+                throw new ArgumentException($"There can only be at most one default Caller Provider, and now the following Caller Providers are found to be default: {errorCallerNames}");
+            }
 
             callerOptions.Callers.Add(caller);
         });
@@ -72,7 +73,7 @@ public static class ServiceCollectionExtensions
         {
             var serviceProvider = services.BuildServiceProvider();
             var callerBase = (CallerBase)serviceProvider.GetRequiredService(type);
-            callerBase.SetCallerOptions(callerOptions);
+            callerBase.SetCallerOptions(callerOptions, type.FullName ?? type.Name);
             callerBase.UseCallerExtension();
         });
     }

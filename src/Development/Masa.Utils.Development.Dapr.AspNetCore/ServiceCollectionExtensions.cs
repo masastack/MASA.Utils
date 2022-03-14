@@ -2,25 +2,16 @@ namespace Masa.Utils.Development.Dapr.AspNetCore;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDaprStarter(
-        this IServiceCollection services,
-        Action<DaprOptions>? daprOptionAction = null)
-    {
-        return services.AddDaprStarter(opt =>
-        {
-            daprOptionAction?.Invoke(opt);
-        }, _ => { });
-    }
+    public static IServiceCollection AddDaprStarter(this IServiceCollection services)
+        => services.AddDaprStarter(_ => { });
 
-    public static IServiceCollection AddDaprStarter(this IServiceCollection services,
-        Action<DaprOptions> daprOptionAction,
-        Action<DaprBackgroundOptions> action)
+    public static IServiceCollection AddDaprStarter(this IServiceCollection services, Action<DaprOptions> daprOptionAction)
     {
+        ArgumentNullException.ThrowIfNull(daprOptionAction,nameof(daprOptionAction));
+
         if (services.Any(service => service.ImplementationType == typeof(DaprService)))
             return services;
         services.AddSingleton<DaprService>();
-
-        services.Configure(action);
 
         services.AddHostedService<DaprBackgroundService>();
         services.Configure<HostOptions>(opts => opts.ShutdownTimeout = TimeSpan.FromSeconds(15));
@@ -34,7 +25,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<DaprService>();
 
         services.AddHostedService<DaprBackgroundService>();
-        services.Configure<DaprBackgroundOptions>(configuration);
         return services.AddDaprStarterCore(configuration);
     }
 
