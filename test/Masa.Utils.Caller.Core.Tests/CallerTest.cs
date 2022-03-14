@@ -21,13 +21,13 @@ public class CallerTest
         {
             opt.UseHttpClient(clientBuilder =>
             {
-                clientBuilder.Name = "httpCaller";
+                clientBuilder.Name = "http";
                 clientBuilder.IsDefault = true;
                 clientBuilder.BaseApi = "https://github.com/masastack/MASA.Contrib";
             });
             opt.UseDapr(clientBuilder =>
             {
-                clientBuilder.Name = "daprCaller";
+                clientBuilder.Name = "dapr";
                 clientBuilder.IsDefault = false;
             });
         });
@@ -36,8 +36,8 @@ public class CallerTest
         Assert.IsNotNull(callerProvider);
 
         var caller = serviceProvider.GetRequiredService<ICallerFactory>().CreateClient();
-        var daprCaller = serviceProvider.GetRequiredService<ICallerFactory>().CreateClient("daprCaller");
-        var httpCaller = serviceProvider.GetRequiredService<ICallerFactory>().CreateClient("httpCaller");
+        var daprCaller = serviceProvider.GetRequiredService<ICallerFactory>().CreateClient("dapr");
+        var httpCaller = serviceProvider.GetRequiredService<ICallerFactory>().CreateClient("http");
 
         Assert.IsTrue(caller.GetType().FullName != daprCaller.GetType().FullName);
         Assert.IsTrue(caller.GetType().FullName == httpCaller.GetType().FullName);
@@ -53,13 +53,13 @@ public class CallerTest
             {
                 opt.UseHttpClient(builder =>
                 {
-                    builder.Name = "githubCaller";
+                    builder.Name = "github";
                     builder.BaseApi = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
                 opt.UseHttpClient(builder =>
                 {
-                    builder.Name = "giteeCaller";
+                    builder.Name = "gitee";
                     builder.BaseApi = "https://gitee.com/masastack";
                     builder.IsDefault = true;
                 });
@@ -77,7 +77,7 @@ public class CallerTest
             {
                 opt.UseHttpClient(builder =>
                 {
-                    builder.Name = "giteeCaller";
+                    builder.Name = "gitee";
                     builder.BaseApi = "https://gitee.com/masastack";
                     builder.IsDefault = true;
                 });
@@ -86,7 +86,7 @@ public class CallerTest
             {
                 opt.UseHttpClient(builder =>
                 {
-                    builder.Name = "githubCaller";
+                    builder.Name = "github";
                     builder.BaseApi = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
@@ -104,13 +104,13 @@ public class CallerTest
             {
                 opt.UseHttpClient(builder =>
                 {
-                    builder.Name = "githubCaller";
+                    builder.Name = "github";
                     builder.BaseApi = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
                 opt.UseHttpClient(builder =>
                 {
-                    builder.Name = "githubCaller";
+                    builder.Name = "github";
                     builder.BaseApi = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
@@ -128,7 +128,7 @@ public class CallerTest
             {
                 opt.UseHttpClient(builder =>
                 {
-                    builder.Name = "githubCaller";
+                    builder.Name = "github";
                     builder.BaseApi = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
@@ -138,7 +138,7 @@ public class CallerTest
             {
                 opt.UseHttpClient(builder =>
                 {
-                    builder.Name = "githubCaller";
+                    builder.Name = "github";
                     builder.BaseApi = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
@@ -157,7 +157,7 @@ public class CallerTest
                 opt.UseHttpClient(builder =>
                 {
                     builder.Name = nameof(CustomCaller);
-                    builder.BaseApi = "https://***.com/masastack";
+                    builder.BaseApi = "https://*.com/masastack";
                     builder.IsDefault = true;
                 });
             });
@@ -166,7 +166,7 @@ public class CallerTest
             {
                 opt.UseHttpClient(builder =>
                 {
-                    builder.Name = "giteeCaller";
+                    builder.Name = "gitee";
                     builder.BaseApi = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
