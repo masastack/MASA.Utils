@@ -157,7 +157,7 @@ public class CallerTest
                 opt.UseHttpClient(builder =>
                 {
                     builder.Name = nameof(CustomCaller);
-                    builder.BaseApi = "https://***.com/masastack";
+                    builder.BaseApi = "https://*.com/masastack";
                     builder.IsDefault = true;
                 });
             });
