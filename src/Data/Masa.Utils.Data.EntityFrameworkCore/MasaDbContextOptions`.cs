@@ -1,7 +1,7 @@
 namespace Masa.Utils.Data.EntityFrameworkCore;
 
 public class MasaDbContextOptions<TContext> : MasaDbContextOptions
-    where TContext : MasaDbContext
+    where TContext : DbContext
 {
     public readonly IServiceProvider ServiceProvider;
     private readonly DbContextOptions _originOptions;

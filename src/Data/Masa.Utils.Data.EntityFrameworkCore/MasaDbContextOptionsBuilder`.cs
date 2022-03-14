@@ -6,12 +6,11 @@ public class MasaDbContextOptionsBuilder<TContext> : MasaDbContextOptionsBuilder
     public MasaDbContextOptionsBuilder(IServiceCollection services)
         : base(services, new DbContextOptions<TContext>())
     {
-
     }
 
     public override MasaDbContextOptionsBuilder UseModelCreatingProvider<TProvider>(ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
     {
-        Services.AddScoped<IQueryFilterProvider, TProvider>();
+        Services.Add(new ServiceDescriptor(typeof(IModelCreatingProvider), typeof(TProvider), serviceLifetime));
         return this;
     }
 

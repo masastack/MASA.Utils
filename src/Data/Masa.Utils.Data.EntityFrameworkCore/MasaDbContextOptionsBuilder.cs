@@ -7,16 +7,17 @@ public abstract class MasaDbContextOptionsBuilder : DbContextOptionsBuilder
     public ServiceLifetime ContextLifetime { get; set; }
 
     public ServiceLifetime OptionsLifetime { get; set; }
-    
-    public MasaDbContextOptionsBuilder(DbContextOptions options)
+
+    public MasaDbContextOptionsBuilder(IServiceCollection services, DbContextOptions options)
         : base(options)
     {
+        Services = services;
         ContextLifetime = ServiceLifetime.Scoped;
         OptionsLifetime = ServiceLifetime.Scoped;
-        Services = services;
     }
-    
-    public abstract MasaDbContextOptionsBuilder UseModelCreatingProvider<TProvider>(ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
+
+    public abstract MasaDbContextOptionsBuilder UseModelCreatingProvider<TProvider>(
+        ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
         where TProvider : class, IModelCreatingProvider;
 
     public abstract MasaDbContextOptionsBuilder UseSaveChangesFilter<TFilter>()
