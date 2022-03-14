@@ -3,22 +3,23 @@ namespace Masa.Utils.Data.EntityFrameworkCore;
 public class MasaDbContextOptions<TContext> : MasaDbContextOptions
     where TContext : MasaDbContext
 {
+    public readonly IServiceProvider ServiceProvider;
     private readonly DbContextOptions _originOptions;
 
     public MasaDbContextOptions(
         DbContextOptions originOptions,
-        IEnumerable<IQueryFilterProvider> queryFilterProviders,
-        IEnumerable<ISaveChangesFilter> saveChangesFilters)
+        IServiceProvider serviceProvider)
     {
+        ServiceProvider = serviceProvider;
         _originOptions = originOptions;
-        QueryFilterProviders = queryFilterProviders;
-        SaveChangesFilters = saveChangesFilters;
+        ModelCreatingProviders = ServiceProvider.GetServices<IModelCreatingProvider>();
+        SaveChangesFilters = ServiceProvider.GetServices<ISaveChangesFilter>();
     }
 
     /// <summary>
     /// Can be used to filter data
     /// </summary>
-    public override IEnumerable<IQueryFilterProvider> QueryFilterProviders { get; }
+    public override IEnumerable<IModelCreatingProvider> ModelCreatingProviders { get; }
 
     /// <summary>
     /// Can be used to intercept SaveChanges(Async) method
@@ -79,4 +80,3 @@ public class MasaDbContextOptions<TContext> : MasaDbContextOptions
         return _originOptions.GetExtension<TExtension>();
     }
 }
-

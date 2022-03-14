@@ -10,21 +10,23 @@ public static class ServiceCollectionExtensions
         var builder = new MasaDbContextOptionsBuilder<TDbContext>(services);
         options?.Invoke(builder);
 
-        services.AddDbContext<TDbContext>();
+        services.AddDbContext<TDbContext>(builder.ContextLifetime, builder.OptionsLifetime);
 
-        services.TryAddScoped(typeof(MasaDbContextOptions<TDbContext>), serviceProvider => CreateMasaDbContextOptions<TDbContext>(serviceProvider, builder.Options));
-        services.TryAddScoped<MasaDbContextOptions>(serviceProvider => serviceProvider.GetRequiredService<MasaDbContextOptions<TDbContext>>());
+        return services
+            .TryAdd(typeof(MasaDbContextOptions<TDbContext>),
+                serviceProvider => CreateMasaDbContextOptions<TDbContext>(serviceProvider, builder.Options), builder.OptionsLifetime)
+            .TryAdd(typeof(MasaDbContextOptions), serviceProvider => serviceProvider.GetRequiredService<MasaDbContextOptions<TDbContext>>(),
+                builder.OptionsLifetime);
+    }
 
+    private static IServiceCollection TryAdd(this IServiceCollection services, Type serviceType, Func<IServiceProvider, object> factory,
+        ServiceLifetime lifetime)
+    {
+        var serviceDescriptor = new ServiceDescriptor(serviceType, factory, lifetime);
+        services.TryAdd(serviceDescriptor);
         return services;
     }
 
-    private static MasaDbContextOptions<TDbContext> CreateMasaDbContextOptions<TDbContext>(
-        IServiceProvider serviceProvider,
-        DbContextOptions options)
-        where TDbContext : MasaDbContext
-    {
-        var queryFilterProviders = serviceProvider.GetServices<IQueryFilterProvider>();
-        var saveChangesFilters = serviceProvider.GetServices<ISaveChangesFilter>();
-        return new MasaDbContextOptions<TDbContext>(options, queryFilterProviders, saveChangesFilters);
-    }
+    private static MasaDbContextOptions<TDbContext> CreateMasaDbContextOptions<TDbContext>(IServiceProvider serviceProvider,
+        DbContextOptions options) where TDbContext : MasaDbContext => new(options, serviceProvider);
 }

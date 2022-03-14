@@ -1,16 +1,12 @@
 namespace Masa.Utils.Data.EntityFrameworkCore;
 
-public class MasaDbContext : DbContext
+public abstract class MasaDbContext : DbContext
 {
     private readonly MasaDbContextOptions? _options;
 
     public MasaDbContext() { }
 
-    public MasaDbContext(MasaDbContextOptions options)
-        : base(options)
-    {
-        _options = options;
-    }
+    public MasaDbContext(MasaDbContextOptions options) : base(options) => _options = options;
 
     /// <summary>
     /// Automatic filter soft delete data.
@@ -29,21 +25,8 @@ public class MasaDbContext : DbContext
             return;
         }
 
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-        {
-            foreach (var provider in _options.QueryFilterProviders)
-            {
-                try
-                {
-                    var lambda = provider.OnExecuting(entityType);
-                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("An error occured when QueryFilterProvider executing", ex);
-                }
-            }
-        }
+        foreach (var provider in _options.ModelCreatingProviders)
+            provider.Configure(modelBuilder);
     }
 
     /// <summary>
@@ -52,7 +35,6 @@ public class MasaDbContext : DbContext
     /// <param name="modelBuilder"></param>
     protected virtual void OnModelCreatingExecuting(ModelBuilder modelBuilder)
     {
-
     }
 
     /// <summary>
@@ -60,10 +42,7 @@ public class MasaDbContext : DbContext
     /// <inheritdoc/>
     /// </summary>
     /// <returns></returns>
-    public override int SaveChanges()
-    {
-        return SaveChanges(true);
-    }
+    public override int SaveChanges() => SaveChanges(true);
 
     /// <summary>
     /// Automatic soft delete.
@@ -102,9 +81,7 @@ public class MasaDbContext : DbContext
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        return SaveChangesAsync(true, cancellationToken);
-    }
+        => SaveChangesAsync(true, cancellationToken);
 
     /// <summary>
     /// Automatic soft delete.

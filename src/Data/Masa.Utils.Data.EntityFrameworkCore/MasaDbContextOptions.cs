@@ -16,10 +16,7 @@ public abstract class MasaDbContextOptions : DbContextOptions
 
     }
 
-    /// <summary>
-    /// Can be used to filter data
-    /// </summary>
-    public abstract IEnumerable<IQueryFilterProvider> QueryFilterProviders { get; }
+    public abstract IEnumerable<IModelCreatingProvider> ModelCreatingProviders { get; }
 
     /// <summary>
     /// Can be used to intercept SaveChanges(Async) method

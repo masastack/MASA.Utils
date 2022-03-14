@@ -11,9 +11,9 @@ public class MasaDbContextOptionsBuilder<TContext> : MasaDbContextOptionsBuilder
         _services = services;
     }
 
-    public override MasaDbContextOptionsBuilder UseQueryFilterProvider<TProvider>()
+    public override MasaDbContextOptionsBuilder UseModelCreatingProvider<TProvider>(ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
     {
-        _services.AddScoped<IQueryFilterProvider, TProvider>();
+        _services.TryAddEnumerable(new ServiceDescriptor(typeof(IModelCreatingProvider), typeof(TProvider), serviceLifetime));
         return this;
     }
 
