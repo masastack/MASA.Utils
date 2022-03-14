@@ -5,14 +5,14 @@ public class DaprBackgroundService : BackgroundService
     private readonly IServiceProvider _serviceProvider;
     private readonly IDaprProcess _daprProcess;
     private readonly DaprOptions _options;
-    private readonly IHostApplicationLifetime _lifetime;
+    private readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly ILogger<DaprBackgroundService>? _logger;
 
     public DaprBackgroundService(
         IServiceProvider serviceProvider,
         IDaprProcess daprProcess,
         IOptionsMonitor<DaprOptions> options,
-        IHostApplicationLifetime lifetime,
+        IHostApplicationLifetime hostApplicationLifetime,
         ILogger<DaprBackgroundService>? logger)
     {
         _serviceProvider = serviceProvider;
@@ -23,7 +23,7 @@ public class DaprBackgroundService : BackgroundService
             daprOptions.AppPort ??= GetAppPort(daprOptions);
             _daprProcess.Refresh(daprOptions);
         });
-        _lifetime = lifetime;
+        _hostApplicationLifetime = hostApplicationLifetime;
         _logger = logger;
     }
 
@@ -44,7 +44,7 @@ public class DaprBackgroundService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        if (!await WaitForAppStartup(_lifetime, stoppingToken))
+        if (!await WaitForAppStartup(_hostApplicationLifetime, stoppingToken))
             return;
 
         // if cancellation was requested, stop
@@ -61,12 +61,12 @@ public class DaprBackgroundService : BackgroundService
         }
     }
 
-    static async Task<bool> WaitForAppStartup(IHostApplicationLifetime lifetime, CancellationToken stoppingToken)
+    static async Task<bool> WaitForAppStartup(IHostApplicationLifetime hostApplicationLifetime, CancellationToken stoppingToken)
     {
         var startedSource = new TaskCompletionSource();
         var cancelledSource = new TaskCompletionSource();
 
-        await using var startedCancellationTokenRegistration = lifetime.ApplicationStarted.Register(() => startedSource.SetResult());
+        await using var startedCancellationTokenRegistration = hostApplicationLifetime.ApplicationStarted.Register(() => startedSource.SetResult());
         await using var cancellationTokenRegistration = stoppingToken.Register(() => cancelledSource.SetResult());
 
         Task completedTask = await Task.WhenAny(startedSource.Task, cancelledSource.Task).ConfigureAwait(false);
