@@ -166,7 +166,7 @@ public class CallerTest
             {
                 opt.UseHttpClient(builder =>
                 {
-                    builder.Name = "gitee";
+                    builder.Name = "giteeCaller";
                     builder.BaseApi = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
