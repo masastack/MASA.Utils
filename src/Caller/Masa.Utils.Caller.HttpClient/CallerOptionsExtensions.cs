@@ -10,7 +10,7 @@ public static class CallerOptionsExtensions
             callerOptions.Services.AddHttpClient(builder.Name) :
             callerOptions.Services.AddHttpClient(builder.Name, builder.Configure);
 
-        AddCallerExtensions.AddCaller(callerOptions, builder.Name, builder.IsDefault, (serviceProvider) =>
+        AddCallerExtensions.AddCaller(callerOptions, builder.Name, builder.IsDefault,  serviceProvider =>
         {
             var httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(builder.Name);
             var requestMessage = serviceProvider.GetRequiredService<IRequestMessage>();
