@@ -2,7 +2,7 @@
 
 public class CustomCaller : HttpClientCallerBase
 {
-    public CustomCaller(IServiceProvider serviceProvider) : base(serviceProvider)
+    private CustomCaller(IServiceProvider serviceProvider) : base(serviceProvider)
     {
     }
 

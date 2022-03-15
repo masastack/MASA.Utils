@@ -1,4 +1,7 @@
-﻿namespace Masa.Utils.Caller.Core.Tests;
+﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
+namespace Masa.Utils.Caller.Core.Tests;
 
 [TestClass]
 public class CallerTest
@@ -9,8 +12,38 @@ public class CallerTest
         IServiceCollection services = new ServiceCollection();
         services.AddCaller();
         IServiceProvider serviceProvider = services.BuildServiceProvider();
-        var caller = serviceProvider.GetRequiredService<CustomCaller>();
-        Assert.IsNotNull(caller);
+        var customCaller = serviceProvider.GetRequiredService<CustomCaller>();
+        Assert.IsNotNull(customCaller);
+        Assert.IsTrue(customCaller.Name == nameof(CustomCaller));
+
+        var githubCaller = serviceProvider.GetRequiredService<GithubCaller>();
+        Assert.IsNotNull(githubCaller);
+        Assert.IsTrue(githubCaller.Name == typeof(GithubCaller).FullName);
+
+        var blogCaller = serviceProvider.GetRequiredService<BlogCaller>();
+        Assert.IsTrue(blogCaller.Name == typeof(BlogCaller).FullName);
+
+        Assert.IsTrue(customCaller.Equals(blogCaller.CustomCaller));
+        Assert.IsTrue(githubCaller.Equals(blogCaller.GithubCaller));
+    }
+
+    [TestMethod]
+    public void TestCallerProviderServiceLifetime()
+    {
+        IServiceCollection services = new ServiceCollection();
+        services.AddCaller(opt =>
+        {
+            opt.UseHttpClient(clientBuilder =>
+            {
+                clientBuilder.Name = "http";
+                clientBuilder.IsDefault = true;
+                clientBuilder.BaseApi = "https://github.com/masastack/MASA.Contrib";
+            });
+        });
+        var serviceProvider = services.BuildServiceProvider();
+        var callerProvider1 = serviceProvider.GetRequiredService<ICallerProvider>();
+        var callerProvider2 = serviceProvider.GetRequiredService<ICallerProvider>();
+        Assert.IsTrue(callerProvider1 == callerProvider2);
     }
 
     [TestMethod]
