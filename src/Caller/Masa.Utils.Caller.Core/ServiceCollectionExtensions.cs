@@ -77,10 +77,16 @@ public static class ServiceCollectionExtensions
                 }
                 var callerBase = (constructorInfo.Invoke(parameters.ToArray()) as CallerBase)!;
                 callerBase.SetCallerOptions(callerOptions, type.FullName ?? type.Name);
-                callerBase.UseCallerExtension();
                 return callerBase;
             }, callerOptions.CallerLifetime);
             services.TryAdd(serviceDescriptor);
+        });
+
+        var serviceProvider = services.BuildServiceProvider();
+        callerTypes.ForEach(type =>
+        {
+            var callerBase = (CallerBase)serviceProvider.GetRequiredService(type);
+            callerBase.UseCallerExtension();
         });
     }
 }
