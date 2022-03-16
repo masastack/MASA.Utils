@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
 
             if (callerOptions.Callers.Any(relation => relation.IsDefault && caller.IsDefault))
             {
-                string errorCallerNames = string.Join("ã€", callerOptions.Callers
+                string errorCallerNames = string.Join("ã€, callerOptions.Callers
                     .Where(relation => relation.IsDefault)
                     .Select(relation => relation.Name)
                     .Concat(options.Callers.Where(relation => relation.IsDefault).Select(relation => relation.Name))
