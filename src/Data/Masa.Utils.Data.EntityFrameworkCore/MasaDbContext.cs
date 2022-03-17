@@ -19,7 +19,7 @@ public abstract class MasaDbContext : DbContext
     /// <param name="modelBuilder"></param>
     protected sealed override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        GlobalSoftwareFilters(modelBuilder);
+        OnModelCreatingConfigureGlobalFilters(modelBuilder);
 
         OnModelCreatingExecuting(modelBuilder);
 
@@ -43,9 +43,9 @@ public abstract class MasaDbContext : DbContext
 
     }
 
-    protected virtual void GlobalSoftwareFilters(ModelBuilder modelBuilder)
+    protected virtual void OnModelCreatingConfigureGlobalFilters(ModelBuilder modelBuilder)
     {
-        var methodInfo = typeof(MasaDbContext).GetMethod(nameof(ConfigureGlobalSoftwareFilters),
+        var methodInfo = typeof(MasaDbContext).GetMethod(nameof(ConfigureGlobalFilters),
             BindingFlags.NonPublic | BindingFlags.Instance);
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
@@ -54,7 +54,7 @@ public abstract class MasaDbContext : DbContext
         }
     }
 
-    private void ConfigureGlobalSoftwareFilters<TEntity>(ModelBuilder modelBuilder, IMutableEntityType mutableEntityType)
+    protected virtual void ConfigureGlobalFilters<TEntity>(ModelBuilder modelBuilder, IMutableEntityType mutableEntityType)
         where TEntity : class
     {
         if (mutableEntityType.BaseType == null)
@@ -65,7 +65,7 @@ public abstract class MasaDbContext : DbContext
         }
     }
 
-    private Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>()
+    protected virtual Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>()
         where TEntity : class
     {
         Expression<Func<TEntity, bool>>? expression = null;
