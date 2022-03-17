@@ -6,7 +6,7 @@
 
 ```c#
 Install-Package Masa.Utils.Data.EntityFrameworkCore
-Install-Package Microsoft.EntityFrameworkCore.SqlServer
+Install-Package Microsoft.EntityFrameworkCore.SqlServer//这里以SqlServer举例
 ```
 
 #### 基本用法:
@@ -23,7 +23,14 @@ builder.Services.AddMasaDbContext<CustomDbContext>(optionsBuilder =>
 
 推荐用法:
 
-[SqlServer](../Masa.Utils.Data.EntityFrameworkCore.SqlServer/README.zh-CN.md)
+- [SqlServer](../Masa.Utils.Data.EntityFrameworkCore.SqlServer/README.zh-CN.md)
+- [MySql](../Masa.Utils.Data.EntityFrameworkCore.MySql/README.zh-CN.md)
+- [Pomelo.MySql](../Masa.Utils.Data.EntityFrameworkCore.Pomelo.MySql/README.zh-CN.md)
+- [Sqlite](../Masa.Utils.Data.EntityFrameworkCore.Sqlite/README.zh-CN.md)
+- [Cosmos](../Masa.Utils.Data.EntityFrameworkCore.Cosmos/README.zh-CN.md)
+- [InMemory](../Masa.Utils.Data.EntityFrameworkCore.InMemory/README.zh-CN.md)
+- [Oracle](../Masa.Utils.Data.EntityFrameworkCore.Oracle/README.zh-CN.md)
+- [PostgreSql](../Masa.Utils.Data.EntityFrameworkCore.PostgreSql/README.zh-CN.md)
 
 #### 数据过滤器
 

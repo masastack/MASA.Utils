@@ -23,7 +23,14 @@ builder.Services.AddMasaDbContext<CustomDbContext>(optionsBuilder =>
 
 Recommended usage:
 
-[SqlServer](../Masa.Utils.Data.EntityFrameworkCore.SqlServer/README.md)
+- [SqlServer](../Masa.Utils.Data.EntityFrameworkCore.SqlServer/README.md)
+- [MySql](../Masa.Utils.Data.EntityFrameworkCore.MySql/README.md)
+- [Pomelo.MySql](../Masa.Utils.Data.EntityFrameworkCore.Pomelo.MySql/README.md)
+- [Sqlite](../Masa.Utils.Data.EntityFrameworkCore.Sqlite/README.md)
+- [Cosmos](../Masa.Utils.Data.EntityFrameworkCore.Cosmos/README.md)
+- [InMemory](../Masa.Utils.Data.EntityFrameworkCore.InMemory/README.md)
+- [Oracle](../Masa.Utils.Data.EntityFrameworkCore.Oracle/README.md)
+- [PostgreSql](../Masa.Utils.Data.EntityFrameworkCore.PostgreSql/README.md)
 
 #### data filter
 
