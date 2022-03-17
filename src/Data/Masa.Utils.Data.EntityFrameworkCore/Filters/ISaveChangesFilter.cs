@@ -1,4 +1,4 @@
-namespace Masa.Utils.Data.EntityFrameworkCore;
+namespace Masa.Utils.Data.EntityFrameworkCore.Filters;
 
 public interface ISaveChangesFilter
 {

@@ -3,14 +3,13 @@ namespace Masa.Utils.Data.EntityFrameworkCore;
 public class MasaDbContextOptions<TContext> : MasaDbContextOptions
     where TContext : DbContext
 {
-    public readonly IServiceProvider ServiceProvider;
     private readonly DbContextOptions _originOptions;
 
     public MasaDbContextOptions(
+        IServiceProvider serviceProvider,
         DbContextOptions originOptions,
-        IServiceProvider serviceProvider)
+        bool enableSoftware) : base(serviceProvider, enableSoftware)
     {
-        ServiceProvider = serviceProvider;
         _originOptions = originOptions;
         ModelCreatingProviders = ServiceProvider.GetServices<IModelCreatingProvider>();
         SaveChangesFilters = ServiceProvider.GetServices<ISaveChangesFilter>();

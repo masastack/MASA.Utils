@@ -1,25 +1,23 @@
 namespace Masa.Utils.Data.EntityFrameworkCore;
 
-public abstract class MasaDbContextOptionsBuilder : DbContextOptionsBuilder
+public abstract class MasaDbContextOptionsBuilder
 {
-    public readonly IServiceCollection Services;
+    public DbContextOptionsBuilder DbContextOptionsBuilder;
 
-    public ServiceLifetime ContextLifetime { get; set; }
+    public IServiceProvider ServiceProvider { get; }
 
-    public ServiceLifetime OptionsLifetime { get; set; }
+    internal bool EnableSoftwareDelete { get; private set; }
 
-    public MasaDbContextOptionsBuilder(IServiceCollection services, DbContextOptions options)
-        : base(options)
+    protected MasaDbContextOptionsBuilder(IServiceProvider serviceProvider, DbContextOptions options, bool enableSoftwareDelete)
     {
-        Services = services;
-        ContextLifetime = ServiceLifetime.Scoped;
-        OptionsLifetime = ServiceLifetime.Scoped;
+        DbContextOptionsBuilder = new DbContextOptionsBuilder(options);
+        ServiceProvider = serviceProvider;
+        EnableSoftwareDelete = enableSoftwareDelete;
     }
 
-    public abstract MasaDbContextOptionsBuilder UseModelCreatingProvider<TProvider>(
-        ServiceLifetime serviceLifetime = ServiceLifetime.Singleton)
-        where TProvider : class, IModelCreatingProvider;
-
-    public abstract MasaDbContextOptionsBuilder UseSaveChangesFilter<TFilter>()
-        where TFilter : class, ISaveChangesFilter;
+    public MasaDbContextOptionsBuilder UseSoftDelete()
+    {
+        EnableSoftwareDelete = true;
+        return this;
+    }
 }

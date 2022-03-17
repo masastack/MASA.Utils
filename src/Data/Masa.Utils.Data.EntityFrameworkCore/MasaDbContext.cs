@@ -2,11 +2,14 @@ namespace Masa.Utils.Data.EntityFrameworkCore;
 
 public abstract class MasaDbContext : DbContext
 {
-    private readonly MasaDbContextOptions? _options;
+    protected readonly IDataFilter? DataFilter;
+    protected readonly MasaDbContextOptions? Options;
 
-    public MasaDbContext() { }
-
-    public MasaDbContext(MasaDbContextOptions options) : base(options) => _options = options;
+    public MasaDbContext(MasaDbContextOptions options) : base(options)
+    {
+        Options = options;
+        DataFilter = options.ServiceProvider.GetService<IDataFilter>();
+    }
 
     /// <summary>
     /// Automatic filter soft delete data.
@@ -16,16 +19,18 @@ public abstract class MasaDbContext : DbContext
     /// <param name="modelBuilder"></param>
     protected sealed override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        GlobalSoftwareFilters(modelBuilder);
+
         OnModelCreatingExecuting(modelBuilder);
 
         // null when run dotnet ef cli
-        if (_options == null)
+        if (Options == null)
         {
             base.OnModelCreating(modelBuilder);
             return;
         }
 
-        foreach (var provider in _options.ModelCreatingProviders)
+        foreach (var provider in Options.ModelCreatingProviders)
             provider.Configure(modelBuilder);
     }
 
@@ -35,7 +40,46 @@ public abstract class MasaDbContext : DbContext
     /// <param name="modelBuilder"></param>
     protected virtual void OnModelCreatingExecuting(ModelBuilder modelBuilder)
     {
+
     }
+
+    protected virtual void GlobalSoftwareFilters(ModelBuilder modelBuilder)
+    {
+        var methodInfo = typeof(MasaDbContext).GetMethod(nameof(ConfigureGlobalSoftwareFilters),
+            BindingFlags.NonPublic | BindingFlags.Instance);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            methodInfo!.MakeGenericMethod(entityType.ClrType).Invoke(this, new object?[] { modelBuilder, entityType });
+        }
+    }
+
+    private void ConfigureGlobalSoftwareFilters<TEntity>(ModelBuilder modelBuilder, IMutableEntityType mutableEntityType)
+        where TEntity : class
+    {
+        if (mutableEntityType.BaseType == null)
+        {
+            var filterExpression = CreateFilterExpression<TEntity>();
+            if (filterExpression != null)
+                modelBuilder.Entity<TEntity>().HasQueryFilter(filterExpression);
+        }
+    }
+
+    private Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>()
+        where TEntity : class
+    {
+        Expression<Func<TEntity, bool>>? expression = null;
+
+        if (typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
+        {
+            expression = entity => !IsSoftDeleteFilterEnabled ||
+                !EF.Property<bool>(entity, nameof(ISoftDelete.IsDeleted));
+        }
+
+        return expression;
+    }
+
+    protected virtual bool IsSoftDeleteFilterEnabled => Options.EnableSoftware && (DataFilter?.IsEnabled<ISoftDelete>() ?? false);
 
     /// <summary>
     /// Automatic soft delete.
@@ -58,9 +102,9 @@ public abstract class MasaDbContext : DbContext
 
     private void OnFilterExecuting()
     {
-        if (_options != null)
+        if (Options != null)
         {
-            foreach (var filter in _options.SaveChangesFilters)
+            foreach (var filter in Options.SaveChangesFilters)
             {
                 try
                 {
