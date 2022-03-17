@@ -79,7 +79,7 @@ public abstract class MasaDbContext : DbContext
         return expression;
     }
 
-    protected virtual bool IsSoftDeleteFilterEnabled => (Options?.EnableSoftware ?? false) && (DataFilter?.IsEnabled<ISoftDelete>() ?? false);
+    protected virtual bool IsSoftDeleteFilterEnabled => (Options?.EnableSoftDelete ?? false) && (DataFilter?.IsEnabled<ISoftDelete>() ?? false);
 
     /// <summary>
     /// Automatic soft delete.

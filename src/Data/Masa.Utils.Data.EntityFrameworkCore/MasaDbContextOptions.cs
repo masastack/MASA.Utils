@@ -11,11 +11,11 @@ public abstract class MasaDbContextOptions : DbContextOptions
     /// </summary>
     public abstract IEnumerable<ISaveChangesFilter> SaveChangesFilters { get; }
 
-    public bool EnableSoftware { get; }
+    public bool EnableSoftDelete { get; }
 
-    protected MasaDbContextOptions(IServiceProvider serviceProvider, bool enableSoftware)
+    protected MasaDbContextOptions(IServiceProvider serviceProvider, bool enableSoftDelete)
     {
         ServiceProvider = serviceProvider;
-        EnableSoftware = enableSoftware;
+        EnableSoftDelete = enableSoftDelete;
     }
 }

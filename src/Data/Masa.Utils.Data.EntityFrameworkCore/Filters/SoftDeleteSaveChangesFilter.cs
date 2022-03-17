@@ -9,7 +9,7 @@ public class SoftDeleteSaveChangesFilter : ISaveChangesFilter
 
     public void OnExecuting(ChangeTracker changeTracker)
     {
-        if(!_masaDbContextOptions.EnableSoftware)
+        if(!_masaDbContextOptions.EnableSoftDelete)
             return;
 
         changeTracker.DetectChanges();

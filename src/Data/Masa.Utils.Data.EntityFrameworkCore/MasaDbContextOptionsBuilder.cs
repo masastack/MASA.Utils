@@ -6,18 +6,18 @@ public abstract class MasaDbContextOptionsBuilder
 
     public IServiceProvider ServiceProvider { get; }
 
-    internal bool EnableSoftwareDelete { get; private set; }
+    internal bool EnableSoftDelete { get; private set; }
 
-    protected MasaDbContextOptionsBuilder(IServiceProvider serviceProvider, DbContextOptions options, bool enableSoftwareDelete)
+    protected MasaDbContextOptionsBuilder(IServiceProvider serviceProvider, DbContextOptions options, bool enableSoftDelete)
     {
         DbContextOptionsBuilder = new DbContextOptionsBuilder(options);
         ServiceProvider = serviceProvider;
-        EnableSoftwareDelete = enableSoftwareDelete;
+        EnableSoftDelete = enableSoftDelete;
     }
 
     public MasaDbContextOptionsBuilder UseSoftDelete()
     {
-        EnableSoftwareDelete = true;
+        EnableSoftDelete = true;
         return this;
     }
 }

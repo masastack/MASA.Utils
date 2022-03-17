@@ -6,28 +6,28 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMasaDbContext<TDbContext>(
         this IServiceCollection services,
-        Action<MasaDbContextOptionsBuilder>? optionsAction = null,
+        Action<MasaDbContextOptionsBuilder>? optionsBuilder = null,
         ServiceLifetime contextLifetime = ServiceLifetime.Scoped,
         ServiceLifetime optionsLifetime = ServiceLifetime.Scoped)
         where TDbContext : MasaDbContext
         => services.AddMasaDbContext<TDbContext>(
-            (_, masaDbContextOptionsBuilder) => optionsAction?.Invoke(masaDbContextOptionsBuilder),
+            (_, masaDbContextOptionsBuilder) => optionsBuilder?.Invoke(masaDbContextOptionsBuilder),
             contextLifetime,
             optionsLifetime);
 
     public static IServiceCollection AddMasaDbContext<TDbContext>(
         this IServiceCollection services,
-        Action<IServiceProvider, MasaDbContextOptionsBuilder>? optionsAction = null,
+        Action<IServiceProvider, MasaDbContextOptionsBuilder>? optionsBuilder = null,
         ServiceLifetime contextLifetime = ServiceLifetime.Scoped,
         ServiceLifetime optionsLifetime = ServiceLifetime.Scoped)
         where TDbContext : MasaDbContext
         => services
             .AddDbContext<TDbContext>(contextLifetime, optionsLifetime)
-            .AddCoreServices<TDbContext>(optionsAction, optionsLifetime);
+            .AddCoreServices<TDbContext>(optionsBuilder, optionsLifetime);
 
     private static IServiceCollection AddCoreServices<TDbContextImplementation>(
         this IServiceCollection services,
-        Action<IServiceProvider, MasaDbContextOptionsBuilder>? optionsAction,
+        Action<IServiceProvider, MasaDbContextOptionsBuilder>? optionsBuilder,
         ServiceLifetime optionsLifetime)
         where TDbContextImplementation : MasaDbContext
     {
@@ -41,7 +41,7 @@ public static class ServiceCollectionExtensions
         services.TryAdd(
             new ServiceDescriptor(
                 typeof(MasaDbContextOptions<TDbContextImplementation>),
-                serviceProvider => CreateMasaDbContextOptions<TDbContextImplementation>(serviceProvider, optionsAction),
+                serviceProvider => CreateMasaDbContextOptions<TDbContextImplementation>(serviceProvider, optionsBuilder),
                 optionsLifetime));
 
         services.Add(
@@ -54,20 +54,20 @@ public static class ServiceCollectionExtensions
 
     private static MasaDbContextOptions<TDbContext> CreateMasaDbContextOptions<TDbContext>(
         IServiceProvider serviceProvider,
-        Action<IServiceProvider, MasaDbContextOptionsBuilder>? optionsAction)
+        Action<IServiceProvider, MasaDbContextOptionsBuilder>? optionsBuilder)
         where TDbContext : MasaDbContext
     {
         var masaDbContextOptionsBuilder = new MasaDbContextOptionsBuilder<TDbContext>(serviceProvider);
-        optionsAction?.Invoke(serviceProvider, masaDbContextOptionsBuilder);
+        optionsBuilder?.Invoke(serviceProvider, masaDbContextOptionsBuilder);
 
         return CreateMasaDbContextOptions<TDbContext>(
             serviceProvider,
             masaDbContextOptionsBuilder.DbContextOptionsBuilder.Options,
-            masaDbContextOptionsBuilder.EnableSoftwareDelete);
+            masaDbContextOptionsBuilder.EnableSoftDelete);
     }
 
     private static MasaDbContextOptions<TDbContext> CreateMasaDbContextOptions<TDbContext>(IServiceProvider serviceProvider,
-        DbContextOptions options, bool enableSoftware) where TDbContext : MasaDbContext => new(serviceProvider, options, enableSoftware);
+        DbContextOptions options, bool enableSoftDelete) where TDbContext : MasaDbContext => new(serviceProvider, options, enableSoftDelete);
 
     private static IServiceCollection TryAddConfigure<TOptions>(
         this IServiceCollection services)

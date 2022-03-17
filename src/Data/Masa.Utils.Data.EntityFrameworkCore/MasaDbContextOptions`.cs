@@ -8,7 +8,7 @@ public class MasaDbContextOptions<TContext> : MasaDbContextOptions
     public MasaDbContextOptions(
         IServiceProvider serviceProvider,
         DbContextOptions originOptions,
-        bool enableSoftware) : base(serviceProvider, enableSoftware)
+        bool enableSoftDelete) : base(serviceProvider, enableSoftDelete)
     {
         _originOptions = originOptions;
         ModelCreatingProviders = ServiceProvider.GetServices<IModelCreatingProvider>();
