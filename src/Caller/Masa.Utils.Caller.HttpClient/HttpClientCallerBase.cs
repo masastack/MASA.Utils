@@ -15,7 +15,11 @@ public abstract class HttpClientCallerBase : CallerBase
         return CallerOptions.UseHttpClient(opt =>
         {
             opt.Name = Name;
-            opt.Configure = client => { client.BaseAddress = new Uri(BaseAddress); };
+            opt.Configure = client =>
+            {
+                if (!string.IsNullOrEmpty(BaseAddress))
+                    client.BaseAddress = new Uri(BaseAddress);
+            };
         });
     }
 }

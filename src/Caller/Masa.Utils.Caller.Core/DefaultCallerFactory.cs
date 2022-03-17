@@ -21,7 +21,7 @@ internal class DefaultCallerFactory : ICallerFactory
     {
         var caller = _callers.SingleOrDefault(c => c.Name == name);
         if (caller == null)
-            throw new NotSupportedException($"Please make sure you have used {name} Caller");
+            throw new NotSupportedException($"Please make sure you have used [{name}] Caller");
 
         return caller.Func.Invoke(_serviceProvider);
     }

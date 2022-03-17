@@ -2,7 +2,7 @@ namespace Masa.Utils.Caller.Core;
 
 public abstract class CallerBase
 {
-    public virtual string Name { get; set; }
+    public virtual string Name { get; set; } = string.Empty;
 
     protected CallerOptions CallerOptions { get; private set; } = default!;
 
@@ -15,7 +15,6 @@ public abstract class CallerBase
     protected CallerBase(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
-        Name = string.Empty;
     }
 
     public abstract void UseCallerExtension();
@@ -23,7 +22,7 @@ public abstract class CallerBase
     public void SetCallerOptions(CallerOptions options, string name)
     {
         CallerOptions = options;
-        if (Name == string.Empty)
+        if (string.IsNullOrEmpty(Name))
             Name = name;
     }
 }

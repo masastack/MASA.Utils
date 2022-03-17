@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
         services.TryOrUpdateCallerOptions(callerOption);
         services.TryAddSingleton<ICallerFactory, DefaultCallerFactory>();
         services.TryAddSingleton<IRequestMessage, DefaultRequestMessage>();
-        services.TryAddTransient(serviceProvider => serviceProvider.GetRequiredService<ICallerFactory>().CreateClient());
+        services.TryAddScoped(serviceProvider => serviceProvider.GetRequiredService<ICallerFactory>().CreateClient());
 
         return services;
     }
@@ -41,7 +41,7 @@ public static class ServiceCollectionExtensions
         {
             if (callerOptions.Callers.Any(relation => relation.Name == caller.Name))
                 throw new ArgumentException(
-                    $"The caller name already exists, please change the name, the repeat name is {caller.Name}");
+                    $"The caller name already exists, please change the name, the repeat name is [{caller.Name}]");
 
             if (callerOptions.Callers.Any(relation => relation.IsDefault && caller.IsDefault))
             {
@@ -50,7 +50,8 @@ public static class ServiceCollectionExtensions
                     .Select(relation => relation.Name)
                     .Concat(options.Callers.Where(relation => relation.IsDefault).Select(relation => relation.Name))
                     .Distinct());
-                throw new ArgumentException($"There can only be at most one default Caller Provider, and now the following Caller Providers are found to be default: {errorCallerNames}");
+                throw new ArgumentException(
+                    $"There can only be at most one default Caller Provider, and now the following Caller Providers are found to be default: {errorCallerNames}");
             }
 
             callerOptions.Callers.Add(caller);
@@ -63,17 +64,28 @@ public static class ServiceCollectionExtensions
     {
         var callerTypes = callerOptions.Assemblies.SelectMany(x => x.GetTypes())
             .Where(type => typeof(CallerBase).IsAssignableFrom(type) && !type.IsAbstract).ToList();
-        callerTypes.ForEach(type =>
+
+        callerTypes.Arrangement().ForEach(type =>
         {
-            ServiceDescriptor serviceDescriptor = new ServiceDescriptor(type, type, callerOptions.CallerLifetime);
+            ServiceDescriptor serviceDescriptor = new ServiceDescriptor(type, serviceProvider =>
+            {
+                var constructorInfo = type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).MaxBy(constructor => constructor.GetParameters().Length)!;
+                List<object> parameters = new();
+                foreach (var parameter in constructorInfo.GetParameters())
+                {
+                    parameters.Add(serviceProvider.GetRequiredService(parameter.ParameterType));
+                }
+                var callerBase = (constructorInfo.Invoke(parameters.ToArray()) as CallerBase)!;
+                callerBase.SetCallerOptions(callerOptions, type.FullName ?? type.Name);
+                return callerBase;
+            }, callerOptions.CallerLifetime);
             services.TryAdd(serviceDescriptor);
         });
 
+        var serviceProvider = services.BuildServiceProvider();
         callerTypes.ForEach(type =>
         {
-            var serviceProvider = services.BuildServiceProvider();
             var callerBase = (CallerBase)serviceProvider.GetRequiredService(type);
-            callerBase.SetCallerOptions(callerOptions, type.FullName ?? type.Name);
             callerBase.UseCallerExtension();
         });
     }
