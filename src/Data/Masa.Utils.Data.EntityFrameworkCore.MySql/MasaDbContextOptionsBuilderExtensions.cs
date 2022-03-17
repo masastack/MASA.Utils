@@ -4,18 +4,18 @@ public static class MasaDbContextOptionsBuilderExtensions
 {
     public static MasaDbContextOptionsBuilder UseMySQL(
         this MasaDbContextOptionsBuilder builder,
-        Action<MySQLDbContextOptionsBuilder>? mySQLOptionsAction = null)
+        Action<MySQLDbContextOptionsBuilder>? mySqlOptionsAction = null)
     {
         var connectionStringProvider = builder.ServiceProvider.GetRequiredService<IConnectionStringProvider>();
-        return builder.UseMySQL(connectionStringProvider.GetConnectionString(), mySQLOptionsAction);
+        return builder.UseMySQL(connectionStringProvider.GetConnectionString(), mySqlOptionsAction);
     }
 
     public static MasaDbContextOptionsBuilder UseMySQL(
         this MasaDbContextOptionsBuilder builder,
         string connectionString,
-        Action<MySQLDbContextOptionsBuilder>? mySQLOptionsAction = null)
+        Action<MySQLDbContextOptionsBuilder>? mySqlOptionsAction = null)
     {
-        builder.DbContextOptionsBuilder.UseMySQL(connectionString, mySQLOptionsAction);
+        builder.DbContextOptionsBuilder.UseMySQL(connectionString, mySqlOptionsAction);
         return builder;
     }
 }
