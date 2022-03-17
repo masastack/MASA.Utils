@@ -1,4 +1,4 @@
-﻿namespace Masa.Utils.Data.EntityFrameworkCore.SqlServer;
+namespace Masa.Utils.Data.EntityFrameworkCore.SqlServer;
 
 public static class MasaDbContextOptionsBuilderExtensions
 {
