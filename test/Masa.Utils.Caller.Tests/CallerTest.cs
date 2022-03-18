@@ -1,9 +1,4 @@
-using Masa.Utils.Caller.Core;
-using Masa.Utils.Caller.HttpClient;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net;
-
-namespace Masa.Utils.Caller.IntegratedTest;
+namespace Masa.Utils.Caller.Tests;
 
 [TestClass]
 public class CallerTest
