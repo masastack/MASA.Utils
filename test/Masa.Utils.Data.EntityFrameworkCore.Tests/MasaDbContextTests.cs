@@ -1,24 +1,12 @@
 ﻿namespace Masa.Utils.Data.EntityFrameworkCore.Test;
 
 [TestClass]
-public class MasaDbContextTests
+public class MasaDbContextTests : TestBase
 {
-    private readonly IServiceCollection _services;
-
-    public MasaDbContextTests()
-    {
-        _services = new ServiceCollection();
-        var configurationRoot = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", true, true)
-            .Build();
-        _services.AddSingleton<IConfiguration>(configurationRoot);
-    }
-
     [TestMethod]
     public async Task TestAddAsync()
     {
-        var dbContext = CreateDbContext(true, out _);
+        await using var dbContext = CreateDbContext(true, out _);
         await dbContext.Set<Student>().AddAsync(new Student()
         {
             Id = 1,
@@ -32,7 +20,11 @@ public class MasaDbContextTests
     [TestMethod]
     public async Task TestSoftDeleteAsync()
     {
-        var dbContext = CreateDbContext(true, out IServiceProvider serviceProvider);
+        Services.Configure<MasaDbConnectionOptions>(options =>
+        {
+            options.DefaultConnection = "soft-delete-db";
+        });
+        await using var dbContext = CreateDbContext(true, out IServiceProvider serviceProvider);
         var student = new Student()
         {
             Id = 1,
@@ -62,10 +54,12 @@ public class MasaDbContextTests
     }
 
     [TestMethod]
-    public async Task TestDisabledSoftware()
+    public async Task TestDisabledSoftDelete()
     {
-        var dbContext = CreateDbContext(false, out IServiceProvider serviceProvider);
-        var student = new Student()
+        Services.AddMasaDbContext<TestDbContext>(options => options.UseInMemoryDatabase("disabled-soft-delete-db"));
+        var serviceProvider = Services.BuildServiceProvider();
+        var dbContext =  serviceProvider.GetRequiredService<TestDbContext>();
+        var student = new Student
         {
             Id = 1,
             Name = "Jim",
@@ -83,18 +77,5 @@ public class MasaDbContextTests
         var dataFilter = serviceProvider.GetRequiredService<IDataFilter>();
         using (dataFilter.Disable<ISoftDelete>())
             Assert.IsTrue(await dbContext.Set<Student>().CountAsync() == 0);
-    }
-
-    private TestDbContext CreateDbContext(bool enableSoftware, out IServiceProvider serviceProvider)
-    {
-        _services.AddMasaDbContext<TestDbContext>(options =>
-        {
-            if (enableSoftware)
-                options.UseSoftDelete();
-
-            options.UseInMemoryDatabase();
-        });
-        serviceProvider = _services.BuildServiceProvider();
-        return serviceProvider.GetRequiredService<TestDbContext>();
     }
 }
