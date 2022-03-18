@@ -72,7 +72,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection TryAddConfigure<TOptions>(
         this IServiceCollection services)
         where TOptions : class
-        => services.TryAddConfigure<TOptions>(Const.DefaultSection);
+        => services.TryAddConfigure<TOptions>(Const.DEFAULT_SECTION);
 
     private static IServiceCollection TryAddConfigure<TOptions>(
         this IServiceCollection services,
