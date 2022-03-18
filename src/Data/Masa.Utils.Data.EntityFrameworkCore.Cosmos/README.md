@@ -15,7 +15,7 @@ Install-Package Masa.Utils.Data.EntityFrameworkCore.Cosmos
 ``` appsettings.json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "AccountKey=AccountKey;AccountEndpoint=AccountEndpoint;Database=Database"//或"ConnectionString=ConnectionString;Database=Database"
+    "DefaultConnection": "AccountKey=AccountKey;AccountEndpoint=AccountEndpoint;Database=Database"// or "ConnectionString=ConnectionString;Database=Database"
   }
 }
 ```

@@ -2,9 +2,8 @@ global using Masa.Utils.Data.EntityFrameworkCore.Filters;
 global using Masa.Utils.Data.EntityFrameworkCore.InMemory;
 global using Masa.Utils.Data.EntityFrameworkCore.Test.Models;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.InMemory.Infrastructure.Internal;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using System.Reflection;
-global using Microsoft.EntityFrameworkCore.InMemory.Infrastructure.Internal;
-
