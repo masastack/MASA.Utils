@@ -101,6 +101,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Data.EntityFrame
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Data.EntityFrameworkCore.Cosmos", "src\Data\Masa.Utils.Data.EntityFrameworkCore.Cosmos\Masa.Utils.Data.EntityFrameworkCore.Cosmos.csproj", "{B8CB480B-2608-46A8-8528-37EDD5E1EC1E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Data.EntityFrameworkCore.Tests", "test\Masa.Utils.Data.EntityFrameworkCore.Tests\Masa.Utils.Data.EntityFrameworkCore.Tests.csproj", "{41C2A208-4DF8-4BD0-B844-77E6F58FE000}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -251,6 +253,10 @@ Global
 		{B8CB480B-2608-46A8-8528-37EDD5E1EC1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8CB480B-2608-46A8-8528-37EDD5E1EC1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8CB480B-2608-46A8-8528-37EDD5E1EC1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41C2A208-4DF8-4BD0-B844-77E6F58FE000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41C2A208-4DF8-4BD0-B844-77E6F58FE000}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41C2A208-4DF8-4BD0-B844-77E6F58FE000}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41C2A208-4DF8-4BD0-B844-77E6F58FE000}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -300,6 +306,7 @@ Global
 		{D682F08B-6586-4C33-815D-8F98C50A0843} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
 		{2AB5DFD8-B537-4066-8366-E3F371BD5EE2} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
 		{B8CB480B-2608-46A8-8528-37EDD5E1EC1E} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
+		{41C2A208-4DF8-4BD0-B844-77E6F58FE000} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7DAA0E6-098F-4B18-8775-64FDA96F1FF0}
