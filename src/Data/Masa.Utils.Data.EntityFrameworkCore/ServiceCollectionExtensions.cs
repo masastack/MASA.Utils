@@ -83,15 +83,12 @@ public static class ServiceCollectionExtensions
         if (configuration == null)
             return services;
 
-        string name = typeof(TOptions).FullName ?? typeof(TOptions).Name;
+        string name = Options.DefaultName;
         services.AddOptions();
         var configurationSection = configuration.GetSection(sectionName);
         services.TryAddSingleton<IOptionsChangeTokenSource<TOptions>>(
             new ConfigurationChangeTokenSource<TOptions>(name, configurationSection));
-        services.TryAddSingleton<IConfigureOptions<TOptions>>(new NamedConfigureFromConfigurationOptions<TOptions>(name,
-            configurationSection, _ =>
-            {
-            }));
+        services.TryAddSingleton<IConfigureOptions<TOptions>>(new NamedConfigureFromConfigurationOptions<TOptions>(name, configurationSection, _ => { }));
         return services;
     }
 }

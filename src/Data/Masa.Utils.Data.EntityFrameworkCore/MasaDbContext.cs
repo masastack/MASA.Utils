@@ -19,9 +19,9 @@ public abstract class MasaDbContext : DbContext
     /// <param name="modelBuilder"></param>
     protected sealed override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        OnModelCreatingConfigureGlobalFilters(modelBuilder);
-
         OnModelCreatingExecuting(modelBuilder);
+
+        OnModelCreatingConfigureGlobalFilters(modelBuilder);
 
         // null when run dotnet ef cli
         if (Options == null)
@@ -45,8 +45,7 @@ public abstract class MasaDbContext : DbContext
 
     protected virtual void OnModelCreatingConfigureGlobalFilters(ModelBuilder modelBuilder)
     {
-        var methodInfo = typeof(MasaDbContext).GetMethod(nameof(ConfigureGlobalFilters),
-            BindingFlags.NonPublic | BindingFlags.Instance);
+        var methodInfo = typeof(MasaDbContext).GetMethod(nameof(ConfigureGlobalFilters), BindingFlags.NonPublic | BindingFlags.Instance);
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
@@ -72,8 +71,7 @@ public abstract class MasaDbContext : DbContext
 
         if (typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
         {
-            expression = entity => !IsSoftDeleteFilterEnabled ||
-                !EF.Property<bool>(entity, nameof(ISoftDelete.IsDeleted));
+            expression = entity => !IsSoftDeleteFilterEnabled || !EF.Property<bool>(entity, nameof(ISoftDelete.IsDeleted));
         }
 
         return expression;
@@ -124,8 +122,7 @@ public abstract class MasaDbContext : DbContext
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-        => SaveChangesAsync(true, cancellationToken);
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => SaveChangesAsync(true, cancellationToken);
 
     /// <summary>
     /// Automatic soft delete.

@@ -4,17 +4,15 @@ public class SoftDeleteSaveChangesFilter : ISaveChangesFilter
 {
     private readonly MasaDbContextOptions _masaDbContextOptions;
 
-    public SoftDeleteSaveChangesFilter(MasaDbContextOptions masaDbContextOptions)
-        => _masaDbContextOptions = masaDbContextOptions;
+    public SoftDeleteSaveChangesFilter(MasaDbContextOptions masaDbContextOptions) => _masaDbContextOptions = masaDbContextOptions;
 
     public void OnExecuting(ChangeTracker changeTracker)
     {
-        if(!_masaDbContextOptions.EnableSoftDelete)
+        if (!_masaDbContextOptions.EnableSoftDelete)
             return;
 
         changeTracker.DetectChanges();
-        foreach (var entity in changeTracker.Entries().Where(entry => entry.State == EntityState.Deleted ||
-                     entry.State == EntityState.Added))
+        foreach (var entity in changeTracker.Entries().Where(entry => entry.State == EntityState.Deleted))
         {
             entity.State = EntityState.Modified;
             entity.CurrentValues[nameof(ISoftDelete.IsDeleted)] = true;

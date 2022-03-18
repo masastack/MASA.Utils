@@ -2,10 +2,5 @@
 
 public class MasaDbConnectionOptions
 {
-    public MasaDbConnectionOptions(string defaultConnection)
-    {
-        DefaultConnection = defaultConnection;
-    }
-
-    public string DefaultConnection { get; private set; }
+    public string DefaultConnection { get; set; }
 }

@@ -8,22 +8,22 @@ public class MasaDbContextOptions<TContext> : MasaDbContextOptions
     public MasaDbContextOptions(
         IServiceProvider serviceProvider,
         DbContextOptions originOptions,
-        bool enableSoftDelete) : base(serviceProvider, enableSoftDelete)
-    {
-        _originOptions = originOptions;
-        ModelCreatingProviders = ServiceProvider.GetServices<IModelCreatingProvider>();
-        SaveChangesFilters = ServiceProvider.GetServices<ISaveChangesFilter>();
-    }
+        bool enableSoftDelete) : base(serviceProvider, enableSoftDelete) => _originOptions = originOptions;
+
+    private IEnumerable<IModelCreatingProvider>? _modelCreatingProviders;
 
     /// <summary>
     /// Can be used to filter data
     /// </summary>
-    public override IEnumerable<IModelCreatingProvider> ModelCreatingProviders { get; }
+    public override IEnumerable<IModelCreatingProvider> ModelCreatingProviders => _modelCreatingProviders ??= ServiceProvider.GetServices<IModelCreatingProvider>();
+
+
+    private IEnumerable<ISaveChangesFilter>? _saveChangesFilters;
 
     /// <summary>
     /// Can be used to intercept SaveChanges(Async) method
     /// </summary>
-    public override IEnumerable<ISaveChangesFilter> SaveChangesFilters { get; }
+    public override IEnumerable<ISaveChangesFilter> SaveChangesFilters => _saveChangesFilters ??= ServiceProvider.GetServices<ISaveChangesFilter>();
 
     /// <summary>
     /// <inheritdoc/>
