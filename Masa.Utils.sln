@@ -81,9 +81,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Security.Cryptog
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Caller.Core.Tests", "test\Masa.Utils.Caller.Core.Tests\Masa.Utils.Caller.Core.Tests.csproj", "{4B351F95-5919-46A9-A02F-F4409C9EA79A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Caller.IntegratedTest", "test\Masa.Utils.Caller.IntegratedTest\Masa.Utils.Caller.IntegratedTest.csproj", "{D5E09920-081B-478C-B77B-EAB77931F47D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Caller.IntegratedTests", "test\Masa.Utils.Caller.IntegratedTests\Masa.Utils.Caller.IntegratedTests.csproj", "{D5E09920-081B-478C-B77B-EAB77931F47D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Caller.Test", "test\Masa.Utils.Caller.Test\Masa.Utils.Caller.Test.csproj", "{1A1E7FBD-B535-48FB-9FA8-5B56AC3B0A62}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Caller.Tests", "test\Masa.Utils.Caller.Tests\Masa.Utils.Caller.Tests.csproj", "{1A1E7FBD-B535-48FB-9FA8-5B56AC3B0A62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
