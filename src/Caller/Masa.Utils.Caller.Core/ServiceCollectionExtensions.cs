@@ -65,6 +65,9 @@ public static class ServiceCollectionExtensions
         var callerTypes = callerOptions.Assemblies.SelectMany(x => x.GetTypes())
             .Where(type => typeof(CallerBase).IsAssignableFrom(type) && !type.IsAbstract).ToList();
 
+        if (callerTypes.Count == 0)
+            return;
+
         callerTypes.Arrangement().ForEach(type =>
         {
             ServiceDescriptor serviceDescriptor = new ServiceDescriptor(type, serviceProvider =>
