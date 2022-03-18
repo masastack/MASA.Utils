@@ -4,27 +4,6 @@ namespace Masa.Utils.Caller.Core.Tests;
 public class CallerTest
 {
     [TestMethod]
-    public void TestAutomaticCaller()
-    {
-        IServiceCollection services = new ServiceCollection();
-        services.AddCaller();
-        IServiceProvider serviceProvider = services.BuildServiceProvider();
-        var customCaller = serviceProvider.GetRequiredService<CustomCaller>();
-        Assert.IsNotNull(customCaller);
-        Assert.IsTrue(customCaller.Name == nameof(CustomCaller));
-
-        var githubCaller = serviceProvider.GetRequiredService<GithubCaller>();
-        Assert.IsNotNull(githubCaller);
-        Assert.IsTrue(githubCaller.Name == typeof(GithubCaller).FullName);
-
-        var blogCaller = serviceProvider.GetRequiredService<BlogCaller>();
-        Assert.IsTrue(blogCaller.Name == typeof(BlogCaller).FullName);
-
-        Assert.IsTrue(customCaller.Equals(blogCaller.CustomCaller));
-        Assert.IsTrue(githubCaller.Equals(blogCaller.GithubCaller));
-    }
-
-    [TestMethod]
     public void TestCallerProviderServiceLifetime()
     {
         IServiceCollection services = new ServiceCollection();
@@ -182,16 +161,6 @@ public class CallerTest
         IServiceCollection services = new ServiceCollection();
         Assert.ThrowsException<ArgumentException>(() =>
         {
-            services.AddCaller(opt =>
-            {
-                opt.UseHttpClient(builder =>
-                {
-                    builder.Name = nameof(CustomCaller);
-                    builder.BaseApi = "https://*.com/masastack";
-                    builder.IsDefault = true;
-                });
-            });
-
             services.AddCaller(opt =>
             {
                 opt.UseHttpClient(builder =>
