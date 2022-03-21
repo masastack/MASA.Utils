@@ -1,15 +1,14 @@
 namespace Masa.Utils.Data.EntityFrameworkCore;
 
-public class MasaDbContext : DbContext
+public abstract class MasaDbContext : DbContext
 {
-    private readonly MasaDbContextOptions? _options;
+    protected readonly IDataFilter? DataFilter;
+    protected readonly MasaDbContextOptions? Options;
 
-    public MasaDbContext() { }
-
-    public MasaDbContext(MasaDbContextOptions options)
-        : base(options)
+    public MasaDbContext(MasaDbContextOptions options) : base(options)
     {
-        _options = options;
+        Options = options;
+        DataFilter = options.ServiceProvider.GetService<IDataFilter>();
     }
 
     /// <summary>
@@ -22,28 +21,17 @@ public class MasaDbContext : DbContext
     {
         OnModelCreatingExecuting(modelBuilder);
 
+        OnModelCreatingConfigureGlobalFilters(modelBuilder);
+
         // null when run dotnet ef cli
-        if (_options == null)
+        if (Options == null)
         {
             base.OnModelCreating(modelBuilder);
             return;
         }
 
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-        {
-            foreach (var provider in _options.QueryFilterProviders)
-            {
-                try
-                {
-                    var lambda = provider.OnExecuting(entityType);
-                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(lambda);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("An error occured when QueryFilterProvider executing", ex);
-                }
-            }
-        }
+        foreach (var provider in Options.ModelCreatingProviders)
+            provider.Configure(modelBuilder);
     }
 
     /// <summary>
@@ -55,15 +43,48 @@ public class MasaDbContext : DbContext
 
     }
 
+    protected virtual void OnModelCreatingConfigureGlobalFilters(ModelBuilder modelBuilder)
+    {
+        var methodInfo = typeof(MasaDbContext).GetMethod(nameof(ConfigureGlobalFilters), BindingFlags.NonPublic | BindingFlags.Instance);
+
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            methodInfo!.MakeGenericMethod(entityType.ClrType).Invoke(this, new object?[] { modelBuilder, entityType });
+        }
+    }
+
+    protected virtual void ConfigureGlobalFilters<TEntity>(ModelBuilder modelBuilder, IMutableEntityType mutableEntityType)
+        where TEntity : class
+    {
+        if (mutableEntityType.BaseType == null)
+        {
+            var filterExpression = CreateFilterExpression<TEntity>();
+            if (filterExpression != null)
+                modelBuilder.Entity<TEntity>().HasQueryFilter(filterExpression);
+        }
+    }
+
+    protected virtual Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>()
+        where TEntity : class
+    {
+        Expression<Func<TEntity, bool>>? expression = null;
+
+        if (typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
+        {
+            expression = entity => !IsSoftDeleteFilterEnabled || !EF.Property<bool>(entity, nameof(ISoftDelete.IsDeleted));
+        }
+
+        return expression;
+    }
+
+    protected virtual bool IsSoftDeleteFilterEnabled => (Options?.EnableSoftDelete ?? false) && (DataFilter?.IsEnabled<ISoftDelete>() ?? false);
+
     /// <summary>
     /// Automatic soft delete.
     /// <inheritdoc/>
     /// </summary>
     /// <returns></returns>
-    public override int SaveChanges()
-    {
-        return SaveChanges(true);
-    }
+    public override int SaveChanges() => SaveChanges(true);
 
     /// <summary>
     /// Automatic soft delete.
@@ -79,9 +100,9 @@ public class MasaDbContext : DbContext
 
     private void OnFilterExecuting()
     {
-        if (_options != null)
+        if (Options != null)
         {
-            foreach (var filter in _options.SaveChangesFilters)
+            foreach (var filter in Options.SaveChangesFilters)
             {
                 try
                 {
@@ -101,10 +122,7 @@ public class MasaDbContext : DbContext
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        return SaveChangesAsync(true, cancellationToken);
-    }
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => SaveChangesAsync(true, cancellationToken);
 
     /// <summary>
     /// Automatic soft delete.

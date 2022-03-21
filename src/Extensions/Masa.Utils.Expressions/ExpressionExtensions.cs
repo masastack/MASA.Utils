@@ -7,9 +7,25 @@ public static class ExpressionExtensions
         return first.Compose(second, Expression.And);
     }
 
+    public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first, bool isCompose, Expression<Func<T, bool>>? second)
+    {
+        if (isCompose && second != null)
+            return first.Compose(second, Expression.And);
+
+        return first;
+    }
+
     public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
     {
         return first.Compose(second, Expression.Or);
+    }
+
+    public static Expression<Func<T, bool>> Or<T>(this Expression<Func<T, bool>> first, bool isCompose, Expression<Func<T, bool>>? second)
+    {
+        if (isCompose && second != null)
+            return first.Compose(second, Expression.Or);
+
+        return first;
     }
 
     public static Expression<T> Compose<T>(this Expression<T> first, Expression<T> second, Func<Expression, Expression, Expression> merge)
@@ -67,7 +83,9 @@ public static class ExpressionExtensions
 
         return result;
     }
+
     #endregion
+
 }
 
 public class ParameterRebinder : ExpressionVisitor

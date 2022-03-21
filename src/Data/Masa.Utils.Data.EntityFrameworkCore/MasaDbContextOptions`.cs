@@ -1,29 +1,29 @@
 namespace Masa.Utils.Data.EntityFrameworkCore;
 
 public class MasaDbContextOptions<TContext> : MasaDbContextOptions
-    where TContext : MasaDbContext
+    where TContext : DbContext
 {
     private readonly DbContextOptions _originOptions;
 
     public MasaDbContextOptions(
+        IServiceProvider serviceProvider,
         DbContextOptions originOptions,
-        IEnumerable<IQueryFilterProvider> queryFilterProviders,
-        IEnumerable<ISaveChangesFilter> saveChangesFilters)
-    {
-        _originOptions = originOptions;
-        QueryFilterProviders = queryFilterProviders;
-        SaveChangesFilters = saveChangesFilters;
-    }
+        bool enableSoftDelete) : base(serviceProvider, enableSoftDelete) => _originOptions = originOptions;
+
+    private IEnumerable<IModelCreatingProvider>? _modelCreatingProviders;
 
     /// <summary>
     /// Can be used to filter data
     /// </summary>
-    public override IEnumerable<IQueryFilterProvider> QueryFilterProviders { get; }
+    public override IEnumerable<IModelCreatingProvider> ModelCreatingProviders => _modelCreatingProviders ??= ServiceProvider.GetServices<IModelCreatingProvider>();
+
+
+    private IEnumerable<ISaveChangesFilter>? _saveChangesFilters;
 
     /// <summary>
     /// Can be used to intercept SaveChanges(Async) method
     /// </summary>
-    public override IEnumerable<ISaveChangesFilter> SaveChangesFilters { get; }
+    public override IEnumerable<ISaveChangesFilter> SaveChangesFilters => _saveChangesFilters ??= ServiceProvider.GetServices<ISaveChangesFilter>();
 
     /// <summary>
     /// <inheritdoc/>
@@ -79,4 +79,3 @@ public class MasaDbContextOptions<TContext> : MasaDbContextOptions
         return _originOptions.GetExtension<TExtension>();
     }
 }
-
