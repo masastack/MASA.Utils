@@ -7,8 +7,8 @@ public class QueryOptions<TDocument> : QueryBaseOptions<TDocument>
 
     public int Take { get; }
 
-    public QueryOptions(string indexName, string query, string defaultField, int skip, int take)
-        : base(indexName, query, defaultField)
+    public QueryOptions(string indexName, string query, string defaultField, int skip, int take, Operator @operator = Operator.Or)
+        : base(indexName, query, defaultField, @operator)
     {
         Skip = skip;
         Take = take;

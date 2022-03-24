@@ -6,9 +6,9 @@ public class SingleDocumentBaseRequest<TDocument> where TDocument : class
 
     public string? DocumentId { get; }
 
-    public SingleDocumentBaseRequest(TDocument document, string? documentId = null)
+    public SingleDocumentBaseRequest(TDocument document, string? documentId)
     {
         Document = document;
-        DocumentId = documentId;
+        DocumentId = documentId ?? Guid.NewGuid().ToString();
     }
 }

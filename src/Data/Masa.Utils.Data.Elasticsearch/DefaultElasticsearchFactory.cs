@@ -53,7 +53,12 @@ public class DefaultElasticsearchFactory : IElasticsearchFactory
         return new ElasticClient(settings);
     }
 
-    private ConnectionSettings GetConnectionSettingsBySingleNode(ElasticsearchRelations relation) => new(relation.Nodes[0]);
+    private ConnectionSettings GetConnectionSettingsBySingleNode(ElasticsearchRelations relation)
+    {
+        var connectionSetting = new ConnectionSettings(relation.Nodes[0]);
+        relation.Action?.Invoke(connectionSetting);
+        return connectionSetting;
+    }
 
     private ConnectionSettings GetConnectionSettingsConnectionPool(ElasticsearchRelations relation)
     {

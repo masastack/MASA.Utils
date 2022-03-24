@@ -4,7 +4,7 @@ public class CreateDocumentRequest<TDocument> : DocumentOptions where TDocument 
 {
     public SingleDocumentBaseRequest<TDocument> Request { get; }
 
-    public CreateDocumentRequest(string indexName, TDocument document, string? documentId = null) : base(indexName)
+    public CreateDocumentRequest(string indexName, TDocument document, string? documentId) : base(indexName)
     {
         Request = new SingleDocumentBaseRequest<TDocument>(document, documentId);
     }
