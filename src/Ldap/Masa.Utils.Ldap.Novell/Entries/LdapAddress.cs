@@ -1,4 +1,4 @@
-namespace Masa.Utils.Ldap.Entries;
+namespace Masa.Utils.Ldap.Novell.Entries;
 
 public class LdapAddress
 {

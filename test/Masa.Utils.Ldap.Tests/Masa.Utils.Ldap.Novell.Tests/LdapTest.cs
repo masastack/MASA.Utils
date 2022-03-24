@@ -1,4 +1,4 @@
-namespace Masa.Utils.Ldap.Tests;
+namespace Masa.Utils.Ldap.Novell.Tests;
 
 [TestClass]
 public class LdapTest

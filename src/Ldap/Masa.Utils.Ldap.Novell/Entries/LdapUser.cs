@@ -1,14 +1,14 @@
-namespace Masa.Utils.Ldap.Entries;
+namespace Masa.Utils.Ldap.Novell.Entries;
 
 public class LdapUser
 {
-    public string ObjectSid { get; set; } = string.Empty;
+    public string SecurityIdentifier { get; set; } = string.Empty;
 
-    public string ObjectGuid { get; set; } = string.Empty;
+    public string UniqueIdentifier { get; set; } = string.Empty;
 
-    public string ObjectCategory { get; set; } = string.Empty;
+    public string Category { get; set; } = string.Empty;
 
-    public string ObjectClass { get; set; } = string.Empty;
+    public string Class { get; set; } = string.Empty;
 
     public string Name { get; set; } = string.Empty;
 
@@ -32,7 +32,7 @@ public class LdapUser
 
     public string LastName { get; set; } = string.Empty;
 
-    public string FullName => $"{this.FirstName} {this.LastName}";
+    public string FullName => $"{FirstName} {LastName}";
 
     public string EmailAddress { get; set; } = string.Empty;
 

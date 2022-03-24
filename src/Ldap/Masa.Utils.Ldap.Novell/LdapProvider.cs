@@ -1,4 +1,4 @@
-namespace Masa.Utils.Ldap;
+namespace Masa.Utils.Ldap.Novell;
 
 public class LdapProvider : ILdapProvider, IDisposable
 {
@@ -77,42 +77,16 @@ public class LdapProvider : ILdapProvider, IDisposable
             new LdapAttribute("mail", user.EmailAddress)
         };
 
-        if (user.DisplayName != null)
-        {
-            attributeSet.Add(new LdapAttribute("displayName", user.DisplayName));
-        }
-        if (user.Description != null)
-        {
-            attributeSet.Add(new LdapAttribute("description", user.Description));
-        }
-        if (user.Phone != null)
-        {
-            attributeSet.Add(new LdapAttribute("telephoneNumber", user.Phone));
-        }
-        if (user.Address?.Street != null)
-        {
-            attributeSet.Add(new LdapAttribute("streetAddress", user.Address.Street));
-        }
-        if (user.Address?.City != null)
-        {
-            attributeSet.Add(new LdapAttribute("l", user.Address.City));
-        }
-        if (user.Address?.PostalCode != null)
-        {
-            attributeSet.Add(new LdapAttribute("postalCode", user.Address.PostalCode));
-        }
-        if (user.Address?.StateName != null)
-        {
-            attributeSet.Add(new LdapAttribute("st", user.Address.StateName));
-        }
-        if (user.Address?.CountryName != null)
-        {
-            attributeSet.Add(new LdapAttribute("co", user.Address.CountryName));
-        }
-        if (user.Address?.CountryCode != null)
-        {
-            attributeSet.Add(new LdapAttribute("c", user.Address.CountryCode));
-        }
+        attributeSet.AddAttribute("displayName", user.DisplayName);
+        attributeSet.AddAttribute("description", user.Description);
+        attributeSet.AddAttribute("telephoneNumber", user.Phone);
+        attributeSet.AddAttribute("streetAddress", user.Address.Street);
+        attributeSet.AddAttribute("l", user.Address.City);
+        attributeSet.AddAttribute("postalCode", user.Address.PostalCode);
+        attributeSet.AddAttribute("st", user.Address.StateName);
+        attributeSet.AddAttribute("co", user.Address.CountryName);
+        attributeSet.AddAttribute("c", user.Address.CountryCode);
+
         var newEntry = new LdapEntry(dn, attributeSet);
 
         using var ldapConnection = await GetConnectionAsync();
@@ -207,55 +181,35 @@ public class LdapProvider : ILdapProvider, IDisposable
     private LdapUser CreateUser(string distinguishedName, LdapAttributeSet attributeSet)
     {
         var ldapUser = new LdapUser();
-        attributeSet.TryGetValue("objectSid", out var objectSid);
-        ldapUser.ObjectSid = objectSid?.StringValue ?? "";
-        attributeSet.TryGetValue("objectGUID", out var objectGUID);
-        ldapUser.ObjectGuid = objectGUID?.StringValue ?? "";
-        attributeSet.TryGetValue("objectCategory", out var objectCategory);
-        ldapUser.ObjectCategory = objectCategory?.StringValue ?? "";
-        attributeSet.TryGetValue("objectClass", out var objectClass);
-        ldapUser.ObjectClass = objectClass?.StringValue ?? "";
-        attributeSet.TryGetValue("memberOf", out var memberOf);
-        ldapUser.MemberOf = memberOf?.StringValueArray ?? new string[] { };
-        attributeSet.TryGetValue("cn", out var cn);
-        ldapUser.CommonName = cn?.StringValue ?? "";
-        attributeSet.TryGetValue("sAMAccountName", out var sAMAccountName);
-        ldapUser.SamAccountName = sAMAccountName?.StringValue ?? "";
-        attributeSet.TryGetValue("userPrincipalName", out var userPrincipalName);
-        ldapUser.UserPrincipalName = userPrincipalName?.StringValue ?? "";
-        attributeSet.TryGetValue("name", out var name);
-        ldapUser.Name = name?.StringValue ?? "";
-        attributeSet.TryGetValue("distinguishedName", out var _distinguishedName);
-        ldapUser.DistinguishedName = _distinguishedName?.StringValue ?? distinguishedName;
-        attributeSet.TryGetValue("displayName", out var displayName);
-        ldapUser.DisplayName = displayName?.StringValue ?? "";
-        attributeSet.TryGetValue("givenName", out var givenName);
-        ldapUser.FirstName = givenName?.StringValue ?? "";
-        attributeSet.TryGetValue("sn", out var sn);
-        ldapUser.LastName = sn?.StringValue ?? "";
-        attributeSet.TryGetValue("description", out var description);
-        ldapUser.Description = description?.StringValue ?? "";
-        attributeSet.TryGetValue("telephoneNumber", out var telephoneNumber);
-        ldapUser.Phone = telephoneNumber?.StringValue ?? "";
-        attributeSet.TryGetValue("mail", out var mail);
-        ldapUser.EmailAddress = mail?.StringValue ?? "";
-        attributeSet.TryGetValue("streetAddress", out var streetAddress);
-        attributeSet.TryGetValue("l", out var city);
-        attributeSet.TryGetValue("postalCode", out var postalCode);
-        attributeSet.TryGetValue("st", out var stateName);
-        attributeSet.TryGetValue("co", out var countryName);
-        attributeSet.TryGetValue("c", out var countryCode);
+
+        ldapUser.SecurityIdentifier = attributeSet.GetString("objectSid");
+        ldapUser.UniqueIdentifier = attributeSet.GetString("objectGUID");
+        ldapUser.Category = attributeSet.GetString("objectCategory");
+        ldapUser.Class = attributeSet.GetString("objectClass");
+        ldapUser.MemberOf = attributeSet.GetStringArray("memberOf");
+        ldapUser.CommonName = attributeSet.GetString("cn");
+        ldapUser.SamAccountName = attributeSet.GetString("sAMAccountName");
+        ldapUser.UserPrincipalName = attributeSet.GetString("userPrincipalName");
+        ldapUser.Name = attributeSet.GetString("name");
+        ldapUser.DistinguishedName = attributeSet.GetString("distinguishedName");
+        ldapUser.DisplayName = attributeSet.GetString("displayName");
+        ldapUser.FirstName = attributeSet.GetString("givenName");
+        ldapUser.LastName = attributeSet.GetString("sn");
+        ldapUser.Description = attributeSet.GetString("description");
+        ldapUser.Phone = attributeSet.GetString("telephoneNumber");
+        ldapUser.EmailAddress = attributeSet.GetString("mail");
         ldapUser.Address = new LdapAddress
         {
-            Street = streetAddress?.StringValue ?? "",
-            City = city?.StringValue ?? "",
-            PostalCode = postalCode?.StringValue ?? "",
-            StateName = stateName?.StringValue ?? "",
-            CountryName = countryName?.StringValue ?? "",
-            CountryCode = countryCode?.StringValue ?? ""
+            Street = attributeSet.GetString("streetAddress"),
+            City = attributeSet.GetString("l"),
+            PostalCode = attributeSet.GetString("postalCode"),
+            StateName = attributeSet.GetString("st"),
+            CountryName = attributeSet.GetString("co"),
+            CountryCode = attributeSet.GetString("c")
         };
         attributeSet.TryGetValue("sAMAccountType", out var sAMAccountType);
         ldapUser.SamAccountType = int.Parse(sAMAccountType?.StringValue ?? "0");
+
         ldapUser.IsDomainAdmin = ldapUser.MemberOf.Contains("CN=Domain Admins," + _ldapOptions.BaseDn);
         return ldapUser;
     }
