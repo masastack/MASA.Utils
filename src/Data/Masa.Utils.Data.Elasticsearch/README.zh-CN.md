@@ -46,7 +46,7 @@ public async Task<string> DeleteIndexByAliasAsync([FromServices] IMasaElasticCli
 }
 ```
 
-### 绑定别名
+#### 绑定别名
 
 ``` C#
 public async Task<string> BindAliasAsync([FromServices] IMasaElasticClient client)
@@ -58,7 +58,7 @@ public async Task<string> BindAliasAsync([FromServices] IMasaElasticClient clien
 }
 ```
 
-### 解除别名绑定
+#### 解除别名绑定
 
 ``` C#
 public async Task<string> BindAliasAsync([FromServices] IMasaElasticClient client)
