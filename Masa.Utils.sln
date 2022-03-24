@@ -83,7 +83,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Caller.Core.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Caller.IntegratedTests", "test\Masa.Utils.Caller.IntegratedTests\Masa.Utils.Caller.IntegratedTests.csproj", "{D5E09920-081B-478C-B77B-EAB77931F47D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Caller.Tests", "test\Masa.Utils.Caller.Tests\Masa.Utils.Caller.Tests.csproj", "{276B4CDC-BD8F-4563-A82A-B46724C9F4B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Caller.Tests", "test\Masa.Utils.Caller.Tests\Masa.Utils.Caller.Tests.csproj", "{276B4CDC-BD8F-4563-A82A-B46724C9F4B0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.EntityFrameworkCore.SqlServer", "src\Data\Masa.Utils.Data.EntityFrameworkCore.SqlServer\Masa.Utils.Data.EntityFrameworkCore.SqlServer.csproj", "{9004B687-3EB7-4156-A3F7-078A342F2BEF}"
 EndProject
@@ -97,11 +97,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.EntityFrame
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.EntityFrameworkCore.PostgreSql", "src\Data\Masa.Utils.Data.EntityFrameworkCore.PostgreSql\Masa.Utils.Data.EntityFrameworkCore.PostgreSql.csproj", "{D682F08B-6586-4C33-815D-8F98C50A0843}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Data.EntityFrameworkCore.Pomelo.MySql", "src\Data\Masa.Utils.Data.EntityFrameworkCore.Pomelo.MySql\Masa.Utils.Data.EntityFrameworkCore.Pomelo.MySql.csproj", "{2AB5DFD8-B537-4066-8366-E3F371BD5EE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.EntityFrameworkCore.Pomelo.MySql", "src\Data\Masa.Utils.Data.EntityFrameworkCore.Pomelo.MySql\Masa.Utils.Data.EntityFrameworkCore.Pomelo.MySql.csproj", "{2AB5DFD8-B537-4066-8366-E3F371BD5EE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Data.EntityFrameworkCore.Cosmos", "src\Data\Masa.Utils.Data.EntityFrameworkCore.Cosmos\Masa.Utils.Data.EntityFrameworkCore.Cosmos.csproj", "{B8CB480B-2608-46A8-8528-37EDD5E1EC1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.EntityFrameworkCore.Cosmos", "src\Data\Masa.Utils.Data.EntityFrameworkCore.Cosmos\Masa.Utils.Data.EntityFrameworkCore.Cosmos.csproj", "{B8CB480B-2608-46A8-8528-37EDD5E1EC1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Data.EntityFrameworkCore.Tests", "test\Masa.Utils.Data.EntityFrameworkCore.Tests\Masa.Utils.Data.EntityFrameworkCore.Tests.csproj", "{41C2A208-4DF8-4BD0-B844-77E6F58FE000}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.EntityFrameworkCore.Tests", "test\Masa.Utils.Data.EntityFrameworkCore.Tests\Masa.Utils.Data.EntityFrameworkCore.Tests.csproj", "{41C2A208-4DF8-4BD0-B844-77E6F58FE000}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ldap", "Ldap", "{59124A98-14AF-4201-87D7-6DC9C92D9849}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Ldap", "src\Ldap\Masa.Utils.Ldap\Masa.Utils.Ldap.csproj", "{E62E5E11-7119-4782-BCF4-A5913F4048FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Ldap.Tests", "test\Masa.Utils.Ldap.Tests\Masa.Utils.Ldap.Tests\Masa.Utils.Ldap.Tests.csproj", "{F6242694-66A5-4E59-9ECD-510D3D81C8C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -257,6 +263,14 @@ Global
 		{41C2A208-4DF8-4BD0-B844-77E6F58FE000}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41C2A208-4DF8-4BD0-B844-77E6F58FE000}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41C2A208-4DF8-4BD0-B844-77E6F58FE000}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E62E5E11-7119-4782-BCF4-A5913F4048FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E62E5E11-7119-4782-BCF4-A5913F4048FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E62E5E11-7119-4782-BCF4-A5913F4048FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E62E5E11-7119-4782-BCF4-A5913F4048FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6242694-66A5-4E59-9ECD-510D3D81C8C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6242694-66A5-4E59-9ECD-510D3D81C8C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6242694-66A5-4E59-9ECD-510D3D81C8C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6242694-66A5-4E59-9ECD-510D3D81C8C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -297,8 +311,8 @@ Global
 		{1A8FBE3D-B004-4D25-8FE0-A3632A0FDE9E} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 		{4B351F95-5919-46A9-A02F-F4409C9EA79A} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 		{D5E09920-081B-478C-B77B-EAB77931F47D} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
-		{9004B687-3EB7-4156-A3F7-078A342F2BEF} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
 		{276B4CDC-BD8F-4563-A82A-B46724C9F4B0} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
+		{9004B687-3EB7-4156-A3F7-078A342F2BEF} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
 		{4C3C99D6-A832-4D14-B1C8-54B6E0780F24} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
 		{8AE29CEB-89D3-4AE3-8F97-D03D19F0B6FB} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
 		{95A1CAC2-42F5-4916-99D2-64D9C830B1B3} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
@@ -307,6 +321,9 @@ Global
 		{2AB5DFD8-B537-4066-8366-E3F371BD5EE2} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
 		{B8CB480B-2608-46A8-8528-37EDD5E1EC1E} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
 		{41C2A208-4DF8-4BD0-B844-77E6F58FE000} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
+		{59124A98-14AF-4201-87D7-6DC9C92D9849} = {D956582F-4071-47E6-A8E7-4C5A83770045}
+		{E62E5E11-7119-4782-BCF4-A5913F4048FE} = {59124A98-14AF-4201-87D7-6DC9C92D9849}
+		{F6242694-66A5-4E59-9ECD-510D3D81C8C6} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7DAA0E6-098F-4B18-8775-64FDA96F1FF0}
