@@ -1,4 +1,4 @@
-global using Masa.Utils.Ldap.Extensions;
+global using Masa.Utils.Ldap.Novell.Extensions;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;

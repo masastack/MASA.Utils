@@ -1,9 +1,15 @@
-namespace Masa.Utils.Ldap.Entries;
+namespace Masa.Utils.Ldap.Novell.Entries;
 
 public class LdapUser
 {
+    /// <summary>
+    /// ObjectSID contains the value for the Security Identifier (SID) of the entry.
+    /// </summary>
     public string ObjectSid { get; set; } = string.Empty;
 
+    /// <summary>
+    /// ObjectGUID is an Attribute-Names which represents a Universally Unique Identifier as used in Microsoft Active Directory.
+    /// </summary>
     public string ObjectGuid { get; set; } = string.Empty;
 
     public string ObjectCategory { get; set; } = string.Empty;
@@ -32,7 +38,7 @@ public class LdapUser
 
     public string LastName { get; set; } = string.Empty;
 
-    public string FullName => $"{this.FirstName} {this.LastName}";
+    public string FullName => $"{FirstName} {LastName}";
 
     public string EmailAddress { get; set; } = string.Empty;
 

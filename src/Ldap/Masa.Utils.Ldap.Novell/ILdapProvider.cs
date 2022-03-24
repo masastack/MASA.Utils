@@ -1,4 +1,4 @@
-namespace Masa.Utils.Ldap;
+namespace Masa.Utils.Ldap.Novell;
 
 public interface ILdapProvider
 {

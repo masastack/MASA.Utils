@@ -105,9 +105,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.EntityFrame
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ldap", "Ldap", "{59124A98-14AF-4201-87D7-6DC9C92D9849}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Ldap", "src\Ldap\Masa.Utils.Ldap\Masa.Utils.Ldap.csproj", "{E62E5E11-7119-4782-BCF4-A5913F4048FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Ldap.Novell", "src\Ldap\Masa.Utils.Ldap.Novell\Masa.Utils.Ldap.Novell.csproj", "{E62E5E11-7119-4782-BCF4-A5913F4048FE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Ldap.Tests", "test\Masa.Utils.Ldap.Tests\Masa.Utils.Ldap.Tests\Masa.Utils.Ldap.Tests.csproj", "{F6242694-66A5-4E59-9ECD-510D3D81C8C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Ldap.Novell.Tests", "test\Masa.Utils.Ldap.Tests\Masa.Utils.Ldap.Novell.Tests\Masa.Utils.Ldap.Novell.Tests.csproj", "{F6242694-66A5-4E59-9ECD-510D3D81C8C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

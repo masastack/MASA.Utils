@@ -1,4 +1,4 @@
-namespace Masa.Utils.Ldap.Extensions;
+namespace Masa.Utils.Ldap.Novell.Extensions;
 
 public static class AsyncEnumerableExtensions
 {
