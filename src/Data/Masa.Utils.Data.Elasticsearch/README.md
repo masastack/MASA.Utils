@@ -8,7 +8,7 @@
 Install-Package Masa.Utils.Data.Elasticsearch
 ```
 
-#### Basic usage:
+### Basic usage:
 
 Using Elasticsearch
 
