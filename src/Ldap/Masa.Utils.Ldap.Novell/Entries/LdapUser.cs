@@ -12,9 +12,9 @@ public class LdapUser
     /// </summary>
     public string ObjectGuid { get; set; } = string.Empty;
 
-    public string Category { get; set; } = string.Empty;
+    public string ObjectCategory { get; set; } = string.Empty;
 
-    public string Class { get; set; } = string.Empty;
+    public string ObjectClass { get; set; } = string.Empty;
 
     public string Name { get; set; } = string.Empty;
 
