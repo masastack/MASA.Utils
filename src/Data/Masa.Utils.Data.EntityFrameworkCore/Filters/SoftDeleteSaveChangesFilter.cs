@@ -14,8 +14,11 @@ public class SoftDeleteSaveChangesFilter : ISaveChangesFilter
         changeTracker.DetectChanges();
         foreach (var entity in changeTracker.Entries().Where(entry => entry.State == EntityState.Deleted))
         {
-            entity.State = EntityState.Modified;
-            entity.CurrentValues[nameof(ISoftDelete.IsDeleted)] = true;
+            if (entity.Entity is ISoftDelete)
+            {
+                entity.State = EntityState.Modified;
+                entity.CurrentValues[nameof(ISoftDelete.IsDeleted)] = true;
+            }
         }
     }
 }
