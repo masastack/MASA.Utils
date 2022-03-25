@@ -18,4 +18,13 @@ public static class MasaDbContextOptionsBuilderExtensions
         builder.DbContextOptionsBuilder.UseOracle(connectionString, oracleOptionsAction);
         return builder;
     }
+
+    public static MasaDbContextOptionsBuilder UseOracle(
+        this MasaDbContextOptionsBuilder builder,
+        DbConnection connection,
+        Action<OracleDbContextOptionsBuilder>? oracleOptionsAction = null)
+    {
+        builder.DbContextOptionsBuilder.UseOracle(connection, oracleOptionsAction);
+        return builder;
+    }
 }

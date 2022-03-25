@@ -18,4 +18,13 @@ public static class MasaDbContextOptionsBuilderExtensions
         builder.DbContextOptionsBuilder.UseMySQL(connectionString, mySqlOptionsAction);
         return builder;
     }
+
+    public static MasaDbContextOptionsBuilder UseMySQL(
+        this MasaDbContextOptionsBuilder builder,
+        DbConnection connection,
+        Action<MySQLDbContextOptionsBuilder>? mySqlOptionsAction = null)
+    {
+        builder.DbContextOptionsBuilder.UseMySQL(connection, mySqlOptionsAction);
+        return builder;
+    }
 }

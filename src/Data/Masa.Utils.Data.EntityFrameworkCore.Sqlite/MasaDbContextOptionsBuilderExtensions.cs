@@ -18,4 +18,13 @@ public static class MasaDbContextOptionsBuilderExtensions
         builder.DbContextOptionsBuilder.UseSqlite(connectionString, sqliteOptionsAction);
         return builder;
     }
+
+    public static MasaDbContextOptionsBuilder UseSqlite(
+        this MasaDbContextOptionsBuilder builder,
+        DbConnection connection,
+        Action<SqliteDbContextOptionsBuilder>? sqliteOptionsAction = null)
+    {
+        builder.DbContextOptionsBuilder.UseSqlite(connection, sqliteOptionsAction);
+        return builder;
+    }
 }
