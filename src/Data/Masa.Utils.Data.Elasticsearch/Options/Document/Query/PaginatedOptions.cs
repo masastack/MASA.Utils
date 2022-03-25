@@ -12,8 +12,9 @@ public class PaginatedOptions<TDocument> : QueryBaseOptions<TDocument>
         string query,
         string defaultField,
         int page,
-        int pageSize)
-        : base(indexName, query, defaultField)
+        int pageSize,
+        Operator @operator = Operator.Or)
+        : base(indexName, query, defaultField, @operator)
     {
         Page = page;
         PageSize = pageSize;

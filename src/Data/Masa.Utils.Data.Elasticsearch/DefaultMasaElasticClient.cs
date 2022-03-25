@@ -47,9 +47,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     {
         BulkAliasDescriptor request = new BulkAliasDescriptor();
         foreach (var indexName in indexNames)
-        {
             request.RemoveIndex(opt => opt.Index(indexName));
-        }
 
         return new Response.Index.DeleteIndexResponse(await _elasticClient.Indices.BulkAliasAsync(request, cancellationToken));
     }
@@ -60,11 +58,9 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     {
         var response = await GetIndexByAliasAsync(alias, cancellationToken);
         if (response.IsValid)
-        {
             return await DeleteMultiIndexAsync(response.IndexNames, cancellationToken);
-        }
 
-        return new MASADeleteIndexResponse(response.Message);
+        return new(response.Message);
     }
 
     public async Task<Response.Index.GetIndexResponse> GetAllIndexAsync(CancellationToken cancellationToken)
@@ -85,8 +81,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
 
     #region alias manage
 
-    public async Task<MASAGetAliasResponse> GetAllAliasAsync(
-        CancellationToken cancellationToken = default)
+    public async Task<MASAGetAliasResponse> GetAllAliasAsync(CancellationToken cancellationToken = default)
     {
         Func<CatAliasesDescriptor, ICatAliasesRequest>? selector = null;
         var response = await _elasticClient.Cat.AliasesAsync(selector, cancellationToken);
@@ -97,7 +92,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         string indexName,
         CancellationToken cancellationToken = default)
     {
-        IGetAliasRequest request = new GetAliasRequest((Indices) indexName);
+        IGetAliasRequest request = new GetAliasRequest((Indices)indexName);
         var response = await _elasticClient.Indices.GetAliasAsync(request, cancellationToken);
         return new MASAGetAliasResponse(response);
     }
@@ -108,9 +103,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     {
         BulkAliasDescriptor request = new BulkAliasDescriptor();
         foreach (var indexName in options.IndexNames)
-        {
             request.Add(opt => opt.Aliases(options.Alias).Index(indexName));
-        }
 
         var response = await _elasticClient.Indices.BulkAliasAsync(request, cancellationToken);
         return new MASABulkAliasResponse(response);
@@ -122,9 +115,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     {
         BulkAliasDescriptor request = new BulkAliasDescriptor();
         foreach (var indexName in options.IndexNames)
-        {
             request.Remove(opt => opt.Aliases(options.Alias).Index(indexName));
-        }
 
         var response = await _elasticClient.Indices.BulkAliasAsync(request, cancellationToken);
         return new MASABulkAliasResponse(response);
@@ -142,6 +133,15 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         return new Response.ExistsResponse(await _elasticClient.DocumentExistsAsync(documentExistsRequest, cancellationToken));
     }
 
+    public async Task<CountDocumentResponse> DocumentCountAsync(CountDocumentRequest request, CancellationToken cancellationToken = default)
+    {
+        var countRequest = new CountRequest(request.IndexName)
+        {
+            ExpandWildcards = ExpandWildcards.All
+        };
+        return new CountDocumentResponse(await _elasticClient.CountAsync(countRequest, cancellationToken));
+    }
+
     /// <summary>
     /// Add a new document
     /// only when the document does not exist
@@ -154,9 +154,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         CreateDocumentRequest<TDocument> request,
         CancellationToken cancellationToken = default) where TDocument : class
     {
-        ICreateRequest<TDocument> createRequest = request.Request.DocumentId != null
-            ? new CreateRequest<TDocument>(request.IndexName, new Id(request.Request.DocumentId))
-            : new CreateRequest<TDocument>(request.IndexName);
+        ICreateRequest<TDocument> createRequest = new CreateRequest<TDocument>(request.IndexName, new Id(request.Request.DocumentId));
         createRequest.Document = request.Request.Document;
         return new Response.CreateResponse(await _elasticClient.CreateAsync(createRequest, cancellationToken));
     }
@@ -225,6 +223,15 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     {
         var response = await _elasticClient.DeleteManyAsync(request.DocumentIds, request.IndexName, cancellationToken);
         return new DeleteMultiResponse(response);
+    }
+
+    public async Task<ClearDocumentResponse> ClearDocumentAsync(string indexNameOrAlias, CancellationToken cancellationToken = default)
+    {
+        var deleteByQueryRequest = new DeleteByQueryRequest(indexNameOrAlias)
+        {
+            Query = new QueryContainer(new MatchAllQuery())
+        };
+        return new(await _elasticClient.DeleteByQueryAsync(deleteByQueryRequest, cancellationToken));
     }
 
     /// <summary>
@@ -309,9 +316,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
             )?.ToList() ?? new List<IMultiGetHit<TDocument>>();
 
         if (response.Count == request.Id.Length)
-        {
             return new GetMultiResponse<TDocument>(true, "success", response);
-        }
 
         return new GetMultiResponse<TDocument>(false, "Failed to get document");
     }
@@ -365,15 +370,12 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         where TDocument : class
     {
         queryDescriptor = queryDescriptor.Query(queryBaseOptions.Query);
+        queryDescriptor = queryDescriptor.DefaultOperator(queryBaseOptions.Operator);
         if (queryBaseOptions.DefaultField != null)
-        {
             queryDescriptor.DefaultField(queryBaseOptions.DefaultField);
-        }
 
         if (queryBaseOptions.Fields.Length > 0)
-        {
             queryDescriptor.Fields(queryBaseOptions.Fields);
-        }
 
         queryBaseOptions.Action?.Invoke(queryDescriptor);
 
@@ -381,4 +383,5 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     }
 
     #endregion
+
 }

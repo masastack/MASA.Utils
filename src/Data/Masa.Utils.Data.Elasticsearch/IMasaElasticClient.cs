@@ -56,6 +56,8 @@ public interface IMasaElasticClient
         ExistDocumentRequest request,
         CancellationToken cancellationToken = default);
 
+    Task<CountDocumentResponse> DocumentCountAsync(CountDocumentRequest request, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Add a new document
     /// only when the document does not exist
@@ -99,6 +101,8 @@ public interface IMasaElasticClient
     Task<DeleteMultiResponse> DeleteMultiDocumentAsync(
         DeleteMultiDocumentRequest request,
         CancellationToken cancellationToken = default);
+
+    Task<ClearDocumentResponse> ClearDocumentAsync(string indexNameOrAlias, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Update the document
