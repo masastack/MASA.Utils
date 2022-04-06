@@ -1,6 +1,9 @@
 global using Masa.Utils.Caller.Core;
+global using Masa.Utils.Caller.Core.Internal;
 global using Masa.Utils.Caller.HttpClient;
+global using Masa.Utils.Caller.Tests.Queries;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using System.Net;
+global using System.Text.Json.Serialization;

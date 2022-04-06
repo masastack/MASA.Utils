@@ -4,13 +4,14 @@ public class HttpClientCallerProvider : AbstractCallerProvider
 {
     private readonly System.Net.Http.HttpClient _httpClient;
     private readonly IRequestMessage _requestMessage;
-    private string _baseAPI;
+    private readonly string _baseApi;
 
-    public HttpClientCallerProvider(System.Net.Http.HttpClient httpClient,IRequestMessage requestMessage, string baseAPI)
+    public HttpClientCallerProvider(IServiceProvider serviceProvider,string name,string baseApi)
+        :base(serviceProvider)
     {
-        _httpClient = httpClient;
-        _requestMessage = requestMessage;
-        _baseAPI = baseAPI;
+        _httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
+        _requestMessage = serviceProvider.GetRequiredService<IRequestMessage>();
+        _baseApi = baseApi;
     }
 
     public override async Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default) where TResponse : default
@@ -56,9 +57,9 @@ public class HttpClientCallerProvider : AbstractCallerProvider
         if (methodName is null)
             return string.Empty;
 
-        if (_baseAPI != string.Empty && !methodName.Split('?')[0].Contains("/"))
+        if (_baseApi != string.Empty && !methodName.Split('?')[0].Contains("/"))
         {
-            return $"{_baseAPI}{(_baseAPI.Substring(_baseAPI.Length - 1, 1) == "/" ? methodName : $"/{methodName}")}";
+            return $"{_baseApi}{(_baseApi.Substring(_baseApi.Length - 1, 1) == "/" ? methodName : $"/{methodName}")}";
         }
         return methodName;
     }
