@@ -10,7 +10,7 @@ public static class CallerOptionsExtensions
             callerOptions.Services.AddHttpClient(builder.Name) :
             callerOptions.Services.AddHttpClient(builder.Name, builder.Configure);
 
-        AddCallerExtensions.AddCaller(callerOptions, builder.Name, builder.IsDefault,  serviceProvider => new HttpClientCallerProvider(serviceProvider, builder.Name,builder.BaseApi));
+        AddCallerExtensions.AddCaller(callerOptions, builder.Name, builder.IsDefault, serviceProvider => new HttpClientCallerProvider(serviceProvider, builder.Name, builder.BaseApi));
         return httpClientBuilder;
     }
 

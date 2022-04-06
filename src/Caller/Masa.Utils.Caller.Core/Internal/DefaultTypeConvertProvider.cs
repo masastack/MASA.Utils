@@ -1,40 +1,18 @@
-﻿namespace Masa.Utils.Caller.Core.Internal;
+namespace Masa.Utils.Caller.Core.Internal;
 
 public class DefaultTypeConvertProvider : ITypeConvertProvider
 {
     private static readonly ConcurrentDictionary<Type, List<PropertyInfoMember>> Dictionary = new();
 
-    protected readonly List<Type> BasicDataTypes = new()
+    protected readonly List<Type> NotNeedSerializeTypes = new()
     {
         typeof(String),
-        typeof(Boolean),
-        typeof(Char),
+        typeof(Guid),
         typeof(DateTime),
-        typeof(float),
-        typeof(Double),
         typeof(Decimal),
-        typeof(Byte),
-        typeof(UInt16),
-        typeof(UInt32),
-        typeof(UInt64),
-        typeof(SByte),
-        typeof(Int16),
-        typeof(Int32),
-        typeof(Int64),
-        typeof(Boolean?),
-        typeof(Char?),
+        typeof(Guid?),
         typeof(DateTime?),
-        typeof(float?),
-        typeof(Double?),
-        typeof(Decimal?),
-        typeof(Byte?),
-        typeof(UInt16?),
-        typeof(UInt32?),
-        typeof(UInt64?),
-        typeof(SByte?),
-        typeof(Int16?),
-        typeof(Int32?),
-        typeof(Int64?)
+        typeof(Decimal?)
     };
 
     /// <summary>
@@ -79,9 +57,7 @@ public class DefaultTypeConvertProvider : ITypeConvertProvider
 
             string name = GetPropertyName(property);
 
-            bool needSerialize = !IsBasicDataType(property) && property.PropertyType != typeof(Guid) &&
-                property.PropertyType != typeof(Guid?);
-            members.Add(new PropertyInfoMember(property, name, needSerialize));
+            members.Add(new PropertyInfoMember(property, name, IsNeedSerialize(property)));
         }
         return members;
     }
@@ -105,5 +81,5 @@ public class DefaultTypeConvertProvider : ITypeConvertProvider
         return property.Name;
     }
 
-    protected bool IsBasicDataType(PropertyInfo property) => BasicDataTypes.Contains(property.PropertyType);
+    protected bool IsNeedSerialize(PropertyInfo property) => !property.PropertyType.IsPrimitive && !NotNeedSerializeTypes.Contains(property.PropertyType);
 }
