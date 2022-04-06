@@ -5,14 +5,14 @@ public class UserDetailQury
     public Guid? Id { get; set; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [JsonIgnore]
     public int Age { get; set; }
 
     public DateTime? DelTime { get; set; }
 
-    public List<string> Tags { get; set; }
+    public List<string>? Tags { get; set; }
 
     public UserDetailQury()
     {

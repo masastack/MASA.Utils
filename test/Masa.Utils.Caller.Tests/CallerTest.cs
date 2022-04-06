@@ -97,7 +97,7 @@ public class CallerTest
     public void TestConvertToDictionaryByObject4()
     {
         var provider = new DefaultTypeConvertProvider();
-        var query = new UserDetailQury(null, "Music", "Game");
+        var query = new UserDetailQury(null!, "Music", "Game");
         var result = provider.ConvertToDictionary(query);
         Assert.IsTrue(result.Count == 1);
         Assert.IsTrue(result["Tags"] == System.Text.Json.JsonSerializer.Serialize(new List<string>()

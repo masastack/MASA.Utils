@@ -6,5 +6,5 @@ public class GithubCaller : HttpClientCallerBase
     {
     }
 
-    protected override string BaseAddress { get; set; }
+    protected override string BaseAddress { get; set; } = default!;
 }

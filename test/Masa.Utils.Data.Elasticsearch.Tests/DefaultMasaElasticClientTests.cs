@@ -3,7 +3,7 @@
 [TestClass]
 public class DefaultMasaElasticClientTests
 {
-    private MasaElasticsearchBuilder _builder;
+    private MasaElasticsearchBuilder _builder = default!;
 
     [TestInitialize]
     public void Initialize()

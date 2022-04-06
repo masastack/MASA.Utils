@@ -165,7 +165,7 @@ public class CallerTest
             {
                 opt.UseHttpClient(builder =>
                 {
-                    builder.Name = typeof(GithubCaller).FullName;
+                    builder.Name = typeof(GithubCaller).FullName!;
                     builder.BaseApi = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
