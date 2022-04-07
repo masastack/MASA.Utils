@@ -1,0 +1,15 @@
+namespace Masa.Utils.Caller.Tests.Queries;
+
+public class UserListQury
+{
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonIgnore]
+    public int Age { get; set; }
+
+    public UserListQury(string name)
+    {
+        Name = name;
+    }
+}

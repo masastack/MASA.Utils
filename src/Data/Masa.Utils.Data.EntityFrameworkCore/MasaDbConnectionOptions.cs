@@ -1,6 +1,6 @@
-﻿namespace Masa.Utils.Data.EntityFrameworkCore;
+namespace Masa.Utils.Data.EntityFrameworkCore;
 
 public class MasaDbConnectionOptions
 {
-    public string DefaultConnection { get; set; }
+    public string DefaultConnection { get; set; } = default!;
 }

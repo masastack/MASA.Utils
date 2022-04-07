@@ -36,6 +36,8 @@ public interface ICallerProvider
 
     Task<TResponse?> GetAsync<TResponse>(string? methodName, CancellationToken cancellationToken = default);
 
+    Task<TResponse?> GetAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken = default) where TRequest : class;
+
     Task<TResponse?> GetAsync<TResponse>(string? methodName, Dictionary<string, string> data, CancellationToken cancellationToken = default);
 
     Task<HttpResponseMessage> PostAsync(string? methodName, HttpContent? content, CancellationToken cancellationToken = default);

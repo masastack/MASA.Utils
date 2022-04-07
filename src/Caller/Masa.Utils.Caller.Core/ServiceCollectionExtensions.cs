@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
         CallerOptions callerOption = new CallerOptions(services);
         options.Invoke(callerOption);
 
+        services.TryAddSingleton<ITypeConvertProvider, DefaultTypeConvertProvider>();
         services.AddAutomaticCaller(callerOption);
         services.TryOrUpdateCallerOptions(callerOption);
         services.TryAddSingleton<ICallerFactory, DefaultCallerFactory>();

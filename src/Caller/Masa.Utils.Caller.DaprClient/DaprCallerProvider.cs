@@ -6,11 +6,11 @@ public class DaprCallerProvider : AbstractCallerProvider
     private readonly IRequestMessage _requestMessage;
     private readonly Dapr.Client.DaprClient _daprClient;
 
-    public DaprCallerProvider(string appId, IRequestMessage requestMessage, Dapr.Client.DaprClient daprClient)
+    public DaprCallerProvider(IServiceProvider serviceProvider,string appId):base(serviceProvider)
     {
         AppId = appId;
-        _requestMessage = requestMessage;
-        _daprClient = daprClient;
+        _requestMessage = serviceProvider.GetRequiredService<IRequestMessage>();
+        _daprClient = serviceProvider.GetRequiredService<Dapr.Client.DaprClient>();
     }
 
     public override async Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default) where TResponse : default

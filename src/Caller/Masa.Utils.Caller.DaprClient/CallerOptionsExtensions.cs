@@ -12,12 +12,7 @@ public static class CallerOptionsExtensions
             throw new ArgumentNullException(nameof(clientBuilder));
 
         callerOptions.Services.AddDaprClient(builder.Configure);
-        AddCallerExtensions.AddCaller(callerOptions, builder.Name, builder.IsDefault, (serviceProvider) =>
-        {
-            var daprClient = serviceProvider.GetRequiredService<Dapr.Client.DaprClient>();
-            var requestMessage = serviceProvider.GetRequiredService<IRequestMessage>();
-            return new DaprCallerProvider(builder.AppId, requestMessage, daprClient);
-        });
+        AddCallerExtensions.AddCaller(callerOptions, builder.Name, builder.IsDefault, (serviceProvider) => new DaprCallerProvider(serviceProvider, builder.AppId));
         return callerOptions;
     }
 
