@@ -42,7 +42,7 @@ public class DefaultRequestMessage : IRequestMessage
                     }
                     catch (Exception exception)
                     {
-                        _logger?.LogWarning(exception, exception.Message);
+                        _logger?.LogWarning(exception, exception.Message ?? string.Empty);
                         ExceptionDispatchInfo.Capture(exception).Throw();
                         return default;//This will never be executed, the previous line has already thrown an exception
                     }

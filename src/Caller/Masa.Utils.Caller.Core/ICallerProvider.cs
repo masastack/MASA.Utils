@@ -4,11 +4,11 @@ public interface ICallerProvider
 {
     Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> SendAsync(HttpMethod method, string? methodName, HttpContent? content, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> SendAsync(HttpMethod method, string? methodName, HttpContent? content, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> SendAsync<TRequest>(HttpMethod method, string? methodName, TRequest data, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> SendAsync<TRequest>(HttpMethod method, string? methodName, TRequest data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
     Task<TResponse?> SendAsync<TRequest, TResponse>(HttpMethod method, string? methodName, TRequest data, CancellationToken cancellationToken = default);
 
@@ -24,15 +24,15 @@ public interface ICallerProvider
         where TRequest : IMessage
         where TResponse : IMessage, new();
 
-    Task<string> GetStringAsync(string? methodName, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<string> GetStringAsync(string? methodName, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
-    Task<byte[]> GetByteArrayAsync(string? methodName, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<byte[]> GetByteArrayAsync(string? methodName, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
-    Task<Stream> GetStreamAsync(string? methodName, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<Stream> GetStreamAsync(string? methodName, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> GetAsync(string? methodName, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> GetAsync(string? methodName, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> GetAsync(string? methodName, Dictionary<string, string> data, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> GetAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
     Task<TResponse?> GetAsync<TResponse>(string? methodName, CancellationToken cancellationToken = default);
 
@@ -40,27 +40,27 @@ public interface ICallerProvider
 
     Task<TResponse?> GetAsync<TResponse>(string? methodName, Dictionary<string, string> data, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> PostAsync(string? methodName, HttpContent? content, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> PostAsync(string? methodName, HttpContent? content, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> PostAsync<TRequest>(string? methodName, TRequest data, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> PostAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
     Task<TResponse?> PostAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> PatchAsync(string? methodName, HttpContent? content, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> PatchAsync(string? methodName, HttpContent? content, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> PatchAsync<TRequest>(string? methodName, TRequest data, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> PatchAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
     Task<TResponse?> PatchAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> PutAsync(string? methodName, HttpContent? content, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> PutAsync(string? methodName, HttpContent? content, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> PutAsync<TRequest>(string? methodName, TRequest data, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> PutAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
     Task<TResponse?> PutAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> DeleteAsync(string? methodName, HttpContent? content, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> DeleteAsync(string? methodName, HttpContent? content, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
-    Task<HttpResponseMessage> DeleteAsync<TRequest>(string? methodName, TRequest data, bool dealException = true, CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> DeleteAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
     Task<TResponse?> DeleteAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken = default);
 }
