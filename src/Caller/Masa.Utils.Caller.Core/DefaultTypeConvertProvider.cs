@@ -1,4 +1,4 @@
-namespace Masa.Utils.Caller.Core.Internal;
+namespace Masa.Utils.Caller.Core;
 
 public class DefaultTypeConvertProvider : ITypeConvertProvider
 {
