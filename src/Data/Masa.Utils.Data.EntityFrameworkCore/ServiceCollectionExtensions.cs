@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-
 namespace Masa.Utils.Data.EntityFrameworkCore;
 
 public static class ServiceCollectionExtensions
@@ -35,7 +33,7 @@ public static class ServiceCollectionExtensions
         services.TryAddScoped<IConnectionStringProvider, DefaultConnectionStringProvider>();
         services.TryAddScoped(typeof(DataFilter<>));
         services.TryAddScoped<IDataFilter, DataFilter>();
-        services.TryAddEnumerable(new ServiceDescriptor(typeof(ISaveChangesFilter), typeof(SoftDeleteSaveChangesFilter),
+        services.TryAddEnumerable(new ServiceDescriptor(typeof(ISaveChangesFilter), typeof(SoftDeleteSaveChangesFilter<TDbContextImplementation>),
             ServiceLifetime.Scoped));
 
         services.TryAdd(

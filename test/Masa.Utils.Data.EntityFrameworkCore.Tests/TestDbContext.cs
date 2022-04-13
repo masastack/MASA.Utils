@@ -8,6 +8,7 @@ public class TestDbContext : MasaDbContext
 
     protected override void OnModelCreatingExecuting(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Student>();
+        modelBuilder.Entity<Student>().OwnsOne(x => x.Address);
+        modelBuilder.Entity<Student>().OwnsMany(t => t.Hobbies);
     }
 }

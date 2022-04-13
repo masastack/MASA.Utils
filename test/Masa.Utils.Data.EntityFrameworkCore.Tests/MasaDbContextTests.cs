@@ -30,11 +30,30 @@ public class MasaDbContextTests : TestBase
             Id = 1,
             Name = "Jim",
             Age = 18,
+            Address = new Address()
+            {
+                City = "ShangHai",
+                Street = "PuDong",
+            },
+            Hobbies = new List<Hobby>()
+            {
+                new()
+                {
+                    Name = "Sing",
+                    Description = "loves singing"
+                },
+                new()
+                {
+                    Name = "Game",
+                    Description = "mobile game"
+                }
+            }
         };
         await dbContext.Set<Student>().AddAsync(student);
         await dbContext.SaveChangesAsync();
         Assert.IsTrue(await dbContext.Set<Student>().CountAsync() == 1);
 
+        student = await dbContext.Set<Student>().Include(s => s.Address).Include(s => s.Hobbies).FirstAsync();
         dbContext.Set<Student>().Remove(student);
         await dbContext.SaveChangesAsync();
 
@@ -45,11 +64,17 @@ public class MasaDbContextTests : TestBase
         {
             Assert.IsTrue(await dbContext.Set<Student>().CountAsync() == 1);
 
-            student = (await dbContext.Set<Student>().FirstOrDefaultAsync())!;
+            student = (await dbContext.Set<Student>().Include(s => s.Address).FirstOrDefaultAsync())!;
             Assert.IsTrue(student.Id == 1);
             Assert.IsTrue(student.Name == "Jim");
             Assert.IsTrue(student.Age == 18);
             Assert.IsTrue(student.IsDeleted);
+            Assert.IsTrue(student.Address.City == "ShangHai");
+            Assert.IsTrue(student.Address.Street == "PuDong");
+
+            Assert.IsTrue(student.Hobbies.Count == 2);
+            Assert.IsTrue(student.Hobbies.Any(h => h.Name == "Sing"));
+            Assert.IsTrue(student.Hobbies.Any(h => h.Name == "Game"));
         }
     }
 
