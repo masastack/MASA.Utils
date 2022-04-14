@@ -1,4 +1,4 @@
-﻿namespace Masa.Utils.Data.EntityFrameworkCore.Test;
+namespace Masa.Utils.Data.EntityFrameworkCore.Test;
 
 [TestClass]
 public class MasaDbContextTests : TestBase
@@ -83,7 +83,7 @@ public class MasaDbContextTests : TestBase
     {
         Services.AddMasaDbContext<TestDbContext>(options => options.UseInMemoryDatabase("disabled-soft-delete-db"));
         var serviceProvider = Services.BuildServiceProvider();
-        var dbContext =  serviceProvider.GetRequiredService<TestDbContext>();
+        var dbContext = serviceProvider.GetRequiredService<TestDbContext>();
         var student = new Student
         {
             Id = 1,
@@ -102,5 +102,45 @@ public class MasaDbContextTests : TestBase
         var dataFilter = serviceProvider.GetRequiredService<IDataFilter>();
         using (dataFilter.Disable<ISoftDelete>())
             Assert.IsTrue(await dbContext.Set<Student>().CountAsync() == 0);
+    }
+
+    [TestMethod]
+    public async Task TestGetPaginatedListAsyncReturnCountEqualResultCount()
+    {
+        Services.Configure<MasaDbConnectionOptions>(options =>
+        {
+            options.DefaultConnection = "soft-delete-db";
+        });
+        await using var dbContext = CreateDbContext(true, out IServiceProvider serviceProvider);
+        var students = new List<Student>()
+        {
+            new Student()
+            {
+                Id = 1,
+                Name = "Jim",
+                Age = 18
+            },
+            new Student()
+            {
+                Id = 2,
+                Name = "Tom",
+                Age = 20
+            }
+        };
+        await dbContext.Set<Student>().AddRangeAsync(students);
+        await dbContext.SaveChangesAsync();
+        Assert.IsTrue(await dbContext.Set<Student>().CountAsync() == 2);
+
+        var student = await dbContext.Set<Student>().FirstAsync();
+        dbContext.Set<Student>().Remove(student);
+        await dbContext.SaveChangesAsync();
+
+        var result = await new Repository(dbContext).GetPaginatedListAsync(new PaginatedOptions()
+        {
+            Page = 1,
+            PageSize = 10
+        });
+
+        Assert.IsTrue(result.Result.Count == result.Total);
     }
 }

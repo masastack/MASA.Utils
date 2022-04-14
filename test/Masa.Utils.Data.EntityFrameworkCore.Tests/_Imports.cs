@@ -1,5 +1,6 @@
 global using Masa.Utils.Data.EntityFrameworkCore.Filters;
 global using Masa.Utils.Data.EntityFrameworkCore.InMemory;
+global using Masa.Utils.Data.EntityFrameworkCore.Test.Internal;
 global using Masa.Utils.Data.EntityFrameworkCore.Test.Models;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.InMemory.Infrastructure.Internal;
