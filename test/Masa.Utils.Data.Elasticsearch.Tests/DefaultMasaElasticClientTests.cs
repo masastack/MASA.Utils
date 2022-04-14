@@ -13,7 +13,7 @@ public class DefaultMasaElasticClientTests
     }
 
     [TestMethod]
-    public async Task CreateDocumentAsync()
+    public async Task TestCreateDocumentAsyncReturnCountIs1()
     {
         string indexName = "user_index";
         var countResponse = await _builder.Client.DocumentCountAsync(new CountDocumentRequest(indexName));
@@ -28,6 +28,91 @@ public class DefaultMasaElasticClientTests
         Thread.Sleep(1000);
         countResponse = await _builder.Client.DocumentCountAsync(new CountDocumentRequest(indexName));
         Assert.IsTrue(countResponse.IsValid && countResponse.Count == 1);
+        await _builder.Client.DeleteIndexAsync(indexName);
+    }
+
+    [TestMethod]
+    public async Task TestCreateMultiDocumentAsyncReturnCountIs2()
+    {
+        string indexName = "user_index";
+        var countResponse = await _builder.Client.DocumentCountAsync(new CountDocumentRequest(indexName));
+        Assert.IsTrue(!countResponse.IsValid);
+
+        string id = Guid.NewGuid().ToString();
+        string id2 = Guid.NewGuid().ToString();
+        var createMultiResponse = await _builder.Client.CreateMultiDocumentAsync(new CreateMultiDocumentRequest<object>(indexName)
+        {
+            Items = new List<SingleDocumentBaseRequest<object>>()
+            {
+                new(new
+                {
+                    Id = Guid.NewGuid()
+                }, id),
+                new(new
+                {
+                    Id = Guid.NewGuid()
+                }, id2)
+            }
+        });
+        Assert.IsTrue(createMultiResponse.IsValid &&
+            createMultiResponse.Items.Count == 2 &&
+            createMultiResponse.Items.Count(r => r.IsValid) == 2);
+
+        Thread.Sleep(1000);
+        countResponse = await _builder.Client.DocumentCountAsync(new CountDocumentRequest(indexName));
+        Assert.IsTrue(countResponse.IsValid && countResponse.Count == 2);
+        await _builder.Client.DeleteIndexAsync(indexName);
+    }
+
+    [TestMethod]
+    public async Task TestDeleteDocumentAsyncReturnCountIs0()
+    {
+        string indexName = "user_index";
+        var id = Guid.NewGuid();
+        var createResponse = await _builder.Client.CreateDocumentAsync(new CreateDocumentRequest<object>(indexName, new
+        {
+            id = id
+        }, id.ToString()));
+        Assert.IsTrue(createResponse.IsValid);
+
+        var deleteResponse = await _builder.Client.DeleteDocumentAsync(new DeleteDocumentRequest(indexName, id.ToString()));
+        Assert.IsTrue(deleteResponse.IsValid);
+
+        Thread.Sleep(1000);
+        var countResponse = await _builder.Client.DocumentCountAsync(new CountDocumentRequest(indexName));
+        Assert.IsTrue(countResponse.IsValid && countResponse.Count == 0);
+
+        await _builder.Client.DeleteIndexAsync(indexName);
+    }
+
+    [TestMethod]
+    public async Task TestDeleteMultiDocumentAsyncReturnCountIs1()
+    {
+        string indexName = "user_index";
+        string id = Guid.NewGuid().ToString();
+        string id2 = Guid.NewGuid().ToString();
+        await _builder.Client.CreateMultiDocumentAsync(new CreateMultiDocumentRequest<object>(indexName)
+        {
+            Items = new List<SingleDocumentBaseRequest<object>>()
+            {
+                new(new
+                {
+                    Id = Guid.NewGuid()
+                }, id),
+                new(new
+                {
+                    Id = Guid.NewGuid()
+                }, id2)
+            }
+        });
+
+        var deleteResponse = await _builder.Client.DeleteMultiDocumentAsync(new DeleteMultiDocumentRequest(indexName, id, id2));
+        Assert.IsTrue(deleteResponse.IsValid && deleteResponse.Data.Count == 2 && deleteResponse.Data.Count(r => r.IsValid) == 2);
+
+        Thread.Sleep(1000);
+        var countResponse = await _builder.Client.DocumentCountAsync(new CountDocumentRequest(indexName));
+        Assert.IsTrue(countResponse.IsValid && countResponse.Count == 0);
+
         await _builder.Client.DeleteIndexAsync(indexName);
     }
 

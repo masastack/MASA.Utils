@@ -4,20 +4,20 @@ public class CreateMultiDocumentRequest<TDocument> : DocumentOptions where TDocu
 {
     public List<SingleDocumentBaseRequest<TDocument>> Items { get; set; }
 
-    public CreateMultiDocumentRequest(string indexName) : base(indexName)
-    {
-        Items = new();
-    }
+    public CreateMultiDocumentRequest(string indexName) : base(indexName) => Items = new();
 
     public CreateMultiDocumentRequest(string indexName, TDocument document, string? documentId = null) : this(indexName)
+        => AddDocument(document, documentId);
+
+    public CreateMultiDocumentRequest(string indexName, IEnumerable<CreateDocumentItemRequest<TDocument>> datas) : this(indexName)
     {
-        AddDocument(document, documentId);
+        ArgumentNullException.ThrowIfNull(datas, nameof(datas));
+
+        foreach (var data in datas) AddDocument(data.Document, data.DocumentId);
     }
 
     public CreateMultiDocumentRequest<TDocument> AddDocument(TDocument document, string? documentId = null)
-    {
-        return AddDocument(new SingleDocumentBaseRequest<TDocument>(document, documentId));
-    }
+        => AddDocument(new SingleDocumentBaseRequest<TDocument>(document, documentId));
 
     public CreateMultiDocumentRequest<TDocument> AddDocument(SingleDocumentBaseRequest<TDocument> item)
     {

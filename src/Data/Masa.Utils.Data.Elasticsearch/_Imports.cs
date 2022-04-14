@@ -1,4 +1,5 @@
 global using Elasticsearch.Net;
+global using Masa.Utils.Data.Elasticsearch.Internal.BulkOperation;
 global using Masa.Utils.Data.Elasticsearch.Options;
 global using Masa.Utils.Data.Elasticsearch.Options.Alias;
 global using Masa.Utils.Data.Elasticsearch.Options.Document.Count;

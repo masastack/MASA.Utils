@@ -2,10 +2,11 @@ namespace Masa.Utils.Data.Elasticsearch.Options.Document.Get;
 
 public class GetMultiDocumentRequest : DocumentOptions
 {
-    public string[] Id { get; }
+    public IEnumerable<string> Ids { get; }
 
-    public GetMultiDocumentRequest(string indexName, string[] id) : base(indexName)
-    {
-        Id = id;
-    }
+    public GetMultiDocumentRequest(string indexName, string[] ids) : base(indexName)
+        => Ids = ids;
+
+    public GetMultiDocumentRequest(string indexName, IEnumerable<string> ids) : base(indexName)
+        => Ids = ids;
 }
