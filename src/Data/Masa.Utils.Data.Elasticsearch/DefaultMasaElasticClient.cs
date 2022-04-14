@@ -221,7 +221,7 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         DeleteMultiDocumentRequest request,
         CancellationToken cancellationToken = default)
     {
-        var response = await _elasticClient.DeleteManyAsync(request.DocumentIds, request.IndexName, cancellationToken);
+        var response = await Internal.DeleteMultiExtensions.DeleteManyAsync(_elasticClient, request.DocumentIds, request.IndexName, cancellationToken);
         return new DeleteMultiResponse(response);
     }
 
@@ -312,10 +312,10 @@ public class DefaultMasaElasticClient : IMasaElasticClient
         CancellationToken cancellationToken = default) where TDocument : class
     {
         var response = (await
-                _elasticClient.GetManyAsync<TDocument>(request.Id, request.IndexName, cancellationToken)
+                _elasticClient.GetManyAsync<TDocument>(request.Ids, request.IndexName, cancellationToken)
             )?.ToList() ?? new List<IMultiGetHit<TDocument>>();
 
-        if (response.Count == request.Id.Length)
+        if (response.Count == request.Ids.Count())
             return new GetMultiResponse<TDocument>(true, "success", response);
 
         return new GetMultiResponse<TDocument>(false, "Failed to get document");
@@ -383,5 +383,4 @@ public class DefaultMasaElasticClient : IMasaElasticClient
     }
 
     #endregion
-
 }
