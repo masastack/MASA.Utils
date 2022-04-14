@@ -1,10 +1,15 @@
 ﻿namespace Masa.Utils.Data.EntityFrameworkCore.Filters;
 
-public class SoftDeleteSaveChangesFilter : ISaveChangesFilter
+public class SoftDeleteSaveChangesFilter<TDbContext> : ISaveChangesFilter where TDbContext : DbContext
 {
+    private readonly TDbContext _context;
     private readonly MasaDbContextOptions _masaDbContextOptions;
 
-    public SoftDeleteSaveChangesFilter(MasaDbContextOptions masaDbContextOptions) => _masaDbContextOptions = masaDbContextOptions;
+    public SoftDeleteSaveChangesFilter(MasaDbContextOptions masaDbContextOptions, TDbContext dbContext)
+    {
+        _masaDbContextOptions = masaDbContextOptions;
+        _context = dbContext;
+    }
 
     public void OnExecuting(ChangeTracker changeTracker)
     {
@@ -16,9 +21,42 @@ public class SoftDeleteSaveChangesFilter : ISaveChangesFilter
         {
             if (entity.Entity is ISoftDelete)
             {
+                HandleNavigationEntry(entity.Navigations.Where(n => !((IReadOnlyNavigation)n.Metadata).IsOnDependent));
+
                 entity.State = EntityState.Modified;
                 entity.CurrentValues[nameof(ISoftDelete.IsDeleted)] = true;
             }
         }
+    }
+
+    protected virtual void HandleNavigationEntry(IEnumerable<NavigationEntry> navigationEntries)
+    {
+        foreach (var navigationEntry in navigationEntries)
+        {
+            if (navigationEntry is CollectionEntry collectionEntry)
+            {
+                foreach (var dependentEntry in collectionEntry.CurrentValue ?? new List<object>())
+                {
+                    HandleDependent(dependentEntry);
+                }
+            }
+            else
+            {
+                var dependentEntry = navigationEntry.CurrentValue;
+                if (dependentEntry != null)
+                {
+                    HandleDependent(dependentEntry);
+                }
+            }
+        }
+    }
+
+    protected virtual void HandleDependent(object dependentEntry)
+    {
+        var entityEntry = _context.Entry(dependentEntry);
+        entityEntry.State = EntityState.Modified;
+
+        if (entityEntry.Entity is ISoftDelete)
+            entityEntry.CurrentValues[nameof(ISoftDelete.IsDeleted)] = true;
     }
 }

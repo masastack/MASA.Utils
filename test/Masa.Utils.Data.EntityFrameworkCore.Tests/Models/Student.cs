@@ -9,4 +9,22 @@ public class Student : ISoftDelete
     public int Age { get; set; }
 
     public bool IsDeleted { get; private set; }
+
+    public Address Address { get; set; }
+
+    public List<Hobby> Hobbies { get; set; }
+}
+
+public class Address
+{
+    public string City { get; set; }
+
+    public string Street { get; set; }
+}
+
+public class Hobby
+{
+    public string Name { get; set; }
+
+    public string Description { get; set; }
 }
