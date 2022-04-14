@@ -1,4 +1,4 @@
-﻿namespace Masa.Utils.Data.EntityFrameworkCore.Filters;
+namespace Masa.Utils.Data.EntityFrameworkCore.Filters;
 
 public class DataFilter : IDataFilter
 {
@@ -32,21 +32,29 @@ public class DataFilter : IDataFilter
 
 public class DataFilter<TFilter> where TFilter : class
 {
-    private readonly AsyncLocal<bool> _filter;
+    private readonly AsyncLocal<DataFilterState> _filter;
 
     public DataFilter()
     {
-        _filter = new AsyncLocal<bool> { Value = true };
+        _filter = new AsyncLocal<DataFilterState>();
     }
 
-    public bool IsEnabled => _filter.Value;
+    public bool IsEnabled
+    {
+        get
+        {
+            _filter.Value ??= new DataFilterState(true);
+
+            return _filter.Value!.IsEnabled;
+        }
+    }
 
     public IDisposable Enable()
     {
         if (IsEnabled)
             return NullDisposable.Instance;
 
-        _filter.Value = true;
+        _filter.Value!.IsEnabled = true;
 
         return new DisposeAction(() => Disable());
     }
@@ -56,9 +64,8 @@ public class DataFilter<TFilter> where TFilter : class
         if (!IsEnabled)
             return NullDisposable.Instance;
 
-        _filter.Value = false;
+        _filter.Value!.IsEnabled = false;
 
         return new DisposeAction(() => Enable());
     }
-
 }
