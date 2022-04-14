@@ -45,7 +45,7 @@ public class DataFilter<TFilter> where TFilter : class
         {
             _filter.Value ??= new DataFilterState(true);
 
-            return _filter.Value!.IsEnabled;
+            return _filter.Value!.Enabled;
         }
     }
 
@@ -54,7 +54,7 @@ public class DataFilter<TFilter> where TFilter : class
         if (IsEnabled)
             return NullDisposable.Instance;
 
-        _filter.Value!.IsEnabled = true;
+        _filter.Value!.Enabled = true;
 
         return new DisposeAction(() => Disable());
     }
@@ -64,7 +64,7 @@ public class DataFilter<TFilter> where TFilter : class
         if (!IsEnabled)
             return NullDisposable.Instance;
 
-        _filter.Value!.IsEnabled = false;
+        _filter.Value!.Enabled = false;
 
         return new DisposeAction(() => Enable());
     }
