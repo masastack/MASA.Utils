@@ -18,7 +18,7 @@ public class DataFilter : IDataFilter
         => GetFilter<TFilter>().Disable();
 
     public bool IsEnabled<TFilter>() where TFilter : class
-        => GetFilter<TFilter>().IsEnabled;
+        => GetFilter<TFilter>().Enabled;
 
     private DataFilter<TFilter> GetFilter<TFilter>()
         where TFilter : class
@@ -39,32 +39,32 @@ public class DataFilter<TFilter> where TFilter : class
         _filter = new AsyncLocal<DataFilterState>();
     }
 
-    public bool IsEnabled
+    public bool Enabled
     {
         get
         {
             _filter.Value ??= new DataFilterState(true);
 
-            return _filter.Value!.IsEnabled;
+            return _filter.Value!.Enabled;
         }
     }
 
     public IDisposable Enable()
     {
-        if (IsEnabled)
+        if (Enabled)
             return NullDisposable.Instance;
 
-        _filter.Value!.IsEnabled = true;
+        _filter.Value!.Enabled = true;
 
         return new DisposeAction(() => Disable());
     }
 
     public IDisposable Disable()
     {
-        if (!IsEnabled)
+        if (!Enabled)
             return NullDisposable.Instance;
 
-        _filter.Value!.IsEnabled = false;
+        _filter.Value!.Enabled = false;
 
         return new DisposeAction(() => Enable());
     }

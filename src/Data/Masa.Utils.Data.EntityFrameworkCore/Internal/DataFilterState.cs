@@ -2,10 +2,10 @@
 
 internal class DataFilterState
 {
-    public bool IsEnabled { get; set; }
+    public bool Enabled { get; set; }
 
-    public DataFilterState(bool isEnabled)
+    public DataFilterState(bool enabled)
     {
-        IsEnabled = isEnabled;
+        Enabled = enabled;
     }
 }
