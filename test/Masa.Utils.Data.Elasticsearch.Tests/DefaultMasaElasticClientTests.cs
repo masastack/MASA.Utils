@@ -13,6 +13,26 @@ public class DefaultMasaElasticClientTests
     }
 
     [TestMethod]
+    public async Task TestCreateIndexAsyncReturnIndexIsExist()
+    {
+        string indexName = "user_index";
+        var indexResponse = await _builder.Client.CreateIndexAsync(indexName);
+        Assert.IsTrue(indexResponse.IsValid);
+        await _builder.Client.DeleteIndexAsync(indexName);
+    }
+
+    [TestMethod]
+    public async Task TestIndexExistAsyncReturnIndexIsExist()
+    {
+        string indexName = "user_index";
+        await _builder.Client.CreateIndexAsync(indexName);
+
+        var existResponse = await _builder.Client.IndexExistAsync(indexName);
+        Assert.IsTrue(existResponse.IsValid && existResponse.Exists);
+        await _builder.Client.DeleteIndexAsync(indexName);
+    }
+
+    [TestMethod]
     public async Task TestCreateDocumentAsyncReturnCountIs1()
     {
         string indexName = "user_index";
