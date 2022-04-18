@@ -4,7 +4,7 @@ public class GetMultiDocumentRequest : DocumentOptions
 {
     public IEnumerable<string> Ids { get; }
 
-    public GetMultiDocumentRequest(string indexName, string[] ids) : base(indexName)
+    public GetMultiDocumentRequest(string indexName,params string[] ids) : base(indexName)
         => Ids = ids;
 
     public GetMultiDocumentRequest(string indexName, IEnumerable<string> ids) : base(indexName)

@@ -19,4 +19,23 @@ public class PaginatedOptions<TDocument> : QueryBaseOptions<TDocument>
         Page = page;
         PageSize = pageSize;
     }
+
+    public PaginatedOptions(
+        string indexName,
+        string query,
+        IEnumerable<string> fields,
+        int page,
+        int pageSize,
+        Operator @operator = Operator.Or)
+        : base(indexName, query, fields, @operator)
+    {
+        Page = page;
+        PageSize = pageSize;
+    }
+
+    public new PaginatedOptions<TDocument> UseFields(params string[] fields)
+    {
+        base.UseFields(fields);
+        return this;
+    }
 }

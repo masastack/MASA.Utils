@@ -17,18 +17,18 @@ public interface IMasaElasticClient
         CancellationToken cancellationToken = default);
 
     Task<Response.Index.DeleteIndexResponse> DeleteMultiIndexAsync(
-        string[] indexNames,
+        IEnumerable<string> indexNames,
         CancellationToken cancellationToken = default);
 
     Task<Response.Index.DeleteIndexResponse> DeleteIndexByAliasAsync(
         string alias,
         CancellationToken cancellationToken = default);
 
-    Task<Response.Index.GetIndexResponse> GetAllIndexAsync(CancellationToken cancellationToken);
+    Task<Response.Index.GetIndexResponse> GetAllIndexAsync(CancellationToken cancellationToken = default);
 
     Task<Response.Index.GetIndexByAliasResponse> GetIndexByAliasAsync(
         string alias,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 
     #endregion
 

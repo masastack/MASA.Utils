@@ -5,7 +5,7 @@ public class QueryBaseOptions<TDocument> : DocumentOptions
 {
     public string? DefaultField { get; }
 
-    public string[] Fields { get; private set; }
+    public IEnumerable<string> Fields { get; private set; }
 
     public string Query { get; }
 
@@ -22,6 +22,14 @@ public class QueryBaseOptions<TDocument> : DocumentOptions
         Operator = @operator;
     }
 
+    public QueryBaseOptions(string indexName, string query, IEnumerable<string>? fields = null, Operator @operator = Operator.Or)
+        : base(indexName)
+    {
+        DefaultField = string.Empty;
+        Fields = fields ?? Array.Empty<string>();
+        Query = query;
+        Operator = @operator;
+    }
 
     public QueryBaseOptions<TDocument> UseFields(params string[] fields)
     {
