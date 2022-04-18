@@ -1,12 +1,3 @@
-﻿using System.Dynamic;
-using Masa.Utils.Data.Elasticsearch.Options.Document.Exist;
-using Masa.Utils.Data.Elasticsearch.Options.Document.Get;
-using Masa.Utils.Data.Elasticsearch.Options.Document.Query;
-using Masa.Utils.Data.Elasticsearch.Options.Document.Set;
-using Masa.Utils.Data.Elasticsearch.Options.Document.Update;
-using Masa.Utils.Data.Elasticsearch.Options.Index;
-using Nest;
-
 namespace Masa.Utils.Data.Elasticsearch.Tests;
 
 [TestClass]
