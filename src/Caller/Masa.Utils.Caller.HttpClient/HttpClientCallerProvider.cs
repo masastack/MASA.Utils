@@ -6,7 +6,7 @@ public class HttpClientCallerProvider : AbstractCallerProvider
     private readonly IRequestMessage _requestMessage;
     private readonly string _baseApi;
 
-    public HttpClientCallerProvider(IServiceProvider serviceProvider,string name,string baseApi)
+    public HttpClientCallerProvider(IServiceProvider serviceProvider, string name, string baseApi)
         :base(serviceProvider)
     {
         _httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
