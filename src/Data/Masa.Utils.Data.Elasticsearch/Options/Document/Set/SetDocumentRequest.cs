@@ -4,20 +4,20 @@ public class SetDocumentRequest<TDocument> : DocumentOptions where TDocument : c
 {
     public List<SingleDocumentBaseRequest<TDocument>> Items { get; set; }
 
-    public SetDocumentRequest(string indexName) : base(indexName)
-    {
-        Items = new();
-    }
+    public SetDocumentRequest(string indexName) : base(indexName) => Items = new();
 
     public SetDocumentRequest(string indexName, TDocument document, string? documentId = null) : this(indexName)
+        => AddDocument(document, documentId);
+
+    public SetDocumentRequest(string indexName, IEnumerable<SetDocumentItemBaseRequest<TDocument>> datas) : this(indexName)
     {
-        AddDocument(document, documentId);
+        ArgumentNullException.ThrowIfNull(datas, nameof(datas));
+
+        foreach (var data in datas) AddDocument(data.Document, data.DocumentId);
     }
 
     public SetDocumentRequest<TDocument> AddDocument(TDocument document, string? documentId = null)
-    {
-        return AddDocument(new SingleDocumentBaseRequest<TDocument>(document, documentId));
-    }
+        => AddDocument(new SingleDocumentBaseRequest<TDocument>(document, documentId));
 
     public SetDocumentRequest<TDocument> AddDocument(SingleDocumentBaseRequest<TDocument> item)
     {

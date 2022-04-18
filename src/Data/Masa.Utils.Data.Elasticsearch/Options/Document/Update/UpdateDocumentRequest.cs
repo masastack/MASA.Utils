@@ -5,12 +5,8 @@ public class UpdateDocumentRequest<TDocument> : DocumentOptions where TDocument 
     public UpdateDocumentBaseRequest<TDocument> Request { get; }
 
     public UpdateDocumentRequest(string indexName, TDocument document, string? documentId = null) : base(indexName)
-    {
-        Request = new UpdateDocumentBaseRequest<TDocument>(document, documentId);
-    }
+        => Request = new UpdateDocumentBaseRequest<TDocument>(document, documentId);
 
     public UpdateDocumentRequest(string indexName, object partialDocument, string? documentId = null) : base(indexName)
-    {
-        Request = new UpdateDocumentBaseRequest<TDocument>(partialDocument, documentId);
-    }
+        => Request = new UpdateDocumentBaseRequest<TDocument>(partialDocument, documentId);
 }
