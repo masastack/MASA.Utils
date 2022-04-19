@@ -29,4 +29,25 @@ public class AutomaticCallerTest
             _builder.Services.AddCaller().AddCaller();
         });
     }
+
+    [TestMethod]
+    public void TestDaprCallerReturnCallerProviderIsNotNull()
+    {
+        _builder.Services.AddCaller();
+        _ = _builder.Build();
+        var serviceProvider = _builder.Services.BuildServiceProvider();
+        var caller = serviceProvider.GetRequiredService<DaprCaller>();
+        Assert.IsTrue(caller.CallerProviderIsNotNull());
+    }
+
+    [TestMethod]
+    public void TestCustomDaprBaseReturnAppIdIsEqualUserService()
+    {
+        _builder.Services.AddCaller();
+        _ = _builder.Build();
+        var serviceProvider = _builder.Services.BuildServiceProvider();
+        var roleCaller = serviceProvider.GetRequiredService<RoleCaller>();
+        var userCaller = serviceProvider.GetRequiredService<UserCaller>();
+        Assert.IsTrue(roleCaller.GetAppId() == "User-Service" && userCaller.GetAppId() == "User-Service");
+    }
 }

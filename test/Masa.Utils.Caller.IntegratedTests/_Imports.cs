@@ -1,4 +1,5 @@
 global using Masa.Utils.Caller.Core;
+global using Masa.Utils.Caller.DaprClient;
 global using Masa.Utils.Caller.HttpClient;
 global using Masa.Utils.Caller.IntegratedTest.Callers;
 global using Microsoft.AspNetCore.Builder;

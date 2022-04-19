@@ -22,13 +22,13 @@ public static class ServiceCollectionExtensions
         CallerOptions callerOption = new CallerOptions(services);
         options.Invoke(callerOption);
 
-        services.TryAddSingleton<ITypeConvertProvider, DefaultTypeConvertProvider>();
-        services.AddAutomaticCaller(callerOption);
-        services.TryOrUpdateCallerOptions(callerOption);
         services.TryAddSingleton<ICallerFactory, DefaultCallerFactory>();
         services.TryAddSingleton<IRequestMessage, DefaultRequestMessage>();
         services.TryAddScoped(serviceProvider => serviceProvider.GetRequiredService<ICallerFactory>().CreateClient());
 
+        services.TryAddSingleton<ITypeConvertProvider, DefaultTypeConvertProvider>();
+        services.AddAutomaticCaller(callerOption);
+        services.TryOrUpdateCallerOptions(callerOption);
         return services;
     }
 
