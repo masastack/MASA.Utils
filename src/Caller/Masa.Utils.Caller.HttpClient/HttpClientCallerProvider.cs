@@ -4,17 +4,20 @@ public class HttpClientCallerProvider : AbstractCallerProvider
 {
     private readonly System.Net.Http.HttpClient _httpClient;
     private readonly IRequestMessage _requestMessage;
+    private readonly bool baseApiIsNullOrEmpty;
     private readonly string _baseApi;
 
     public HttpClientCallerProvider(IServiceProvider serviceProvider, string name, string baseApi)
-        :base(serviceProvider)
+        : base(serviceProvider)
     {
         _httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
         _requestMessage = serviceProvider.GetRequiredService<IRequestMessage>();
         _baseApi = baseApi;
+        baseApiIsNullOrEmpty = string.IsNullOrEmpty(_baseApi);
     }
 
-    public override async Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default) where TResponse : default
+    public override async Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
+        where TResponse : default
     {
         HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
         return await _requestMessage.ProcessResponseAsync<TResponse>(response, cancellationToken);
@@ -47,20 +50,24 @@ public class HttpClientCallerProvider : AbstractCallerProvider
         throw new NotImplementedException();
     }
 
-    public override Task<TResponse> SendGrpcAsync<TRequest, TResponse>(string methodName, TRequest request, CancellationToken cancellationToken = default)
+    public override Task<TResponse> SendGrpcAsync<TRequest, TResponse>(string methodName, TRequest request,
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    private string GetRequestUri(string? methodName)
+    protected virtual string GetRequestUri(string? methodName)
     {
-        if (methodName is null)
-            return string.Empty;
+        if (string.IsNullOrEmpty(methodName))
+            return baseApiIsNullOrEmpty ? string.Empty : _baseApi;
 
-        if (_baseApi != string.Empty && !methodName.Split('?')[0].Contains("/"))
+        if (baseApiIsNullOrEmpty || Uri.IsWellFormedUriString(methodName, UriKind.Absolute))
+            return methodName;
+
+        if (_baseApi.EndsWith("/"))
         {
-            return $"{_baseApi}{(_baseApi.Substring(_baseApi.Length - 1, 1) == "/" ? methodName : $"/{methodName}")}";
+            return $"{_baseApi}{(methodName.StartsWith("/") ? methodName.Substring(1) : methodName)}";
         }
-        return methodName;
+        return $"{_baseApi}{(methodName.StartsWith("/") ? methodName : "/" + methodName)}";
     }
 }
