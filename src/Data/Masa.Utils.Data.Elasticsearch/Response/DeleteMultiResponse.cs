@@ -6,6 +6,9 @@ public class DeleteMultiResponse : ResponseBase
 
     public DeleteMultiResponse(Nest.BulkResponse bulkResponse) : base(bulkResponse)
     {
-        Data = bulkResponse.Items.Select(item => new DeleteRangeResponseItems(item.Id, item.IsValid, item.Error?.ToString() ?? string.Empty)).ToList();
+        Data = bulkResponse.Items.Select(item =>
+            new DeleteRangeResponseItems(item.Id,
+                item.IsValid && item.Status == 200,
+                !string.IsNullOrEmpty(item.Result) ? item.Result : item.Error?.ToString() ?? string.Empty)).ToList();
     }
 }

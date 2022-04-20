@@ -15,7 +15,7 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task TestCreateIndexAsyncReturnIndexIsExist()
     {
-        string indexName = "user_index";
+        string indexName = $"user_index_{Guid.NewGuid()}";
         var indexResponse = await _builder.Client.CreateIndexAsync(indexName);
         Assert.IsTrue(indexResponse.IsValid);
         await _builder.Client.DeleteIndexAsync(indexName);
@@ -24,7 +24,7 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task TestIndexExistAsyncReturnIndexIsExist()
     {
-        string indexName = "user_index";
+        string indexName = $"user_index_{Guid.NewGuid()}";
         await _builder.Client.CreateIndexAsync(indexName);
 
         var existResponse = await _builder.Client.IndexExistAsync(indexName);
@@ -35,7 +35,7 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task TestCreateDocumentAsyncReturnCountIs1()
     {
-        string indexName = "user_index";
+        string indexName = $"user_index_{Guid.NewGuid()}";
         var countResponse = await _builder.Client.DocumentCountAsync(new CountDocumentRequest(indexName));
         Assert.IsTrue(!countResponse.IsValid);
 
@@ -54,11 +54,11 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task TestDeleteMultiIndexAsyncReturnCountIs0()
     {
-        string userIndexName = "user_index";
+        string userIndexName = $"user_index_{Guid.NewGuid()}";
         var indexResponse = await _builder.Client.CreateIndexAsync(userIndexName);
         Assert.IsTrue(indexResponse.IsValid);
 
-        string personIndexName = "person_index";
+        string personIndexName = $"person_index_{Guid.NewGuid()}";
         indexResponse = await _builder.Client.CreateIndexAsync(personIndexName);
         Assert.IsTrue(indexResponse.IsValid);
 
@@ -73,9 +73,9 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task TestIndexByAliasAsync()
     {
-        string userIndex1Name = "user_index_01";
-        string userIndex2Name = "user_index_02";
-        string aliasIndexName = "user_index_alias";
+        string userIndex1Name = $"user_index_{Guid.NewGuid()}";
+        string userIndex2Name = $"user_index_{Guid.NewGuid()}";
+        string aliasIndexName = $"user_index_alias_{Guid.NewGuid()}";
 
         IAliases aliases = new Aliases();
         aliases.Add(aliasIndexName, new Alias());
@@ -130,8 +130,8 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task TestGetAliasByIndexAsyncReturnAliasIsUserIndexAlias()
     {
-        string userIndexName = "user_index";
-        string aliasIndexName = "user_index_alias";
+        string userIndexName = $"user_index_{Guid.NewGuid()}";
+        string aliasIndexName = $"user_index_alias_{Guid.NewGuid()}";
 
         IAliases aliases = new Aliases();
         aliases.Add(aliasIndexName, new Alias());
@@ -150,8 +150,8 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task TestUnBindAliasAsyncReturnIndexIsExist()
     {
-        string userIndexName = "user_index";
-        string aliasIndexName = "user_index_alias";
+        string userIndexName = $"user_index_{Guid.NewGuid()}";
+        string aliasIndexName = $"user_index_alias_{Guid.NewGuid()}";
 
         IAliases aliases = new Aliases();
         aliases.Add(aliasIndexName, new Alias());
@@ -173,7 +173,7 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task TestCreateMultiDocumentAsyncReturnCountIs2()
     {
-        string indexName = "user_index";
+        string indexName = $"user_index_{Guid.NewGuid()}";
         await _builder.Client.DeleteIndexAsync(indexName);
 
         string id = Guid.NewGuid().ToString();
@@ -205,7 +205,7 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task TestDocumentExistsAsyncReturnIsExist()
     {
-        string indexName = "user_index";
+        string indexName = $"user_index_{Guid.NewGuid()}";
         var id = Guid.NewGuid();
         var createResponse = await _builder.Client.CreateDocumentAsync(new CreateDocumentRequest<object>(indexName, new
         {
@@ -223,7 +223,7 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task TestDeleteDocumentAsyncReturnCountIs0()
     {
-        string indexName = "user_index";
+        string indexName = $"user_index_{Guid.NewGuid()}";
         var id = Guid.NewGuid();
         var createResponse = await _builder.Client.CreateDocumentAsync(new CreateDocumentRequest<object>(indexName, new
         {
@@ -242,9 +242,9 @@ public class DefaultMasaElasticClientTests
     }
 
     [TestMethod]
-    public async Task TestDeleteMultiDocumentAsyncReturnCountIs1()
+    public async Task TestDeleteMultiDocumentAsyncReturnDeleteCountIs2()
     {
-        string indexName = "user_index";
+        string indexName = $"user_index_{Guid.NewGuid()}";
         string id = Guid.NewGuid().ToString();
         string id2 = Guid.NewGuid().ToString();
         await _builder.Client.CreateMultiDocumentAsync(new CreateMultiDocumentRequest<object>(indexName)
@@ -262,8 +262,41 @@ public class DefaultMasaElasticClientTests
             }
         });
 
-        var deleteResponse = await _builder.Client.DeleteMultiDocumentAsync(new DeleteMultiDocumentRequest(indexName, id, id2));
+        var deleteResponse =
+            await _builder.Client.DeleteMultiDocumentAsync(new DeleteMultiDocumentRequest(indexName, id, id2));
         Assert.IsTrue(deleteResponse.IsValid && deleteResponse.Data.Count == 2 && deleteResponse.Data.Count(r => r.IsValid) == 2);
+
+        Thread.Sleep(1000);
+        var countResponse = await _builder.Client.DocumentCountAsync(new CountDocumentRequest(indexName));
+        Assert.IsTrue(countResponse.IsValid && countResponse.Count == 0);
+
+        await _builder.Client.DeleteIndexAsync(indexName);
+    }
+
+    [TestMethod]
+    public async Task TestDeleteMultiDocumentAsyncReturnDeleteCountSuccessIs2()
+    {
+        string indexName = $"user_index_{Guid.NewGuid()}";
+        string id = Guid.NewGuid().ToString();
+        string id2 = Guid.NewGuid().ToString();
+        await _builder.Client.CreateMultiDocumentAsync(new CreateMultiDocumentRequest<object>(indexName)
+        {
+            Items = new List<SingleDocumentBaseRequest<object>>()
+            {
+                new(new
+                {
+                    Id = Guid.NewGuid()
+                }, id),
+                new(new
+                {
+                    Id = Guid.NewGuid()
+                }, id2)
+            }
+        });
+
+        var deleteResponse =
+            await _builder.Client.DeleteMultiDocumentAsync(new DeleteMultiDocumentRequest(indexName, id, id2, Guid.NewGuid().ToString()));
+        Assert.IsTrue(deleteResponse.IsValid && deleteResponse.Data.Count == 3 && deleteResponse.Data.Count(r => r.IsValid) == 2);
 
         Thread.Sleep(1000);
         var countResponse = await _builder.Client.DocumentCountAsync(new CountDocumentRequest(indexName));
@@ -275,7 +308,7 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task TestSetDocumentAsyncReturnCountIs3()
     {
-        string indexName = "user_index";
+        string indexName = $"user_index_{Guid.NewGuid()}";
         Guid id = Guid.NewGuid();
         Guid id2 = Guid.NewGuid();
         await _builder.Client.CreateMultiDocumentAsync(new CreateMultiDocumentRequest<object>(indexName)
@@ -395,7 +428,8 @@ public class DefaultMasaElasticClientTests
         var response =
             await _builder.Client.GetPaginatedListAsync(new PaginatedOptions<object>(indexName, "jim", "name", 1, 1));
         Assert.IsTrue(response.IsValid && response.Data.Count == 1);
-        response = await _builder.Client.GetPaginatedListAsync(new PaginatedOptions<object>(indexName, "jim or 2", new List<string> { "id", "name" }, 1, 2));
+        response = await _builder.Client.GetPaginatedListAsync(new PaginatedOptions<object>(indexName, "jim or 2",
+            new List<string> { "id", "name" }, 1, 2));
         Assert.IsTrue(response.IsValid && response.Data.Count == 2);
 
         await _builder.Client.DeleteIndexAsync(indexName);
@@ -404,9 +438,9 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task BindAliasAsync()
     {
-        string indexName = "user_index_1";
-        string indexName2 = "user_index_2";
-        string alias = "userIndex";
+        string indexName = $"user_index_{Guid.NewGuid()}";
+        string indexName2 = $"user_index_{Guid.NewGuid()}";
+        string alias = $"userIndex_{Guid.NewGuid()}";
 
         await _builder.Client.CreateIndexAsync(indexName);
         await _builder.Client.CreateIndexAsync(indexName2);
@@ -437,9 +471,9 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task DeleteIndexByAliasAsync()
     {
-        string indexName = "user_index_1";
-        string indexName2 = "user_index_2";
-        string alias = "userIndex";
+        string indexName = $"user_index_{Guid.NewGuid()}";
+        string indexName2 = $"user_index_{Guid.NewGuid()}";
+        string alias = $"user_index_{Guid.NewGuid()}";
 
         await _builder.Client.CreateIndexAsync(indexName);
         await _builder.Client.CreateIndexAsync(indexName2);
@@ -471,9 +505,9 @@ public class DefaultMasaElasticClientTests
     [TestMethod]
     public async Task ClearDocumentAsync()
     {
-        string indexName = "user_index_1";
-        string indexName2 = "user_index_2";
-        string alias = "userIndex";
+        string indexName = $"user_index_{Guid.NewGuid()}";
+        string indexName2 = $"user_index_{Guid.NewGuid()}";
+        string alias = $"user_index_{Guid.NewGuid()}";
 
         await _builder.Client.CreateIndexAsync(indexName);
         await _builder.Client.CreateIndexAsync(indexName2);

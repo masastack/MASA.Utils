@@ -7,6 +7,5 @@ public class GetIndexByAliasResponse : ResponseBase
     public GetIndexByAliasResponse(CatResponse<CatIndicesRecord> catResponse) : base(catResponse)
     {
         IndexNames = catResponse.IsValid ? catResponse.Records.Select(r => r.Index).ToArray() : Array.Empty<string>();
-        IndexNames = catResponse.IsValid ? catResponse.Records.Select(r => r.Index).ToArray() : Array.Empty<string>();
     }
 }
