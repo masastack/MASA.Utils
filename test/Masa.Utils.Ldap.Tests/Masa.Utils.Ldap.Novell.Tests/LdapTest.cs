@@ -5,6 +5,7 @@ public class LdapTest
 {
     readonly IServiceCollection Services;
     readonly ILdapProvider ldapProvider;
+    readonly ILdapFactory ldapFactory;
 
     public LdapTest()
     {
@@ -15,14 +16,26 @@ public class LdapTest
         var configuration = configurationBuilder.Build();
         var ldapConfigurationSection = configuration.GetSection(nameof(LdapOptions));
         Services.AddLadpContext(ldapConfigurationSection);
+        Services.AddLadpContext();
         var serviceProvider = Services.BuildServiceProvider();
         ldapProvider = serviceProvider.GetRequiredService<ILdapProvider>();
+        ldapFactory = serviceProvider.GetRequiredService<ILdapFactory>();
     }
 
     [TestInitialize]
     public void EdgeDriverInitialize()
     {
 
+    }
+
+    [TestMethod]
+    public void CreateLdapProvider()
+    {
+        var ldapProvider = ldapFactory.CreateProvider(new LdapOptions
+        {
+
+        });
+        Assert.IsNotNull(ldapProvider);
     }
 
     [TestMethod]

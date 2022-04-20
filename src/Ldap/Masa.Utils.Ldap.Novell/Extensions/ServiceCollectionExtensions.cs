@@ -15,4 +15,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(typeof(ILdapProvider), typeof(LdapProvider));
         return services;
     }
+
+    public static IServiceCollection AddLadpContext(this IServiceCollection services)
+    {
+        services.AddSingleton(typeof(ILdapFactory), typeof(LdapFactory));
+        return services;
+    }
 }

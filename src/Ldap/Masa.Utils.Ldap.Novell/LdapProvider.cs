@@ -12,6 +12,11 @@ public class LdapProvider : ILdapProvider, IDisposable
         "telephoneNumber", "mail", "streetAddress", "postalCode", "l", "st", "co", "c"
     };
 
+    internal LdapProvider(LdapOptions options)
+    {
+        _ldapOptions = options;
+    }
+
     public LdapProvider(IOptionsSnapshot<LdapOptions> options)
     {
         _ldapOptions = options.Value;
