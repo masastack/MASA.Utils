@@ -4,16 +4,16 @@ public class HttpClientCallerProvider : AbstractCallerProvider
 {
     private readonly System.Net.Http.HttpClient _httpClient;
     private readonly IRequestMessage _requestMessage;
-    private readonly bool baseApiIsNullOrEmpty;
-    private readonly string _baseApi;
+    private readonly bool _prefixIsNullOrEmpty;
+    private readonly string _prefix;
 
-    public HttpClientCallerProvider(IServiceProvider serviceProvider, string name, string baseApi)
+    public HttpClientCallerProvider(IServiceProvider serviceProvider, string name, string prefix)
         : base(serviceProvider)
     {
         _httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
         _requestMessage = serviceProvider.GetRequiredService<IRequestMessage>();
-        _baseApi = baseApi;
-        baseApiIsNullOrEmpty = string.IsNullOrEmpty(_baseApi);
+        _prefix = prefix;
+        _prefixIsNullOrEmpty = string.IsNullOrEmpty(_prefix);
     }
 
     public override async Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
@@ -59,15 +59,14 @@ public class HttpClientCallerProvider : AbstractCallerProvider
     protected virtual string GetRequestUri(string? methodName)
     {
         if (string.IsNullOrEmpty(methodName))
-            return baseApiIsNullOrEmpty ? string.Empty : _baseApi;
+            return string.Empty;
 
-        if (baseApiIsNullOrEmpty || Uri.IsWellFormedUriString(methodName, UriKind.Absolute))
+        if (Uri.IsWellFormedUriString(methodName, UriKind.Absolute) || _prefixIsNullOrEmpty)
             return methodName;
 
-        if (_baseApi.EndsWith("/"))
-        {
-            return $"{_baseApi}{(methodName.StartsWith("/") ? methodName.Substring(1) : methodName)}";
-        }
-        return $"{_baseApi}{(methodName.StartsWith("/") ? methodName : "/" + methodName)}";
+        if (_prefix.EndsWith("/"))
+            return $"{_prefix}{(methodName.StartsWith("/") ? methodName.Substring(1) : methodName)}";
+
+        return $"{_prefix}{(methodName.StartsWith("/") ? methodName : "/" + methodName)}";
     }
 }

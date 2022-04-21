@@ -8,5 +8,5 @@ public class CustomHttpClientCallerProvider : HttpClientCallerProvider
 
     }
 
-    public string GetFullPath(string? methodName) => base.GetRequestUri(methodName);
+    public string GetResult(string? methodName) => base.GetRequestUri(methodName);
 }

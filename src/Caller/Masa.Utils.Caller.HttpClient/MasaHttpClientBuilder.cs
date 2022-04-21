@@ -16,7 +16,12 @@ public class MasaHttpClientBuilder
         }
     }
 
-    public string BaseApi { get; set; }
+    [Obsolete($"recommended to use {nameof(BaseAddress)}, {nameof(BaseApi)} has expired")]
+    public string BaseApi { get => BaseAddress; set => BaseAddress = value; }
+
+    public string BaseAddress { get; set; }
+
+    public string Prefix { get; set; }
 
     public bool IsDefault { get; set; } = false;
 
@@ -31,11 +36,24 @@ public class MasaHttpClientBuilder
     {
     }
 
-    public MasaHttpClientBuilder(string name, string baseApi, Action<System.Net.Http.HttpClient>? configure)
+    public MasaHttpClientBuilder(string name, string baseAddress, Action<System.Net.Http.HttpClient>? configure)
+        : this(name, baseAddress, string.Empty, configure)
+    {
+    }
+
+    public MasaHttpClientBuilder(string name, string baseAddress, string prefix, Action<System.Net.Http.HttpClient>? configure)
     {
         Name = name;
-        BaseApi = baseApi;
+        BaseAddress = baseAddress;
+        Prefix = prefix;
         Configure = configure;
     }
-}
 
+    public virtual void ConfigureHttpClient(System.Net.Http.HttpClient httpClient)
+    {
+        if (!string.IsNullOrEmpty(BaseAddress))
+            httpClient.BaseAddress = new Uri(BaseAddress);
+
+        Configure?.Invoke(httpClient);
+    }
+}
