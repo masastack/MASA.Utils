@@ -17,7 +17,7 @@ Install-Package Masa.Utils.Caller.HttpClient
     {
         options.UseHttpClient(httpClientBuilder =>
         {
-            httpClientBuilder.Name = "UserCaller";//仅存在一个HttpClient时，可以不对Name赋值
+            httpClientBuilder.Name = "UserCaller";// 当前Caller的别名，仅存在一个HttpClient时，可以不对Name赋值
             httpClientBuilder.BaseAddress = "http://localhost:5000" ;
         });
     });
@@ -63,6 +63,12 @@ Install-Package Masa.Utils.Caller.HttpClient
         return callerProvider.GetAsync<string>("/Check/Healthy");
     });
     ```
+
+> 当多个Caller被添加时，如何获取指定的Caller？
+>> 通过`CallerFactory`的`CreateClient`方法得到指定别名的CallerProvider
+>
+> 为什么`userCallerProvider`没有通过`CallerFactory`的`CreateClient`方法得到对应的Caller？
+>> 如果未指定默认的ICallerProvider，则在`AddCaller`方法中第一个被添加的就是默认的CallerProvider
 
 #### 推荐用法
 

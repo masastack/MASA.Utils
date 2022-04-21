@@ -17,7 +17,7 @@ Install-Package Masa.Utils.Caller.HttpClient
     {
         options.UseHttpClient(httpClientBuilder =>
         {
-            httpClientBuilder.Name = "UserCaller";//When there is only one HttpClient, you can not assign a value to Name
+            httpClientBuilder.Name = "UserCaller";// The alias of the current Caller, when there is only one HttpClient, you can not assign a value to Name
             httpClientBuilder.BaseAddress = "http://localhost:5000" ;
         });
     });
@@ -63,6 +63,12 @@ Install-Package Masa.Utils.Caller.HttpClient
         return callerProvider.GetAsync<string>("/Check/Healthy");
     });
     ````
+
+> When multiple Callers are added, how to get the specified Caller?
+>> Get the CallerProvider of the specified alias through the `CreateClient` method of `CallerFactory`
+>
+> Why doesn't `userCallerProvider` get the corresponding Caller through the `CreateClient` method of `CallerFactory`?
+>> If no default ICallerProvider is specified, the default CallerProvider is the first one added in the `AddCaller` method
 
 #### Recommended usage
 
