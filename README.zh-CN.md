@@ -2,7 +2,7 @@
 
 # MASA.Utils
 
-MASA.Utils是MASA的工具库、这些工具被[MASA Stack](https://github.com/masastack)和[MASA Labs](https://github.com/masalabs)等项目使用。
+MASA.Utils是MASA的工具库，这些工具被[MASA Stack](https://github.com/masastack)和[MASA Labs](https://github.com/masalabs)等项目使用。
 
 
 
@@ -16,7 +16,7 @@ MASA.Utils是MASA的工具库、这些工具被[MASA Stack](https://github.com/m
 * Caching
   * Memory: 内存缓存
   * Redis
-  * DistributedMemory: 分布式缓存
+  * DistributedMemory: 分布式内存缓存
 * Caller
   * HttpClient
   * DaprClient

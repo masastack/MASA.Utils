@@ -16,7 +16,7 @@ MASA.Utils is a library of MASA tools used by projects such as [MASA Stack](http
 * Caching
   * Memory: memory cache
   * Redis
-  * DistributedMemory: Distributed cache
+  * DistributedMemory: Distributed memory cache
 * Caller
   * HttpClient
   * DaprClient
@@ -69,7 +69,7 @@ Thanks to all the friends who have contributed to this project.
 
 
 
-## code of conduct
+## Code of conduct
 
 This project adopts the Code of Conduct as defined by the Contributors Covenant to clarify the expected behavior of our community. For more information see [MASA Stack Community Code of Conduct](https://github.com/masastack/community/blob/main/CODE-OF-CONDUCT.md).
 
