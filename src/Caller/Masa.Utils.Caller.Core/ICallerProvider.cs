@@ -26,9 +26,21 @@ public interface ICallerProvider
 
     Task<string> GetStringAsync(string? methodName, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
+    Task<string> GetStringAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default) where TRequest : class;
+
+    Task<string> GetStringAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
+
     Task<byte[]> GetByteArrayAsync(string? methodName, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
+    Task<byte[]> GetByteArrayAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default) where TRequest : class;
+
+    Task<byte[]> GetByteArrayAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
+
     Task<Stream> GetStreamAsync(string? methodName, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
+
+    Task<Stream> GetStreamAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default) where TRequest : class;
+
+    Task<Stream> GetStreamAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
     Task<HttpResponseMessage> GetAsync(string? methodName, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default);
 
