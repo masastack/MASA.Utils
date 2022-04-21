@@ -57,9 +57,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Development.Dapr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Development.Dapr.AspNetCore", "src\Development\Masa.Utils.Development.Dapr.AspNetCore\Masa.Utils.Development.Dapr.AspNetCore.csproj", "{BA28042B-25C1-4361-A836-5710BF271EEF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Enums", "src\Extensions\Masa.Utils.Enums\Masa.Utils.Enums.csproj", "{56E7A4C7-5AF3-4DD1-A6AA-E713CA1C19D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Extensions.Enums", "src\Extensions\Masa.Utils.Extensions.Enums\Masa.Utils.Extensions.Enums.csproj", "{56E7A4C7-5AF3-4DD1-A6AA-E713CA1C19D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Expressions", "src\Extensions\Masa.Utils.Expressions\Masa.Utils.Expressions.csproj", "{22FB9445-2337-43F7-AEFB-6E349619CBB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Extensions.Expressions", "src\Extensions\Masa.Utils.Extensions.Expressions\Masa.Utils.Extensions.Expressions.csproj", "{22FB9445-2337-43F7-AEFB-6E349619CBB1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Extensions.DependencyInjection", "src\Extensions\Masa.Utils.Extensions.DependencyInjection\Masa.Utils.Extensions.DependencyInjection.csproj", "{6CC1E189-9249-44BB-B0C9-E13D173E85CE}"
 EndProject

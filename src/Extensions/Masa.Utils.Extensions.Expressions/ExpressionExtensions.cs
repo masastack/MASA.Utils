@@ -1,4 +1,6 @@
-namespace System.Linq.Expressions;
+using System.Linq.Expressions;
+
+namespace Masa.Utils.Extensions.Expressions;
 
 public static class ExpressionExtensions
 {
