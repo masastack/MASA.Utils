@@ -42,7 +42,7 @@ public class DefaultTypeConvertProvider : ITypeConvertProvider
         if (request is IEnumerable<KeyValuePair<string, string>> keyValuePairs)
             return keyValuePairs;
 
-        var requestType = typeof(TRequest);
+        var requestType = request.GetType();
         if (!Dictionary.TryGetValue(requestType, out List<PropertyInfoMember>? members))
         {
             members = GetMembers(request.GetType().GetProperties());
