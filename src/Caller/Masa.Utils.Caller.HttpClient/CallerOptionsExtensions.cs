@@ -5,12 +5,11 @@ public static class CallerOptionsExtensions
     public static IHttpClientBuilder UseHttpClient(this CallerOptions callerOptions, Func<MasaHttpClientBuilder>? clientBuilder = null)
     {
         var builder = clientBuilder == null ? new MasaHttpClientBuilder() : clientBuilder.Invoke();
+        var httpClientBuilder = callerOptions.Services.AddHttpClient(builder.Name, httpClient
+            => builder.ConfigureHttpClient(httpClient));
 
-        IHttpClientBuilder httpClientBuilder = builder.Configure == null ?
-            callerOptions.Services.AddHttpClient(builder.Name) :
-            callerOptions.Services.AddHttpClient(builder.Name, builder.Configure);
-
-        AddCallerExtensions.AddCaller(callerOptions, builder.Name, builder.IsDefault, serviceProvider => new HttpClientCallerProvider(serviceProvider, builder.Name, builder.BaseApi));
+        AddCallerExtensions.AddCaller(callerOptions, builder.Name, builder.IsDefault, serviceProvider
+            => new HttpClientCallerProvider(serviceProvider, builder.Name, builder.Prefix));
         return httpClientBuilder;
     }
 

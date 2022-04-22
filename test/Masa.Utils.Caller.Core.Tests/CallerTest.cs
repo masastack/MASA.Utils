@@ -13,7 +13,7 @@ public class CallerTest
             {
                 clientBuilder.Name = "http";
                 clientBuilder.IsDefault = true;
-                clientBuilder.BaseApi = "https://github.com/masastack/MASA.Contrib";
+                clientBuilder.BaseAddress = "https://github.com/masastack/MASA.Contrib";
             });
         });
         var serviceProvider = services.BuildServiceProvider();
@@ -32,7 +32,7 @@ public class CallerTest
             {
                 clientBuilder.Name = "http";
                 clientBuilder.IsDefault = true;
-                clientBuilder.BaseApi = "https://github.com/masastack/MASA.Contrib";
+                clientBuilder.BaseAddress = "https://github.com/masastack/MASA.Contrib";
             });
             opt.UseDapr(clientBuilder =>
             {
@@ -63,13 +63,13 @@ public class CallerTest
                 opt.UseHttpClient(builder =>
                 {
                     builder.Name = "github";
-                    builder.BaseApi = "https://github.com/masastack";
+                    builder.BaseAddress = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
                 opt.UseHttpClient(builder =>
                 {
                     builder.Name = "gitee";
-                    builder.BaseApi = "https://gitee.com/masastack";
+                    builder.BaseAddress = "https://gitee.com/masastack";
                     builder.IsDefault = true;
                 });
             });
@@ -87,7 +87,7 @@ public class CallerTest
                 opt.UseHttpClient(builder =>
                 {
                     builder.Name = "gitee";
-                    builder.BaseApi = "https://gitee.com/masastack";
+                    builder.BaseAddress = "https://gitee.com/masastack";
                     builder.IsDefault = true;
                 });
             });
@@ -96,7 +96,7 @@ public class CallerTest
                 opt.UseHttpClient(builder =>
                 {
                     builder.Name = "github";
-                    builder.BaseApi = "https://github.com/masastack";
+                    builder.BaseAddress = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
             });
@@ -114,13 +114,13 @@ public class CallerTest
                 opt.UseHttpClient(builder =>
                 {
                     builder.Name = "github";
-                    builder.BaseApi = "https://github.com/masastack";
+                    builder.BaseAddress = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
                 opt.UseHttpClient(builder =>
                 {
                     builder.Name = "github";
-                    builder.BaseApi = "https://github.com/masastack";
+                    builder.BaseAddress = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
             });
@@ -138,7 +138,7 @@ public class CallerTest
                 opt.UseHttpClient(builder =>
                 {
                     builder.Name = "github";
-                    builder.BaseApi = "https://github.com/masastack";
+                    builder.BaseAddress = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
             });
@@ -148,7 +148,7 @@ public class CallerTest
                 opt.UseHttpClient(builder =>
                 {
                     builder.Name = "github";
-                    builder.BaseApi = "https://github.com/masastack";
+                    builder.BaseAddress = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
             });
@@ -166,7 +166,7 @@ public class CallerTest
                 opt.UseHttpClient(builder =>
                 {
                     builder.Name = typeof(GithubCaller).FullName!;
-                    builder.BaseApi = "https://github.com/masastack";
+                    builder.BaseAddress = "https://github.com/masastack";
                     builder.IsDefault = true;
                 });
             });

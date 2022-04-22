@@ -68,12 +68,28 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return await content.Content.ReadAsStringAsync(cancellationToken);
     }
 
+    public virtual Task<string> GetStringAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true,
+        CancellationToken cancellationToken = default) where TRequest : class
+        => GetStringAsync(methodName, _typeConvertProvider.ConvertToDictionary(data), autoThrowUserFriendlyException, cancellationToken);
+
+    public virtual Task<string> GetStringAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true,
+        CancellationToken cancellationToken = default)
+        => GetStringAsync(GetUrl(methodName, data), autoThrowUserFriendlyException, cancellationToken);
+
     public virtual async Task<byte[]> GetByteArrayAsync(string? methodName, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default)
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Get, methodName);
         HttpResponseMessage content = await SendAsync(request, autoThrowUserFriendlyException, cancellationToken);
         return await content.Content.ReadAsByteArrayAsync(cancellationToken);
     }
+
+    public Task<byte[]> GetByteArrayAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true,
+        CancellationToken cancellationToken = default) where TRequest : class
+        => GetByteArrayAsync(methodName, _typeConvertProvider.ConvertToDictionary(data), autoThrowUserFriendlyException, cancellationToken);
+
+    public Task<byte[]> GetByteArrayAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true,
+        CancellationToken cancellationToken = default)
+        => GetByteArrayAsync(GetUrl(methodName, data), autoThrowUserFriendlyException, cancellationToken);
 
     public virtual async Task<Stream> GetStreamAsync(string? methodName, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default)
     {
@@ -82,14 +98,19 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return await content.Content.ReadAsStreamAsync(cancellationToken);
     }
 
+    public Task<Stream> GetStreamAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true,
+        CancellationToken cancellationToken = default) where TRequest : class
+        => GetStreamAsync(methodName, _typeConvertProvider.ConvertToDictionary(data), autoThrowUserFriendlyException, cancellationToken);
+
+    public Task<Stream> GetStreamAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true,
+        CancellationToken cancellationToken = default)
+        => GetStreamAsync(GetUrl(methodName, data), autoThrowUserFriendlyException, cancellationToken);
+
     public virtual Task<HttpResponseMessage> GetAsync(string? methodName, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default)
         => SendAsync(HttpMethod.Get, methodName, null, autoThrowUserFriendlyException, cancellationToken);
 
     public virtual Task<HttpResponseMessage> GetAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default)
-    {
-        methodName = GetUrl(methodName ?? String.Empty, data);
-        return GetAsync(methodName, autoThrowUserFriendlyException, cancellationToken);
-    }
+        => GetAsync(GetUrl(methodName, data), autoThrowUserFriendlyException, cancellationToken);
 
     public Task<TResponse?> GetAsync<TResponse>(string? methodName, CancellationToken cancellationToken = default)
     {
@@ -99,18 +120,19 @@ public abstract class AbstractCallerProvider : ICallerProvider
 
     public Task<TResponse?> GetAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken = default) where TRequest : class
     {
-        HttpRequestMessage request = CreateRequest(HttpMethod.Get, GetUrl(methodName ?? String.Empty, _typeConvertProvider.ConvertToDictionary(data)));
+        HttpRequestMessage request = CreateRequest(HttpMethod.Get, GetUrl(methodName, _typeConvertProvider.ConvertToDictionary(data)));
         return SendAsync<TResponse>(request, cancellationToken);
     }
 
     public Task<TResponse?> GetAsync<TResponse>(string? methodName, Dictionary<string, string> data, CancellationToken cancellationToken = default)
     {
-        HttpRequestMessage request = CreateRequest(HttpMethod.Get, GetUrl(methodName ?? String.Empty, data));
+        HttpRequestMessage request = CreateRequest(HttpMethod.Get, GetUrl(methodName, data));
         return SendAsync<TResponse>(request, cancellationToken);
     }
 
-    protected virtual string GetUrl(string url, Dictionary<string, string> properties)
+    protected virtual string GetUrl(string? url, Dictionary<string, string> properties)
     {
+        url ??= string.Empty;
         foreach (var property in properties)
         {
             string value = property.Value;
