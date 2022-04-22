@@ -70,7 +70,7 @@ public abstract class AbstractCallerProvider : ICallerProvider
 
     public virtual Task<string> GetStringAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default) where TRequest : class
-        => GetStringAsync(methodName, _typeConvertProvider.ConvertToDictionary(data), autoThrowUserFriendlyException, cancellationToken);
+        => GetStringAsync(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data), autoThrowUserFriendlyException, cancellationToken);
 
     public virtual Task<string> GetStringAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default)
@@ -85,7 +85,7 @@ public abstract class AbstractCallerProvider : ICallerProvider
 
     public Task<byte[]> GetByteArrayAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default) where TRequest : class
-        => GetByteArrayAsync(methodName, _typeConvertProvider.ConvertToDictionary(data), autoThrowUserFriendlyException, cancellationToken);
+        => GetByteArrayAsync(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data), autoThrowUserFriendlyException, cancellationToken);
 
     public Task<byte[]> GetByteArrayAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default)
@@ -100,7 +100,7 @@ public abstract class AbstractCallerProvider : ICallerProvider
 
     public Task<Stream> GetStreamAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default) where TRequest : class
-        => GetStreamAsync(methodName, _typeConvertProvider.ConvertToDictionary(data), autoThrowUserFriendlyException, cancellationToken);
+        => GetStreamAsync(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data), autoThrowUserFriendlyException, cancellationToken);
 
     public Task<Stream> GetStreamAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default)
@@ -120,7 +120,7 @@ public abstract class AbstractCallerProvider : ICallerProvider
 
     public Task<TResponse?> GetAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken = default) where TRequest : class
     {
-        HttpRequestMessage request = CreateRequest(HttpMethod.Get, GetUrl(methodName, _typeConvertProvider.ConvertToDictionary(data)));
+        HttpRequestMessage request = CreateRequest(HttpMethod.Get, GetUrl(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data)));
         return SendAsync<TResponse>(request, cancellationToken);
     }
 
@@ -130,7 +130,7 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return SendAsync<TResponse>(request, cancellationToken);
     }
 
-    protected virtual string GetUrl(string? url, Dictionary<string, string> properties)
+    protected virtual string GetUrl(string? url, IEnumerable<KeyValuePair<string, string>> properties)
     {
         url ??= string.Empty;
         foreach (var property in properties)
