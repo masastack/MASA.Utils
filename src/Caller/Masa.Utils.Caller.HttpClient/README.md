@@ -26,8 +26,8 @@ Install-Package Masa.Utils.Caller.HttpClient
 2. How to use:
 
     ```` C#
-    app.MapGet("/Test/User/Check/Healthy", ([FromServices] ICallerProvider userCallerProvider)
-        => userCallerProvider.GetAsync<string>("/Check/Healthy"));
+    app.MapGet("/Test/User/Hello", ([FromServices] ICallerProvider userCallerProvider, string name)
+        => userCallerProvider.GetAsync<string>($"/Hello/{name}"));
     ````
 
     > The interface address of the complete request is: http://localhost:5000/Check/Healthy
@@ -53,14 +53,14 @@ Install-Package Masa.Utils.Caller.HttpClient
 4. How to use UserCaller or OrderCaller
 
     ```` C#
-    app.MapGet("/Test/User/Check/Healthy", ([FromServices] ICallerProvider userCallerProvider)
-        => userCallerProvider.GetAsync<string>("/Check/Healthy"));
+    app.MapGet("/Test/User/Hello", ([FromServices] ICallerProvider userCallerProvider, string name)
+        => userCallerProvider.GetAsync<string>($"/Hello/{name}"));
 
 
-    app.MapGet("/Test/Order/Check/Healthy", ([FromServices] ICallerFactory callerFactory) =>
+    app.MapGet("/Test/Order/Hello", ([FromServices] ICallerFactory callerFactory, string name) =>
     {
         var callerProvider = callerFactory.CreateClient("OrderCaller");
-        return callerProvider.GetAsync<string>("/Check/Healthy");
+        return callerProvider.GetAsync<string>($"/Hello/{name}");
     });
     ````
 
@@ -78,7 +78,7 @@ Install-Package Masa.Utils.Caller.HttpClient
     builder.Services.AddCaller();
     ````
 
-2. Add a new class `UserServiceCaller`
+2. Add a new class `UserCaller`
 
     ```` C#
     public class UserCaller: HttpClientCallerBase
@@ -89,7 +89,7 @@ Install-Package Masa.Utils.Caller.HttpClient
         {
         }
 
-        public Task<string> GetHello1Async() => CallerProvider.GetStringAsync("/Check/Hello1");
+        public Task<string> HelloAsync(string name) => CallerProvider.GetStringAsync($"/Hello/{name}");
 
         /// <summary>
         /// There is no need to overload by default, and it can be overloaded when there are special requirements for httpClient
@@ -105,6 +105,6 @@ Install-Package Masa.Utils.Caller.HttpClient
 3. How to use UserCaller
 
     ```` C#
-    app.MapGet("/Test/User/Check/Healthy", ([FromServices] UserCaller userCaller)
-        => userCaller.GetAsync<string>("/Check/Healthy"));
+    app.MapGet("/Test/User/Hello", ([FromServices] UserCaller caller, string name)
+        => caller.HelloAsync(name));
     ````
