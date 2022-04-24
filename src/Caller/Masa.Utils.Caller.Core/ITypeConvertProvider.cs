@@ -8,5 +8,14 @@ public interface ITypeConvertProvider
     /// <param name="request"></param>
     /// <typeparam name="TRequest">Support classes, anonymous objects</typeparam>
     /// <returns></returns>
+    [Obsolete("Use ConvertToKeyValuePairs instead")]
     Dictionary<string, string> ConvertToDictionary<TRequest>(TRequest request) where TRequest : class;
+
+    /// <summary>
+    /// Convert custom object to dictionary
+    /// </summary>
+    /// <param name="request"></param>
+    /// <typeparam name="TRequest">Support classes, anonymous objects</typeparam>
+    /// <returns></returns>
+    IEnumerable<KeyValuePair<string, string>> ConvertToKeyValuePairs<TRequest>(TRequest request) where TRequest : class;
 }
