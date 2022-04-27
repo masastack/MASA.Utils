@@ -1,0 +1,22 @@
+﻿namespace Masa.Utils.Data.Mapping.Tests.Domain.ValueObjects;
+
+public class AddressItem
+{
+    public string Province { get; set; }
+
+    public string City { get; set; }
+
+    public string Address { get; set; }
+
+    public AddressItem(string fullAddress) : this(fullAddress.Split(',')[0], fullAddress.Split(',')[1], fullAddress.Split(',')[2])
+    {
+
+    }
+
+    public AddressItem(string province, string city, string address)
+    {
+        Province = province;
+        City = city;
+        Address = address;
+    }
+}
