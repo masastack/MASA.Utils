@@ -1,57 +1,54 @@
-﻿using System.Collections;
+﻿namespace System.ComponentModel.DataAnnotations;
 
-namespace System.ComponentModel.DataAnnotations
+public class MinCountAttribute : ValidationAttribute
 {
-    public class MinCountAttribute : ValidationAttribute
+    private const string DEFAULT_ERROR_MESSAGE = "The field {0} must be a list type with a minimum count of '{1}'.";
+
+    public MinCountAttribute(int count) : base(DEFAULT_ERROR_MESSAGE)
     {
-        private const string DEFAULT_ERROR_MESSAGE = "The field {0} must be a list type with a minimum count of '{1}'.";
+        Count = count;
+    }
 
-        public MinCountAttribute(int count) : base(DEFAULT_ERROR_MESSAGE)
+    public int Count { get; }
+
+    public override bool IsValid(object? value)
+    {
+        // Check the lengths for legality
+        EnsureLegalLengths();
+
+        int count;
+
+        if (value == null)
         {
-            Count = count;
+            return true;
         }
 
-        public int Count { get; }
-
-        public override bool IsValid(object? value)
+        if (value is IList list)
         {
-            // Check the lengths for legality
-            EnsureLegalLengths();
-
-            int count;
-
-            if (value == null)
-            {
-                return true;
-            }
-
-            if (value is IList list)
-            {
-                count = list.Count;
-            }
-            else
-            {
-                throw new InvalidCastException($"The field of type {value.GetType()} must be a list type.");
-            }
-
-            return count >= Count;
+            count = list.Count;
+        }
+        else
+        {
+            throw new InvalidCastException($"The field of type {value.GetType()} must be a list type.");
         }
 
-        public override string FormatErrorMessage(string name)
-        {
-            return string.Format(ErrorMessageString, name, Count);
-        }
+        return count >= Count;
+    }
 
-        /// <summary>
-        /// Checks that Length has a legal value.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">Length is less than zero.</exception>
-        private void EnsureLegalLengths()
+    public override string FormatErrorMessage(string name)
+    {
+        return string.Format(ErrorMessageString, name, Count);
+    }
+
+    /// <summary>
+    /// Checks that Length has a legal value.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Length is less than zero.</exception>
+    private void EnsureLegalLengths()
+    {
+        if (Count < 0)
         {
-            if (Count < 0)
-            {
-                throw new InvalidOperationException($"{nameof(MinCountAttribute)} must have a Count value that is zero or greater.");
-            }
+            throw new InvalidOperationException($"{nameof(MinCountAttribute)} must have a Count value that is zero or greater.");
         }
     }
 }

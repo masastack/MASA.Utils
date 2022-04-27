@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-namespace System.ComponentModel.DataAnnotations
+﻿namespace System.ComponentModel.DataAnnotations
 {
     public class NonDefaultAttribute : ValidationAttribute
     {
