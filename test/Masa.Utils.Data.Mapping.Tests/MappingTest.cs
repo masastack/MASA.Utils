@@ -1,6 +1,8 @@
 ﻿// Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
+using System.Reflection;
+
 namespace Masa.Utils.Data.Mapping.Tests;
 
 [TestClass]
@@ -151,5 +153,41 @@ public class MappingTest : BaseMappingTest
         Assert.AreEqual(order.OrderItems[0].Price, request.OrderItems[0].Price);
         Assert.AreEqual(order.OrderItems[0].Number, 1);
         Assert.AreEqual(order.TotalPrice, 0);
+    }
+
+    [TestMethod]
+    public void TestMapToExistingObject()
+    {
+        var request = new
+        {
+            Name = "Jim",
+            Age = 18
+        };
+        User user = new User("Time")
+        {
+            Description = "Description",
+        };
+
+        var newUser = _mapper.Map(request, user);
+        Assert.IsNotNull(newUser);
+        Assert.IsTrue(newUser.Description == "Description");
+        Assert.IsTrue(newUser.Name == "Jim");
+        Assert.IsTrue(newUser.Age == 18);
+    }
+
+    [TestMethod]
+    public void TestCreateUserRequestListMapToUsers()
+    {
+        List<CreateUserRequest> requests = new List<CreateUserRequest>()
+        {
+            new()
+            {
+                Name = "Jim"
+            }
+        };
+        List<User> users = new();
+        var newUsers = _mapper.Map(requests, users);
+        Assert.IsTrue(newUsers.Count == 1);
+        Assert.IsTrue(newUsers[0].Name == "Jim");
     }
 }

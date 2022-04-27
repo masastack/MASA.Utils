@@ -15,6 +15,11 @@ public class User
 
     public AddressItem Hometown { get; set; }
 
+
+    public User()
+    {
+
+    }
     public User(string name)
     {
         Name = name;
