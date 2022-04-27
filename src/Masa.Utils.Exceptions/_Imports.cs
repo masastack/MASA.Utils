@@ -1,3 +1,6 @@
+// Copyright (c) MASA Stack All rights reserved.
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
 global using Masa.Utils.Exceptions.Handling;
 global using Masa.Utils.Exceptions.Results;
 global using Microsoft.AspNetCore.Builder;

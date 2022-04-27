@@ -1,5 +1,8 @@
 using System.Linq.Expressions;
 
+// Copyright (c) MASA Stack All rights reserved.
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
 namespace Masa.Utils.Extensions.Expressions;
 
 public static class ExpressionExtensions
