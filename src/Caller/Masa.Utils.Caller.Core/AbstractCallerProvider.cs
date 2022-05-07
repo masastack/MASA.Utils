@@ -73,7 +73,7 @@ public abstract class AbstractCallerProvider : ICallerProvider
 
     public virtual Task<string> GetStringAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default) where TRequest : class
-        => GetStringAsync(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data), autoThrowUserFriendlyException, cancellationToken);
+        => GetStringAsync(GetUrl(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data)), autoThrowUserFriendlyException, cancellationToken);
 
     public virtual Task<string> GetStringAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default)
@@ -86,11 +86,11 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return await content.Content.ReadAsByteArrayAsync(cancellationToken);
     }
 
-    public Task<byte[]> GetByteArrayAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true,
+    public virtual Task<byte[]> GetByteArrayAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default) where TRequest : class
-        => GetByteArrayAsync(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data), autoThrowUserFriendlyException, cancellationToken);
+        => GetByteArrayAsync(GetUrl(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data)), autoThrowUserFriendlyException, cancellationToken);
 
-    public Task<byte[]> GetByteArrayAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true,
+    public virtual Task<byte[]> GetByteArrayAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default)
         => GetByteArrayAsync(GetUrl(methodName, data), autoThrowUserFriendlyException, cancellationToken);
 
@@ -101,11 +101,11 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return await content.Content.ReadAsStreamAsync(cancellationToken);
     }
 
-    public Task<Stream> GetStreamAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true,
+    public virtual Task<Stream> GetStreamAsync<TRequest>(string? methodName, TRequest data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default) where TRequest : class
-        => GetStreamAsync(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data), autoThrowUserFriendlyException, cancellationToken);
+        => GetStreamAsync(GetUrl(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data)), autoThrowUserFriendlyException, cancellationToken);
 
-    public Task<Stream> GetStreamAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true,
+    public virtual Task<Stream> GetStreamAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default)
         => GetStreamAsync(GetUrl(methodName, data), autoThrowUserFriendlyException, cancellationToken);
 
@@ -115,19 +115,25 @@ public abstract class AbstractCallerProvider : ICallerProvider
     public virtual Task<HttpResponseMessage> GetAsync(string? methodName, Dictionary<string, string> data, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default)
         => GetAsync(GetUrl(methodName, data), autoThrowUserFriendlyException, cancellationToken);
 
-    public Task<TResponse?> GetAsync<TResponse>(string? methodName, CancellationToken cancellationToken = default)
+    public virtual Task<TResponse?> GetAsync<TResponse>(string? methodName, CancellationToken cancellationToken = default)
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Get, methodName);
         return SendAsync<TResponse>(request, cancellationToken);
     }
 
-    public Task<TResponse?> GetAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken = default) where TRequest : class
+    public virtual Task<TResponse?> GetAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken = default) where TRequest : class
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Get, GetUrl(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data)));
         return SendAsync<TResponse>(request, cancellationToken);
     }
 
-    public Task<TResponse?> GetAsync<TResponse>(string? methodName, Dictionary<string, string> data, CancellationToken cancellationToken = default)
+    public virtual Task<TResponse?> GetAsync<TResponse>(string? methodName, object data, CancellationToken cancellationToken = default)
+    {
+        HttpRequestMessage request = CreateRequest(HttpMethod.Get, GetUrl(methodName, _typeConvertProvider.ConvertToKeyValuePairs(data)));
+        return SendAsync<TResponse>(request, cancellationToken);
+    }
+
+    public virtual Task<TResponse?> GetAsync<TResponse>(string? methodName, Dictionary<string, string> data, CancellationToken cancellationToken = default)
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Get, GetUrl(methodName, data));
         return SendAsync<TResponse>(request, cancellationToken);
@@ -163,6 +169,12 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return SendAsync<TResponse>(request, cancellationToken);
     }
 
+    public virtual Task<TResponse?> PostAsync<TResponse>(string? methodName, object data, CancellationToken cancellationToken = default)
+    {
+        HttpRequestMessage request = CreateRequest(HttpMethod.Post, methodName, data);
+        return SendAsync<TResponse>(request, cancellationToken);
+    }
+
     public virtual Task<HttpResponseMessage> PatchAsync(string? methodName, HttpContent? content, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default)
         => SendAsync(HttpMethod.Patch, methodName, content, autoThrowUserFriendlyException, cancellationToken);
 
@@ -173,6 +185,12 @@ public abstract class AbstractCallerProvider : ICallerProvider
     }
 
     public virtual Task<TResponse?> PatchAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken = default)
+    {
+        HttpRequestMessage request = CreateRequest(HttpMethod.Post, methodName, data);
+        return SendAsync<TResponse>(request, cancellationToken);
+    }
+
+    public virtual Task<TResponse?> PatchAsync<TResponse>(string? methodName, object data, CancellationToken cancellationToken = default)
     {
         HttpRequestMessage request = CreateRequest(HttpMethod.Post, methodName, data);
         return SendAsync<TResponse>(request, cancellationToken);
@@ -193,6 +211,12 @@ public abstract class AbstractCallerProvider : ICallerProvider
         return SendAsync<TResponse>(request, cancellationToken);
     }
 
+    public virtual Task<TResponse?> PutAsync<TResponse>(string? methodName, object data, CancellationToken cancellationToken = default)
+    {
+        var request = CreateRequest(HttpMethod.Put, methodName, data);
+        return SendAsync<TResponse>(request, cancellationToken);
+    }
+
     public virtual Task<HttpResponseMessage> DeleteAsync(string? methodName, HttpContent? content, bool autoThrowUserFriendlyException = true, CancellationToken cancellationToken = default)
         => SendAsync(HttpMethod.Delete, methodName, content, autoThrowUserFriendlyException, cancellationToken);
 
@@ -203,6 +227,12 @@ public abstract class AbstractCallerProvider : ICallerProvider
     }
 
     public virtual Task<TResponse?> DeleteAsync<TRequest, TResponse>(string? methodName, TRequest data, CancellationToken cancellationToken = default)
+    {
+        var request = CreateRequest(HttpMethod.Delete, methodName, data);
+        return SendAsync<TResponse>(request, cancellationToken);
+    }
+
+    public virtual Task<TResponse?> DeleteAsync<TResponse>(string? methodName, object data, CancellationToken cancellationToken = default)
     {
         var request = CreateRequest(HttpMethod.Delete, methodName, data);
         return SendAsync<TResponse>(request, cancellationToken);
