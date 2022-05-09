@@ -10,8 +10,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="$(MicrosoftPackageVersion)" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.15.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="$(IdentityPackageVersion)" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="$(IdentityPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>

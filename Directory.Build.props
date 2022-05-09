@@ -11,6 +11,7 @@
     <NpgsqlPackageVersion>6.0.1</NpgsqlPackageVersion>
     <GrpcNetPackageVersion>2.40.0</GrpcNetPackageVersion>
     <DaprPackageVersion>1.5.0</DaprPackageVersion>
+    <IdentityPackageVersion>6.15.0</IdentityPackageVersion>
 	
     <PackageId>$(AssemblyName)</PackageId>
     <PackageIcon>packageIcon.png</PackageIcon>
