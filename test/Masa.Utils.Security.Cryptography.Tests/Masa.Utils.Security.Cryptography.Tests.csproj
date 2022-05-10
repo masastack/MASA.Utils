@@ -12,7 +12,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftTeskSdkPackageVersion)" />
     <PackageReference Include="MSTest.TestAdapter" Version="$(MSTestPackageVersion)" />
     <PackageReference Include="MSTest.TestFramework" Version="$(MSTestPackageVersion)" />
-    <PackageReference Include="coverlet.collector" Version="$(CoverletCollectorPackageVersion)" />
+    <PackageReference Include="coverlet.collector" Version="$(CoverletPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
