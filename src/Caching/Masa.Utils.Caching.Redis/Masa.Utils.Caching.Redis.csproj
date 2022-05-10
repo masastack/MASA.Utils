@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+    <PackageReference Include="StackExchange.Redis" Version="2.5.61" />
     <PackageReference Include="System.Text.Json" Version="6.0.0" />
   </ItemGroup>
 
