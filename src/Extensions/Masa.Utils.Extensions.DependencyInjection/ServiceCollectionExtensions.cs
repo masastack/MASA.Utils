@@ -5,6 +5,38 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection AddAutoInject(this IServiceCollection services)
+        => services.AddAutoInject(AppDomain.CurrentDomain.GetAssemblies());
+
+    public static IServiceCollection AddAutoInject(this IServiceCollection services, IEnumerable<Assembly> assemblies)
+        => services.AddAutoInjectCore(assemblies);
+
+    public static IServiceCollection AddAutoInject(this IServiceCollection services, params Assembly[] assemblies)
+        => services.AddAutoInjectCore(assemblies);
+
+    private static IServiceCollection AddAutoInjectCore(this IServiceCollection services, IEnumerable<Assembly> assemblies)
+    {
+        if (services.Any<DependencyInjectionService>())
+            return services;
+
+        services.AddSingleton<DependencyInjectionService>();
+
+        services.TryAddSingleton<ITypeProvider, DefaultTypeProvider>();
+        var typeProvider = services.GetInstance<ITypeProvider>();
+        var serviceDescriptors = typeProvider.GetServiceDescriptors(typeProvider.GetAllTypes(assemblies));
+        foreach (var descriptor in serviceDescriptors)
+            services.Add(new ServiceDescriptor(descriptor.ServiceType, descriptor.ImplementationType, descriptor.Lifetime));
+
+        if (!serviceDescriptors.Any(d => d.AutoFire))
+            return services;
+
+        var serviceProvider = services.BuildServiceProvider();
+        foreach (var descriptor in serviceDescriptors.Where(d => d.AutoFire))
+            serviceProvider.GetService(descriptor.ServiceType);
+
+        return services;
+    }
+
     /// <summary>
     /// Auto add all service to IoC, lifecycle is scoped
     /// </summary>
@@ -21,7 +53,8 @@ public static class ServiceCollectionExtensions
     /// <param name="autoFire"></param>
     /// <param name="assemblies"></param>
     /// <returns></returns>
-    public static IServiceCollection AddServices(this IServiceCollection services, string suffix, bool autoFire, params Assembly[] assemblies)
+    public static IServiceCollection AddServices(this IServiceCollection services, string suffix, bool autoFire,
+        params Assembly[] assemblies)
         => (from type in assemblies.SelectMany(assembly => assembly.GetTypes())
             where !type.IsAbstract && type.Name.EndsWith(suffix)
             select type).AddScoped(services, autoFire);
@@ -75,5 +108,10 @@ public static class ServiceCollectionExtensions
         if (type.BaseType == typeof(T)) return true;
 
         return type.BaseType != null && BaseOf<T>(type.BaseType);
+    }
+
+    private class DependencyInjectionService
+    {
+
     }
 }
