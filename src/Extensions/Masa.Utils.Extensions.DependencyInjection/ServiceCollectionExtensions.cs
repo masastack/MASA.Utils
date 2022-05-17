@@ -14,6 +14,24 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddAutoInject(this IServiceCollection services, params Assembly[] assemblies)
         => services.AddAutoInjectCore(assemblies);
 
+    /// <summary>
+    /// Automatic registration from an assembly containing the specified type
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="handlerAssemblyMarkerTypes"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddAutoInject(this IServiceCollection services, IEnumerable<Type> handlerAssemblyMarkerTypes)
+        => services.AddAutoInjectCore(handlerAssemblyMarkerTypes.Select(t => t.GetTypeInfo().Assembly).Distinct().ToArray());
+
+    /// <summary>
+    /// Automatic registration from an assembly containing the specified type
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="handlerAssemblyMarkerTypes"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddAutoInject(this IServiceCollection services, params Type[] handlerAssemblyMarkerTypes)
+        => services.AddAutoInjectCore(handlerAssemblyMarkerTypes.Select(t => t.GetTypeInfo().Assembly).Distinct().ToArray());
+
     private static IServiceCollection AddAutoInjectCore(this IServiceCollection services, IEnumerable<Assembly> assemblies)
     {
         if (services.Any<DependencyInjectionService>())
@@ -42,6 +60,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services"></param>
     /// <param name="suffix">default is Service</param>
+    /// <param name="autoFire"></param>
     public static IServiceCollection AddServices(this IServiceCollection services, string suffix, bool autoFire)
         => services.AddServices(suffix, autoFire, Assembly.GetEntryAssembly()!);
 
@@ -67,10 +86,7 @@ public static class ServiceCollectionExtensions
     /// <param name="autoFire"></param>
     /// <returns></returns>
     public static IServiceCollection AddServices<TService>(this IServiceCollection services, bool autoFire)
-        => services.AddServices<TService>(autoFire, new Assembly[1]
-        {
-            Assembly.GetEntryAssembly()!
-        });
+        => services.AddServices<TService>(autoFire, Assembly.GetEntryAssembly()!);
 
     /// <summary>
     /// Auto add all service to IoC, lifecycle is scoped
