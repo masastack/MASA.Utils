@@ -241,8 +241,7 @@ public class DaprProcess : IDaprProcess
         };
     }
 
-    private string GetAppId(DaprOptions options) =>
-        options.AppIdSuffix.Trim() == string.Empty ? options.AppId : $"{options.AppId}{options.AppIdDelimiter}{options.AppIdSuffix}";
+    private string GetAppId(DaprOptions options) => DaprExtensions.GetAppId(options.AppId, options.AppIdSuffix, options.AppIdDelimiter);
 
     private ushort GetAppPort(DaprOptions options) =>
         options.AppPort ?? throw new ArgumentNullException(nameof(options.AppPort));
