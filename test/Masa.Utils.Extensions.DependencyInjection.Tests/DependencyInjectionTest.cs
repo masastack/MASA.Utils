@@ -167,6 +167,19 @@ public class DependencyInjectionTest
     }
 
     [TestMethod]
+    public void TestAddAutoInjectByTypes()
+    {
+        var services = new ServiceCollection();
+        services
+            .AddAutoInject(typeof(IRepository<>));
+        var serviceProvider = services.BuildServiceProvider();
+        Assert.IsNotNull(serviceProvider.GetService<IRepository<User>>());
+        Assert.IsTrue(serviceProvider.GetServices<IRepository<User>>().Count() == 1);
+
+        Assert.IsNull(serviceProvider.GetService<BaseService>());
+    }
+
+    [TestMethod]
     public void TestAny()
     {
         var services = new ServiceCollection();
