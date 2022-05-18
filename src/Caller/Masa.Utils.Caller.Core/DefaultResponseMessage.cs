@@ -3,18 +3,19 @@
 
 namespace Masa.Utils.Caller.Core;
 
-public class DefaultRequestMessage : IRequestMessage
+public class DefaultResponseMessage : IResponseMessage
 {
-    private readonly ILogger<DefaultRequestMessage>? _logger;
+    private readonly ILogger<DefaultResponseMessage>? _logger;
     private readonly CallerOptions _callerOptions;
 
-    public DefaultRequestMessage(CallerOptions callerOptions, ILogger<DefaultRequestMessage>? logger)
+    public DefaultResponseMessage(CallerOptions callerOptions, ILogger<DefaultResponseMessage>? logger)
     {
         _callerOptions = callerOptions;
         _logger = logger;
     }
 
-    public async Task<TResponse?> ProcessResponseAsync<TResponse>(HttpResponseMessage response, CancellationToken cancellationToken = default)
+    public async Task<TResponse?> ProcessResponseAsync<TResponse>(HttpResponseMessage response,
+        CancellationToken cancellationToken = default)
     {
         if (response.IsSuccessStatusCode)
         {
@@ -31,6 +32,7 @@ public class DefaultRequestMessage : IRequestMessage
                         var content = await response.Content.ReadAsStringAsync(cancellationToken);
                         if (string.IsNullOrEmpty(content))
                             return (TResponse)(object?)null!;
+
                         return (TResponse?)(object)Guid.Parse(content);
                     }
                     if (typeof(TResponse).GetInterfaces().Any(type => type == typeof(IConvertible)))
@@ -47,11 +49,13 @@ public class DefaultRequestMessage : IRequestMessage
                     {
                         _logger?.LogWarning(exception, exception.Message ?? string.Empty);
                         ExceptionDispatchInfo.Capture(exception).Throw();
-                        return default;//This will never be executed, the previous line has already thrown an exception
+                        return default; //This will never be executed, the previous line has already thrown an exception
                     }
             }
         }
-        throw new Exception(await response.Content.ReadAsStringAsync(cancellationToken));
+
+        await ProcessResponseExceptionAsync(response, cancellationToken);
+        return default; //never executed
     }
 
     public async Task ProcessResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
@@ -66,6 +70,15 @@ public class DefaultRequestMessage : IRequestMessage
                     return;
             }
         }
-        throw new Exception(await response.Content.ReadAsStringAsync(cancellationToken));
+
+        await ProcessResponseExceptionAsync(response, cancellationToken);
+    }
+
+    public async Task ProcessResponseExceptionAsync(HttpResponseMessage response, CancellationToken cancellationToken = default)
+    {
+        if (response.Content.Headers.ContentLength is > 0)
+            throw new Exception(await response.Content.ReadAsStringAsync(cancellationToken));
+
+        throw new MasaException($"ReasonPhrase: {response.ReasonPhrase ?? string.Empty}, StatusCode: {response.StatusCode}");
     }
 }
