@@ -6,17 +6,13 @@ namespace Masa.Utils.Caller.HttpClient;
 public class HttpClientCallerProvider : AbstractCallerProvider
 {
     private readonly System.Net.Http.HttpClient _httpClient;
-    private readonly IRequestMessage _requestMessage;
-    private readonly IResponseMessage _responseMessage;
-    private readonly bool _prefixIsNullOrEmpty;
     private readonly string _prefix;
+    private readonly bool _prefixIsNullOrEmpty;
 
     public HttpClientCallerProvider(IServiceProvider serviceProvider, string name, string prefix)
         : base(serviceProvider)
     {
         _httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
-        _requestMessage = serviceProvider.GetRequiredService<IRequestMessage>();
-        _responseMessage = serviceProvider.GetRequiredService<IResponseMessage>();
         _prefix = prefix;
         _prefixIsNullOrEmpty = string.IsNullOrEmpty(_prefix);
     }
@@ -24,22 +20,20 @@ public class HttpClientCallerProvider : AbstractCallerProvider
     public override async Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
         where TResponse : default
     {
-        HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
-        return await _responseMessage.ProcessResponseAsync<TResponse>(response, cancellationToken);
+        var response = await _httpClient.SendAsync(request, cancellationToken);
+        return await ResponseMessage.ProcessResponseAsync<TResponse>(response, cancellationToken);
     }
 
     public override Task<HttpRequestMessage> CreateRequestAsync(HttpMethod method, string? methodName)
-        => _requestMessage.ProcessHttpRequestMessageAsync(new(method, GetRequestUri(methodName)));
+        => RequestMessage.ProcessHttpRequestMessageAsync(new HttpRequestMessage(method, GetRequestUri(methodName)));
 
-    public override async Task<HttpRequestMessage> CreateRequestAsync<TRequest>(HttpMethod method, string? methodName, TRequest data)
-    {
-        HttpRequestMessage request = await _requestMessage.ProcessHttpRequestMessageAsync(new(method, GetRequestUri(methodName)), data);
-        request.Content ??= JsonContent.Create(data);
-        return request;
-    }
+    public override Task<HttpRequestMessage> CreateRequestAsync<TRequest>(HttpMethod method, string? methodName, TRequest data)
+        => RequestMessage.ProcessHttpRequestMessageAsync(new HttpRequestMessage(method, GetRequestUri(methodName)), data);
 
     public override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
-        => _httpClient.SendAsync(request, cancellationToken);
+    {
+        return _httpClient.SendAsync(request, cancellationToken);
+    }
 
     public override Task SendGrpcAsync(string methodName, CancellationToken cancellationToken = default)
     {
