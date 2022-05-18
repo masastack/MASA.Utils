@@ -7,6 +7,7 @@ public class HttpClientCallerProvider : AbstractCallerProvider
 {
     private readonly System.Net.Http.HttpClient _httpClient;
     private readonly IRequestMessage _requestMessage;
+    private readonly IResponseMessage _responseMessage;
     private readonly bool _prefixIsNullOrEmpty;
     private readonly string _prefix;
 
@@ -15,6 +16,7 @@ public class HttpClientCallerProvider : AbstractCallerProvider
     {
         _httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
         _requestMessage = serviceProvider.GetRequiredService<IRequestMessage>();
+        _responseMessage = serviceProvider.GetRequiredService<IResponseMessage>();
         _prefix = prefix;
         _prefixIsNullOrEmpty = string.IsNullOrEmpty(_prefix);
     }
@@ -23,15 +25,16 @@ public class HttpClientCallerProvider : AbstractCallerProvider
         where TResponse : default
     {
         HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
-        return await _requestMessage.ProcessResponseAsync<TResponse>(response, cancellationToken);
+        return await _responseMessage.ProcessResponseAsync<TResponse>(response, cancellationToken);
     }
 
-    public override HttpRequestMessage CreateRequest(HttpMethod method, string? methodName) => new(method, GetRequestUri(methodName));
+    public override Task<HttpRequestMessage> CreateRequestAsync(HttpMethod method, string? methodName)
+        => _requestMessage.ProcessHttpRequestMessageAsync(new(method, GetRequestUri(methodName)));
 
-    public override HttpRequestMessage CreateRequest<TRequest>(HttpMethod method, string? methodName, TRequest data)
+    public override async Task<HttpRequestMessage> CreateRequestAsync<TRequest>(HttpMethod method, string? methodName, TRequest data)
     {
-        HttpRequestMessage request = CreateRequest(method, methodName);
-        request.Content = JsonContent.Create(data);
+        HttpRequestMessage request = await _requestMessage.ProcessHttpRequestMessageAsync(new(method, GetRequestUri(methodName)), data);
+        request.Content ??= JsonContent.Create(data);
         return request;
     }
 

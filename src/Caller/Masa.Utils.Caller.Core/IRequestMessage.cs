@@ -5,7 +5,7 @@ namespace Masa.Utils.Caller.Core;
 
 public interface IRequestMessage
 {
-    Task<TResponse?> ProcessResponseAsync<TResponse>(HttpResponseMessage response, CancellationToken cancellationToken = default);
+    Task<HttpRequestMessage> ProcessHttpRequestMessageAsync(HttpRequestMessage requestMessage);
 
-    Task ProcessResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken = default);
+    Task<HttpRequestMessage> ProcessHttpRequestMessageAsync<TRequest>(HttpRequestMessage requestMessage, TRequest data);
 }

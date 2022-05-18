@@ -26,7 +26,8 @@ public static class ServiceCollectionExtensions
         options.Invoke(callerOption);
 
         services.TryAddSingleton<ICallerFactory, DefaultCallerFactory>();
-        services.TryAddSingleton<IRequestMessage, DefaultRequestMessage>();
+        services.TryAdd(new ServiceDescriptor(typeof(IRequestMessage), typeof(EmptyRequestMessage), callerOption.CallerLifetime));
+        services.TryAddSingleton<IResponseMessage, DefaultResponseMessage>();
         services.TryAddScoped(serviceProvider => serviceProvider.GetRequiredService<ICallerFactory>().CreateClient());
 
         services.TryAddSingleton<ITypeConvertProvider, DefaultTypeConvertProvider>();
@@ -76,7 +77,8 @@ public static class ServiceCollectionExtensions
         {
             ServiceDescriptor serviceDescriptor = new ServiceDescriptor(type, serviceProvider =>
             {
-                var constructorInfo = type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).MaxBy(constructor => constructor.GetParameters().Length)!;
+                var constructorInfo = type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                    .MaxBy(constructor => constructor.GetParameters().Length)!;
                 List<object> parameters = new();
                 foreach (var parameter in constructorInfo.GetParameters())
                 {
