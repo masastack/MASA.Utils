@@ -3,6 +3,8 @@
 
 namespace Masa.Utils.Development.Dapr;
 
+public delegate void DaprEventHandler(string type, string data);
+
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDaprStarterCore(this IServiceCollection services, Action<DaprOptions>? action = null)
@@ -10,20 +12,23 @@ public static class ServiceCollectionExtensions
         if (action != null)
             services.Configure(action);
         else
-            services.Configure<DaprOptions>(_ => { });
-        return services.AddDaprStarterCore();
+            services.Configure<DaprOptions>(_ =>
+            {
+            });
+        return services.AddDaprStarter();
     }
 
     public static IServiceCollection AddDaprStarterCore(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<DaprOptions>(configuration);
-        return services.AddDaprStarterCore();
+        return services.AddDaprStarter();
     }
 
-    private static IServiceCollection AddDaprStarterCore(this IServiceCollection services)
+    private static IServiceCollection AddDaprStarter(this IServiceCollection services)
     {
         if (services.Any(service => service.ImplementationType == typeof(DaprService)))
             return services;
+
         services.AddSingleton<DaprService>();
 
         services.TryAddSingleton(typeof(IDaprProcess), typeof(DaprProcess));

@@ -271,4 +271,13 @@ public class DaprOptions
     public bool EnableHeartBeat { get; set; } = true;
 
     public bool CreateNoWindow { get; set; } = true;
+
+    public string GetAppId() => DaprExtensions.GetAppId(AppId, AppIdSuffix, AppIdDelimiter);
+
+    public ushort GetAppPort() =>
+        AppPort ?? throw new ArgumentNullException(nameof(AppPort));
+
+    public event DaprEventHandler? OutputDataReceived;
+
+    public void Output(string type, string data) => OutputDataReceived?.Invoke(type, data);
 }
