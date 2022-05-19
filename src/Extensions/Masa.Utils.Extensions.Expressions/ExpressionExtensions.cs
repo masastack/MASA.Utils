@@ -1,9 +1,7 @@
-using System.Linq.Expressions;
-
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-namespace Masa.Utils.Extensions.Expressions;
+namespace System.Linq.Expressions;
 
 public static class ExpressionExtensions
 {
@@ -104,7 +102,7 @@ public class ParameterRebinder : ExpressionVisitor
 
     public static Expression ReplaceParameters(Dictionary<ParameterExpression, ParameterExpression> map, Expression exp)
     {
-        return (new ParameterRebinder(map)).Visit(exp);
+        return new ParameterRebinder(map).Visit(exp);
     }
 
     protected override Expression VisitParameter(ParameterExpression p)
