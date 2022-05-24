@@ -183,13 +183,6 @@ public class LdapProvider : ILdapProvider, IDisposable
         }
     }
 
-    //LdapAttributeSet objectGUID to string
-    private static string GetObjectGUID(LdapAttributeSet attributeSet)
-    {
-        var objectGUID = attributeSet.GetAttribute("objectGUID");
-        return objectGUID.StringValue;
-    }
-
     private LdapUser CreateUser(string distinguishedName, LdapAttributeSet attributeSet)
     {
         var ldapUser = new LdapUser();
