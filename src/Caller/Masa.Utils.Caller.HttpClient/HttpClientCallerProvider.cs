@@ -1,20 +1,26 @@
+// Copyright (c) MASA Stack All rights reserved.
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
 namespace Masa.Utils.Caller.HttpClient;
 
 public class HttpClientCallerProvider : AbstractCallerProvider
 {
     private readonly System.Net.Http.HttpClient _httpClient;
     private readonly IRequestMessage _requestMessage;
-    private readonly string _baseApi;
+    private readonly bool _prefixIsNullOrEmpty;
+    private readonly string _prefix;
 
-    public HttpClientCallerProvider(IServiceProvider serviceProvider, string name, string baseApi)
-        :base(serviceProvider)
+    public HttpClientCallerProvider(IServiceProvider serviceProvider, string name, string prefix)
+        : base(serviceProvider)
     {
         _httpClient = serviceProvider.GetRequiredService<IHttpClientFactory>().CreateClient(name);
         _requestMessage = serviceProvider.GetRequiredService<IRequestMessage>();
-        _baseApi = baseApi;
+        _prefix = prefix;
+        _prefixIsNullOrEmpty = string.IsNullOrEmpty(_prefix);
     }
 
-    public override async Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default) where TResponse : default
+    public override async Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage request, CancellationToken cancellationToken = default)
+        where TResponse : default
     {
         HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
         return await _requestMessage.ProcessResponseAsync<TResponse>(response, cancellationToken);
@@ -47,20 +53,23 @@ public class HttpClientCallerProvider : AbstractCallerProvider
         throw new NotImplementedException();
     }
 
-    public override Task<TResponse> SendGrpcAsync<TRequest, TResponse>(string methodName, TRequest request, CancellationToken cancellationToken = default)
+    public override Task<TResponse> SendGrpcAsync<TRequest, TResponse>(string methodName, TRequest request,
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    private string GetRequestUri(string? methodName)
+    protected virtual string GetRequestUri(string? methodName)
     {
-        if (methodName is null)
+        if (string.IsNullOrEmpty(methodName))
             return string.Empty;
 
-        if (_baseApi != string.Empty && !methodName.Split('?')[0].Contains("/"))
-        {
-            return $"{_baseApi}{(_baseApi.Substring(_baseApi.Length - 1, 1) == "/" ? methodName : $"/{methodName}")}";
-        }
-        return methodName;
+        if (Uri.IsWellFormedUriString(methodName, UriKind.Absolute) || _prefixIsNullOrEmpty)
+            return methodName;
+
+        if (_prefix.EndsWith("/"))
+            return $"{_prefix}{(methodName.StartsWith("/") ? methodName.Substring(1) : methodName)}";
+
+        return $"{_prefix}{(methodName.StartsWith("/") ? methodName : "/" + methodName)}";
     }
 }

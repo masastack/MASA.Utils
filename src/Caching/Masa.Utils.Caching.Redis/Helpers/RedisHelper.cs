@@ -1,22 +1,27 @@
+// Copyright (c) MASA Stack All rights reserved.
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
+using Masa.Utils.Caching.Redis.Internal.Enum;
+
 namespace Masa.Utils.Caching.Redis.Helpers;
 
 public static class RedisHelper
 {
     public static T? ConvertToValue<T>(RedisValue redisValue)
     {
-        if (typeof(T).IsNumericType())
-        {
-            return (dynamic)(long)redisValue;
-        }
+        var type = typeof(T);
+        var compressMode = GetCompressMode(type);
+
+        if (compressMode == CompressMode.None)
+            return (T?)Convert.ChangeType(redisValue, type);
 
         var byteValue = (byte[])redisValue;
-
         if (byteValue == null || byteValue.Length == 0)
             return default;
 
         var value = Decompress(byteValue);
 
-        if (typeof(T) == typeof(string))
+        if (compressMode == CompressMode.Compress)
         {
             var valueString = Encoding.UTF8.GetString(value);
             return (dynamic)valueString;
@@ -28,31 +33,38 @@ public static class RedisHelper
         return JsonSerializer.Deserialize<T>(value, options);
     }
 
-    public static dynamic ConvertFromValue<T>(T value)
+    public static RedisValue ConvertFromValue<T>(T value)
     {
-        switch (Type.GetTypeCode(typeof(T)))
+        var type = typeof(T);
+        dynamic redisValue;
+        switch (GetCompressMode(type))
         {
-            case TypeCode.Byte:
-            case TypeCode.SByte:
-            case TypeCode.UInt16:
-            case TypeCode.UInt32:
-            case TypeCode.UInt64:
-            case TypeCode.Int16:
-            case TypeCode.Int32:
-            case TypeCode.Int64:
-            case TypeCode.Decimal:
-            case TypeCode.Double:
-            case TypeCode.Single:
-                return value!;
-            case TypeCode.String:
-                return Compress(Encoding.UTF8.GetBytes(value?.ToString() ?? string.Empty));
+            case CompressMode.None:
+                redisValue = value!;
+                break;
+            case CompressMode.Compress:
+                redisValue = Compress(Encoding.UTF8.GetBytes(value?.ToString() ?? string.Empty));
+                break;
             default:
                 var options = new JsonSerializerOptions();
                 options.EnableDynamicTypes();
 
                 var jsonString = JsonSerializer.Serialize(value, options);
-                return Compress(Encoding.UTF8.GetBytes(jsonString));
+                redisValue = Compress(Encoding.UTF8.GetBytes(jsonString));
+                break;
         }
+        return ConvertToRedisValue(type, redisValue);
+    }
+
+    private static RedisValue ConvertToRedisValue(Type type, dynamic value)
+    {
+        if (type == typeof(byte) || type == typeof(ushort))
+            return (long)value;
+
+        if (type == typeof(decimal))
+            return new RedisValue(value.ToString());
+
+        return value;
     }
 
     public static byte[] Compress(byte[] data)
@@ -85,7 +97,7 @@ public static class RedisHelper
         }
     }
 
-    public static bool IsNumericType(this Type type)
+    private static CompressMode GetCompressMode(this Type type)
     {
         switch (Type.GetTypeCode(type))
         {
@@ -97,12 +109,14 @@ public static class RedisHelper
             case TypeCode.Int16:
             case TypeCode.Int32:
             case TypeCode.Int64:
-            case TypeCode.Decimal:
             case TypeCode.Double:
             case TypeCode.Single:
-                return true;
+            case TypeCode.Decimal:
+                return CompressMode.None;
+            case TypeCode.String:
+                return CompressMode.Compress;
             default:
-                return false;
+                return CompressMode.SerializeAndCompress;
         }
     }
 }

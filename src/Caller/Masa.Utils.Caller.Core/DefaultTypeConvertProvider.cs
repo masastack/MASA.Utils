@@ -1,3 +1,6 @@
+// Copyright (c) MASA Stack All rights reserved.
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
 namespace Masa.Utils.Caller.Core;
 
 public class DefaultTypeConvertProvider : ITypeConvertProvider
@@ -21,29 +24,38 @@ public class DefaultTypeConvertProvider : ITypeConvertProvider
     /// <param name="request"></param>
     /// <typeparam name="TRequest">Support classes, anonymous objects</typeparam>
     /// <returns></returns>
+    [Obsolete("Use ConvertToKeyValuePairs instead")]
     public Dictionary<string, string> ConvertToDictionary<TRequest>(TRequest request) where TRequest : class
+        => new(ConvertToKeyValuePairs(request));
+
+    /// <summary>
+    /// Convert custom object to dictionary
+    /// </summary>
+    /// <param name="request"></param>
+    /// <typeparam name="TRequest">Support classes, anonymous objects</typeparam>
+    /// <returns></returns>
+    public IEnumerable<KeyValuePair<string, string>> ConvertToKeyValuePairs<TRequest>(TRequest request) where TRequest : class
     {
-        Dictionary<string, string> data = new();
         if (request.Equals(null))
-            return data;
+            return Array.Empty<KeyValuePair<string, string>>();
 
         if (request is Dictionary<string, string> response)
             return response;
 
         if (request is IEnumerable<KeyValuePair<string, string>> keyValuePairs)
-            return new Dictionary<string, string>(keyValuePairs);
+            return keyValuePairs;
 
-        var requestType = typeof(TRequest);
+        var requestType = request.GetType();
         if (!Dictionary.TryGetValue(requestType, out List<PropertyInfoMember>? members))
         {
             members = GetMembers(request.GetType().GetProperties());
             Dictionary.TryAdd(requestType, members);
         }
-
+        List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>();
         foreach (var member in members)
         {
             if (member.TryGetValue(request, out string value))
-                data.Add(member.Name, value);
+                data.Add(new KeyValuePair<string, string>(member.Name, value));
         }
         return data;
     }
@@ -81,5 +93,6 @@ public class DefaultTypeConvertProvider : ITypeConvertProvider
         return property.Name;
     }
 
-    protected bool IsNeedSerialize(PropertyInfo property) => !property.PropertyType.IsPrimitive && !NotNeedSerializeTypes.Contains(property.PropertyType);
+    protected bool IsNeedSerialize(PropertyInfo property)
+        => !property.PropertyType.IsPrimitive && !NotNeedSerializeTypes.Contains(property.PropertyType);
 }

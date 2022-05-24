@@ -1,3 +1,6 @@
+// Copyright (c) MASA Stack All rights reserved.
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
 namespace Masa.Utils.Caching.Redis;
 
 /// <summary>
@@ -231,7 +234,7 @@ public class RedisCacheClient : IDistributedCacheClient
         options ??= new CombinedCacheEntryOptions<T>();
 
         var redisKeys = keyValues.Select(item => (RedisKey)item.Key).ToArray();
-        var redisValues = keyValues.Select(item => (RedisValue)ConvertFromValue(item.Value)).ToArray();
+        var redisValues = keyValues.Select(item => ConvertFromValue(item.Value)).ToArray();
 
         _db.ScriptEvaluate(
             SET_MULTIPLE_SCRIPT,
@@ -249,7 +252,7 @@ public class RedisCacheClient : IDistributedCacheClient
         options ??= new CombinedCacheEntryOptions<T>();
 
         var keys = keyValues.Select(item => (RedisKey)item.Key).ToArray();
-        var redisValues = keyValues.Select(item => (RedisValue)ConvertFromValue(item.Value)).ToArray();
+        var redisValues = keyValues.Select(item => ConvertFromValue(item.Value)).ToArray();
 
         await _db.ScriptEvaluateAsync(
             SET_MULTIPLE_SCRIPT,

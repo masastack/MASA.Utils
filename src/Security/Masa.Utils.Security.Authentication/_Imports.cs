@@ -1,3 +1,6 @@
+// Copyright (c) MASA Stack All rights reserved.
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
 global using Masa.Utils.Caching.Memory;
 global using Masa.Utils.Security.Authentication.Attributes;
 global using Masa.Utils.Security.Authentication.Constants;
@@ -18,6 +21,3 @@ global using System.IdentityModel.Tokens.Jwt;
 global using System.Linq.Expressions;
 global using System.Reflection;
 global using System.Security.Claims;
-
-
-

@@ -1,3 +1,6 @@
+// Copyright (c) MASA Stack All rights reserved.
+// Licensed under the MIT License. See LICENSE.txt in the project root for license information.
+
 namespace Masa.Utils.Ldap.Novell;
 
 public class LdapProvider : ILdapProvider, IDisposable
@@ -29,10 +32,10 @@ public class LdapProvider : ILdapProvider, IDisposable
             return ldapConnection;
         }
         ldapConnection = new LdapConnection() { SecureSocketLayer = _ldapOptions.ServerPortSsl != 0 };
-        //Connect function will create a socket connection to the server - Port 389 for insecure and 3269 for secure    
+        //Connect function will create a socket connection to the server - Port 389 for insecure and 3269 for secure
         await ldapConnection.ConnectAsync(_ldapOptions.ServerAddress,
             _ldapOptions.ServerPortSsl != 0 ? _ldapOptions.ServerPortSsl : _ldapOptions.ServerPort);
-        //Bind function with null user dn and password value will perform anonymous bind to LDAP server 
+        //Bind function with null user dn and password value will perform anonymous bind to LDAP server
         await ldapConnection.BindAsync(_ldapOptions.RootUserDn, _ldapOptions.RootUserPassword);
 
         return ldapConnection;
