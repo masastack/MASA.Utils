@@ -183,12 +183,19 @@ public class LdapProvider : ILdapProvider, IDisposable
         }
     }
 
+    //LdapAttributeSet objectGUID to string
+    private static string GetObjectGUID(LdapAttributeSet attributeSet)
+    {
+        var objectGUID = attributeSet.GetAttribute("objectGUID");
+        return objectGUID.StringValue;
+    }
+
     private LdapUser CreateUser(string distinguishedName, LdapAttributeSet attributeSet)
     {
         var ldapUser = new LdapUser();
 
-        ldapUser.ObjectSid = attributeSet.GetString("objectSid");
-        ldapUser.ObjectGuid = attributeSet.GetString("objectGUID");
+        ldapUser.ObjectSid = ObjectSidToString(attributeSet.GetAttribute("objectSid").ByteValue);
+        ldapUser.ObjectGuid = ObjectGuidToString(attributeSet.GetAttribute("objectGUID").ByteValue);
         ldapUser.ObjectCategory = attributeSet.GetString("objectCategory");
         ldapUser.ObjectClass = attributeSet.GetString("objectClass");
         ldapUser.MemberOf = attributeSet.GetStringArray("memberOf");
@@ -216,6 +223,76 @@ public class LdapProvider : ILdapProvider, IDisposable
         ldapUser.SamAccountType = int.Parse(sAMAccountType?.StringValue ?? "0");
 
         ldapUser.IsDomainAdmin = ldapUser.MemberOf.Contains("CN=Domain Admins," + _ldapOptions.BaseDn);
+
         return ldapUser;
+    }
+
+    private string ObjectGuidToString(byte[] bytes)
+    {
+        var strGUID = "";
+        strGUID += AddLeadingZero(bytes[3] & 0xFF);
+        strGUID += AddLeadingZero(bytes[2] & 0xFF);
+        strGUID += AddLeadingZero(bytes[1] & 0xFF);
+        strGUID += AddLeadingZero(bytes[0] & 0xFF);
+        strGUID += "-";
+        strGUID += AddLeadingZero(bytes[5] & 0xFF);
+        strGUID += AddLeadingZero(bytes[4] & 0xFF);
+        strGUID += "-";
+        strGUID += AddLeadingZero(bytes[7] & 0xFF);
+        strGUID += AddLeadingZero(bytes[6] & 0xFF);
+        strGUID += "-";
+        strGUID += AddLeadingZero(bytes[8] & 0xFF);
+        strGUID += AddLeadingZero(bytes[9] & 0xFF);
+        strGUID += "-";
+        strGUID += AddLeadingZero(bytes[10] & 0xFF);
+        strGUID += AddLeadingZero(bytes[11] & 0xFF);
+        strGUID += AddLeadingZero(bytes[12] & 0xFF);
+        strGUID += AddLeadingZero(bytes[13] & 0xFF);
+        strGUID += AddLeadingZero(bytes[14] & 0xFF);
+        strGUID += AddLeadingZero(bytes[15] & 0xFF);
+
+        return strGUID;
+    }
+
+    private string ObjectSidToString(byte[] bytes)
+    {
+        StringBuilder strSID = new StringBuilder("S-");
+        strSID.Append(bytes[0]).Append('-');
+        // bytes[2..7] :
+        StringBuilder tmpBuff = new StringBuilder();
+        for (int t = 2; t <= 7; t++)
+        {
+            //var hexString = (bytes[t] & 0xFF).ToString("X");
+            //tmpBuff.Append(hexString);
+            tmpBuff.Append(AddLeadingZero((int)bytes[t] & 0xFF));
+        }
+        strSID.Append(Convert.ToInt64(tmpBuff.ToString(), 16));
+        // bytes[1] : the sub authorities count
+        int count = bytes[1];
+        for (int i = 0; i < count; i++)
+        {
+            int currSubAuthOffset = i * 4;
+            tmpBuff.Length = 0;
+            tmpBuff.Append(string.Format("{0:X2}{1:X2}{2:X2}{3:X2}",
+                (bytes[11 + currSubAuthOffset] & 0xFF),
+                (bytes[10 + currSubAuthOffset] & 0xFF),
+                (bytes[9 + currSubAuthOffset] & 0xFF),
+                (bytes[8 + currSubAuthOffset] & 0xFF)));
+
+            strSID.Append('-').Append(Convert.ToInt64(tmpBuff.ToString(), 16));
+        }
+        return strSID.ToString();
+    }
+
+    string AddLeadingZero(int k)
+    {
+        return (k <= 0xF) ? "0" + Int2String(k) : Int2String(k);
+    }
+
+    string Int2String(int kb)
+    {
+        byte[] bytes = new byte[1];
+        bytes[0] = (byte)(kb & 0xFF);
+        return Convert.ToHexString(bytes);
     }
 }
