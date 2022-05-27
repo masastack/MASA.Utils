@@ -49,8 +49,7 @@ public class DaprProcess : IDaprProcess
         {
             if (_isFirst)
             {
-                CompleteDaprOptions(options);
-                _isFirst = false;
+                CompleteDaprOptions(options, () => _isFirst = false);
             }
             DaprProcess_OutputDataReceived(sender, args);
         };
@@ -274,7 +273,7 @@ public class DaprProcess : IDaprProcess
     /// Improve the information of HttpPort and GrpcPort successfully configured.
     /// When Port is specified or Dapr is closed for other reasons after startup, the HttpPort and GrpcPort are the same as the Port assigned at the first startup.
     /// </summary>
-    private void CompleteDaprOptions(DaprCoreOptions options)
+    private void CompleteDaprOptions(DaprCoreOptions options, Action action)
     {
         int retry = 0;
         if (_successDaprOptions!.DaprHttpPort == null || _successDaprOptions.DaprGrpcPort == null)
@@ -301,7 +300,7 @@ public class DaprProcess : IDaprProcess
         string daprHttpPort = _successDaprOptions.DaprHttpPort.ToString()!;
         string daprGrpcPort = _successDaprOptions.DaprGrpcPort.ToString()!;
         CompleteDaprEnvironment(daprHttpPort, daprGrpcPort, out bool isChange);
-
+        action.Invoke();
         if (isChange)
         {
             options.Output(Const.CHANGE_DAPR_ENVIRONMENT_VARIABLE,
