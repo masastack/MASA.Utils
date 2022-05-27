@@ -33,7 +33,7 @@ public class DefaultResponseMessage : IResponseMessage
                         if (string.IsNullOrEmpty(content))
                             return (TResponse)(object?)null!;
 
-                        return (TResponse?)(object)Guid.Parse(content.Replace("\"","“"));
+                        return (TResponse?)(object)Guid.Parse(content.Replace("\"",""));
                     }
                     if (typeof(TResponse).GetInterfaces().Any(type => type == typeof(IConvertible)))
                     {
@@ -47,7 +47,7 @@ public class DefaultResponseMessage : IResponseMessage
                     }
                     catch (Exception exception)
                     {
-                        _logger?.LogWarning(exception, exception.Message ?? string.Empty);
+                        _logger?.LogWarning(exception, exception.Message);
                         ExceptionDispatchInfo.Capture(exception).Throw();
                         return default; //This will never be executed, the previous line has already thrown an exception
                     }
