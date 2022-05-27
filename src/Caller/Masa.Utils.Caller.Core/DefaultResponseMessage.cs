@@ -33,7 +33,7 @@ public class DefaultResponseMessage : IResponseMessage
                         if (string.IsNullOrEmpty(content))
                             return (TResponse)(object?)null!;
 
-                        return (TResponse?)(object)Guid.Parse(content);
+                        return (TResponse?)(object)Guid.Parse(content.Replace("\"","“"));
                     }
                     if (typeof(TResponse).GetInterfaces().Any(type => type == typeof(IConvertible)))
                     {
