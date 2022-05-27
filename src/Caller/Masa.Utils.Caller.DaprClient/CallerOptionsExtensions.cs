@@ -14,8 +14,16 @@ public static class CallerOptionsExtensions
         if (clientBuilder == null)
             throw new ArgumentNullException(nameof(clientBuilder));
 
-        callerOptions.Services.AddDaprClient(builder.Configure);
-        AddCallerExtensions.AddCaller(callerOptions, builder.Name, builder.IsDefault, (serviceProvider) => new DaprCallerProvider(serviceProvider, builder.AppId));
+        callerOptions.Services.AddDaprClient(daprClientBuilder =>
+        {
+            if (callerOptions.JsonSerializerOptions != null)
+                daprClientBuilder.UseJsonSerializationOptions(callerOptions.JsonSerializerOptions);
+
+            builder.Configure?.Invoke(daprClientBuilder);
+        });
+
+        AddCallerExtensions.AddCaller(callerOptions, builder.Name, builder.IsDefault,
+            serviceProvider => new DaprCallerProvider(serviceProvider, builder.AppId));
         return callerOptions;
     }
 
