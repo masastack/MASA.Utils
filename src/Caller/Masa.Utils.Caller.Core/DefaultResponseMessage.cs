@@ -33,7 +33,15 @@ public class DefaultResponseMessage : IResponseMessage
                         if (string.IsNullOrEmpty(content))
                             return (TResponse)(object?)null!;
 
-                        return (TResponse?)(object)Guid.Parse(content.Replace("\"",""));
+                        return (TResponse?)(object)Guid.Parse(content.Replace("\"", ""));
+                    }
+                    if (typeof(TResponse) == typeof(DateTime) || typeof(TResponse) == typeof(DateTime?))
+                    {
+                        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+                        if (string.IsNullOrEmpty(content))
+                            return (TResponse)(object?)null!;
+
+                        return (TResponse?)(object)DateTime.Parse(content.Replace("\"", ""));
                     }
                     if (typeof(TResponse).GetInterfaces().Any(type => type == typeof(IConvertible)))
                     {
