@@ -3,7 +3,7 @@
 
 namespace Masa.Utils.Extensions.DependencyInjection.Tests.Services;
 
-public class NullICalculateProviderService : ICalculateProviderService
+public class NullCalculateProviderService : ICalculateProviderService
 {
     public string Name => string.Empty;
 }

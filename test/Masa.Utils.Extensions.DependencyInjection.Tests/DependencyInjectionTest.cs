@@ -24,7 +24,7 @@ public class DependencyInjectionTest
         Assert.IsFalse(_typeProvider.IsSkip(typeof(BaseService)));
         Assert.IsTrue(_typeProvider.IsSkip(typeof(GoodsBaseService)));
         Assert.IsFalse(_typeProvider.IsSkip(typeof(GoodsService)));
-        Assert.IsFalse(_typeProvider.IsSkip(typeof(NullICalculateProviderService)));
+        Assert.IsFalse(_typeProvider.IsSkip(typeof(NullCalculateProviderService)));
         Assert.IsTrue(_typeProvider.IsSkip(typeof(OrderBaseService)));
         Assert.IsTrue(_typeProvider.IsSkip(typeof(OrderService)));
         Assert.IsTrue(_typeProvider.IsSkip(typeof(UserBaseService)));
@@ -51,10 +51,10 @@ public class DependencyInjectionTest
     [TestMethod]
     public void TestAssignableFrom()
     {
-        Assert.IsTrue(_typeProvider.IsAssignableFrom(typeof(ICalculateProviderService), typeof(NullICalculateProviderService)));
+        Assert.IsTrue(_typeProvider.IsAssignableFrom(typeof(ICalculateProviderService), typeof(NullCalculateProviderService)));
         Assert.IsTrue(_typeProvider.IsAssignableFrom(typeof(ISingletonDependency), typeof(ICalculateProviderService)));
 
-        Assert.IsFalse(_typeProvider.IsAssignableFrom(typeof(NullICalculateProviderService), typeof(ICalculateProviderService)));
+        Assert.IsFalse(_typeProvider.IsAssignableFrom(typeof(NullCalculateProviderService), typeof(ICalculateProviderService)));
         Assert.IsFalse(_typeProvider.IsAssignableFrom(typeof(ICalculateProviderService), typeof(ISingletonDependency)));
 
         Assert.IsTrue(_typeProvider.IsAssignableFrom(typeof(BaseService), typeof(UserBaseService)));
@@ -80,10 +80,10 @@ public class DependencyInjectionTest
     [TestMethod]
     public void TestAssignableTo()
     {
-        Assert.IsFalse(_typeProvider.IsAssignableTo(typeof(ICalculateProviderService), typeof(NullICalculateProviderService)));
+        Assert.IsFalse(_typeProvider.IsAssignableTo(typeof(ICalculateProviderService), typeof(NullCalculateProviderService)));
         Assert.IsFalse(_typeProvider.IsAssignableTo(typeof(ISingletonDependency), typeof(ICalculateProviderService)));
 
-        Assert.IsTrue(_typeProvider.IsAssignableTo(typeof(NullICalculateProviderService), typeof(ICalculateProviderService)));
+        Assert.IsTrue(_typeProvider.IsAssignableTo(typeof(NullCalculateProviderService), typeof(ICalculateProviderService)));
         Assert.IsTrue(_typeProvider.IsAssignableTo(typeof(ICalculateProviderService), typeof(ISingletonDependency)));
 
         Assert.IsFalse(_typeProvider.IsAssignableTo(typeof(BaseService), typeof(UserBaseService)));
@@ -114,7 +114,7 @@ public class DependencyInjectionTest
         var serviceProvider = services.BuildServiceProvider();
         var calculateProviderService = serviceProvider.GetService<ICalculateProviderService>();
         Assert.IsNotNull(calculateProviderService);
-        Assert.IsNull(serviceProvider.GetService<NullICalculateProviderService>());
+        Assert.IsNull(serviceProvider.GetService<NullCalculateProviderService>());
 
         Assert.IsTrue(BaseService.Count == 1);
         var serviceBase = serviceProvider.GetService<BaseService>();
