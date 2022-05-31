@@ -29,7 +29,7 @@ public class DaprProvider : IDaprProvider
         };
         _processUtils.Exit += delegate
         {
-            _logger?.LogInformation("{Name} process has exited", Const.DEFAULT_FILE_NAME);
+            _logger?.LogDebug("{Name} process has exited", Const.DEFAULT_FILE_NAME);
         };
         _processUtils.Run(Const.DEFAULT_FILE_NAME, "list -o json", true, true);
         string response = stringBuilder.ToString().Trim();

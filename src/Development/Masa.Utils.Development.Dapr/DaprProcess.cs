@@ -49,8 +49,7 @@ public class DaprProcess : IDaprProcess
         {
             if (_isFirst)
             {
-                CompleteDaprOptions();
-                _isFirst = false;
+                CompleteDaprOptions(options, () => _isFirst = false);
             }
             DaprProcess_OutputDataReceived(sender, args);
         };
@@ -58,7 +57,7 @@ public class DaprProcess : IDaprProcess
         utils.Exit += delegate
         {
             UpdateStatus(DaprProcessStatus.Stopped);
-            _logger?.LogInformation("{Name} process has exited", Const.DEFAULT_FILE_NAME);
+            _logger?.LogDebug("{Name} process has exited", Const.DEFAULT_FILE_NAME);
         };
         var process = utils.Run(Const.DEFAULT_FILE_NAME, $"run {commandLineBuilder}", options.CreateNoWindow);
         _process = new SystemProcess(process);
@@ -156,12 +155,12 @@ public class DaprProcess : IDaprProcess
     {
         lock (_lock)
         {
-            _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, please wait...", _successDaprOptions!.AppId);
+            _logger?.LogDebug("Dapr configuration refresh, appid is {appid}, please wait...", _successDaprOptions!.AppId);
 
             if (_successDaprOptions != null)
             {
                 UpdateStatus(DaprProcessStatus.Restarting);
-                _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, closing dapr, please wait...",
+                _logger?.LogDebug("Dapr configuration refresh, appid is {appid}, closing dapr, please wait...",
                     _successDaprOptions!.AppId);
                 StopCore(_successDaprOptions, cancellationToken);
             }
@@ -169,7 +168,7 @@ public class DaprProcess : IDaprProcess
             _isFirst = true;
             _successDaprOptions = null;
             _process = null;
-            _logger?.LogInformation("Dapr configuration refresh, appid is {appid}, restarting dapr, please wait...", options.AppId);
+            _logger?.LogDebug("Dapr configuration refresh, appid is {appid}, restarting dapr, please wait...", options.AppId);
             StartCore(GetDaprOptions(options), cancellationToken);
         }
     }
@@ -213,9 +212,9 @@ public class DaprProcess : IDaprProcess
 
     private DaprCoreOptions GetDaprOptions(DaprOptions options)
     {
-        string appId = GetAppId(options);
-        ushort appPort = GetAppPort(options);
-        return new(
+        string appId = options.GetAppId();
+        ushort appPort = options.GetAppPort();
+        DaprCoreOptions dataOptions = new(
             appId,
             appPort,
             options.AppProtocol,
@@ -239,13 +238,9 @@ public class DaprProcess : IDaprProcess
             UnixDomainSocket = options.UnixDomainSocket,
             DaprMaxRequestSize = options.DaprMaxRequestSize
         };
+        dataOptions.OutputDataReceived += options.Output;
+        return dataOptions;
     }
-
-    private string GetAppId(DaprOptions options) =>
-        options.AppIdSuffix.Trim() == string.Empty ? options.AppId : $"{options.AppId}{options.AppIdDelimiter}{options.AppIdSuffix}";
-
-    private ushort GetAppPort(DaprOptions options) =>
-        options.AppPort ?? throw new ArgumentNullException(nameof(options.AppPort));
 
     private CommandLineBuilder Initialize(DaprCoreOptions options, CancellationToken cancellationToken)
     {
@@ -278,7 +273,7 @@ public class DaprProcess : IDaprProcess
     /// Improve the information of HttpPort and GrpcPort successfully configured.
     /// When Port is specified or Dapr is closed for other reasons after startup, the HttpPort and GrpcPort are the same as the Port assigned at the first startup.
     /// </summary>
-    private void CompleteDaprOptions()
+    private void CompleteDaprOptions(DaprCoreOptions options, Action action)
     {
         int retry = 0;
         if (_successDaprOptions!.DaprHttpPort == null || _successDaprOptions.DaprGrpcPort == null)
@@ -301,22 +296,32 @@ public class DaprProcess : IDaprProcess
                 return;
             }
         }
-        CompleteDaprEnvironment(_successDaprOptions.DaprHttpPort.ToString()!, _successDaprOptions.DaprGrpcPort!.ToString()!);
+
+        string daprHttpPort = _successDaprOptions.DaprHttpPort.ToString()!;
+        string daprGrpcPort = _successDaprOptions.DaprGrpcPort.ToString()!;
+        CompleteDaprEnvironment(daprHttpPort, daprGrpcPort, out bool isChange);
+        action.Invoke();
+        if (isChange)
+        {
+            options.Output(Const.CHANGE_DAPR_ENVIRONMENT_VARIABLE,
+                $"update environment variables, DaprHttpPort: {daprHttpPort}, DAPR_GRPC_PORT: {daprGrpcPort}");
+        }
     }
 
     private void UpdateStatus(DaprProcessStatus status)
     {
         if (status != Status)
         {
-            _logger?.LogInformation($"Dapr Process Status Change: {Status} -> {status}");
+            _logger?.LogDebug($"Dapr Process Status Change: {Status} -> {status}");
             Status = status;
         }
     }
 
-    private static void CompleteDaprEnvironment(string daprHttpPort, string daprGrpcPort)
+    private static void CompleteDaprEnvironment(string daprHttpPort, string daprGrpcPort, out bool isChange)
     {
-        EnvironmentUtils.TryAdd("DAPR_GRPC_PORT", () => daprGrpcPort);
-        EnvironmentUtils.TryAdd("DAPR_HTTP_PORT", () => daprHttpPort);
+        EnvironmentExtensions.TryAdd("DAPR_GRPC_PORT", () => daprGrpcPort, out bool gRpcPortIsExist);
+        EnvironmentExtensions.TryAdd("DAPR_HTTP_PORT", () => daprHttpPort, out bool httpPortIsExist);
+        isChange = !gRpcPortIsExist || !httpPortIsExist;
     }
 
     public void Dispose()

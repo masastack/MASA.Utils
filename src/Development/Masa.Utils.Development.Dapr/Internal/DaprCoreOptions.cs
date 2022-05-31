@@ -111,6 +111,8 @@ internal class DaprCoreOptions
     /// </summary>
     public int? DaprMaxRequestSize { get; set; }
 
+    public event DaprEventHandler? OutputDataReceived;
+
     public DaprCoreOptions(
         string appId,
         ushort appPort,
@@ -138,4 +140,6 @@ internal class DaprCoreOptions
         DaprHttpPort ??= httpPort;
         DaprGrpcPort ??= rpcPort;
     }
+
+    public void Output(string type, string data) => OutputDataReceived?.Invoke(type, data);
 }
