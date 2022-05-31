@@ -32,6 +32,17 @@ public interface IRepository<TEntity> : IScopedDependency
 
 > Because IRepository<TEntity> inherits IScopedDependency, the life cycle of IRepository<TEntity> will be Scoped
 
+## Rule:
+
+Scan the interfaces and classes that inherit ISingletonDependency, IScopedDependency, and ITransientDependency in the assembly, and automatically register services for them
+
+* When the inherited class is an interface, its ServiceType is the current interface, and its ImplementationType is the implementation class of the current interface
+  > If the current interface has multiple implementation classes, it will be added multiple times
+* When the inherited class is not an interface, its ServiceType is the current class, and its ImplementationType is also the current class
+  > Cascade scan registration service is supported by default, and subclasses of the current class will also be registered
+  >
+  > abstract classes will not be registered
+
 ## Features:
 
 * IgnoreInjection: Ignore injection, used to exclude sub-services from being injected automatically
