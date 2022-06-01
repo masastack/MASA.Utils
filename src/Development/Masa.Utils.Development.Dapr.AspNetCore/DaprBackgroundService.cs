@@ -5,44 +5,29 @@ namespace Masa.Utils.Development.Dapr.AspNetCore;
 
 public class DaprBackgroundService : BackgroundService
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IAppPortProvider _appPortProvider;
     private readonly IDaprProcess _daprProcess;
     private readonly DaprOptions _options;
     private readonly IHostApplicationLifetime _hostApplicationLifetime;
     private readonly ILogger<DaprBackgroundService>? _logger;
 
     public DaprBackgroundService(
-        IServiceProvider serviceProvider,
+        IAppPortProvider appPortProvider,
         IDaprProcess daprProcess,
         IOptionsMonitor<DaprOptions> options,
         IHostApplicationLifetime hostApplicationLifetime,
         ILogger<DaprBackgroundService>? logger)
     {
-        _serviceProvider = serviceProvider;
+        _appPortProvider = appPortProvider;
         _daprProcess = daprProcess;
         _options = options.CurrentValue;
         options.OnChange(daprOptions =>
         {
-            daprOptions.AppPort ??= GetAppPort(daprOptions);
+            daprOptions.AppPort ??= _appPortProvider.GetAppPort(daprOptions.EnableSsl);
             _daprProcess.Refresh(daprOptions);
         });
         _hostApplicationLifetime = hostApplicationLifetime;
         _logger = logger;
-    }
-
-    private ushort GetAppPort(DaprOptions options)
-    {
-        var server = _serviceProvider.GetRequiredService<IServer>();
-        var addresses = server.Features.Get<IServerAddressesFeature>()?.Addresses;
-        if (addresses is { IsReadOnly: false, Count: 0 })
-            throw new Exception("Failed to get the startup port, please specify the port manually");
-
-        return addresses!
-            .Select(address => new Uri(address))
-            .Where(address
-                => (options.EnableSsl is true && address.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
-                || address.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
-            .Select(address => (ushort)address.Port).FirstOrDefault();
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -59,7 +44,7 @@ public class DaprBackgroundService : BackgroundService
         else
         {
             _logger?.LogInformation("{Name} is Starting ...", nameof(DaprBackgroundService));
-            _options.AppPort ??= GetAppPort(_options);
+            _options.AppPort ??= _appPortProvider.GetAppPort(_options.EnableSsl);
             _daprProcess.Start(_options, stoppingToken);
         }
     }
@@ -69,7 +54,8 @@ public class DaprBackgroundService : BackgroundService
         var startedSource = new TaskCompletionSource();
         var cancelledSource = new TaskCompletionSource();
 
-        await using var startedCancellationTokenRegistration = hostApplicationLifetime.ApplicationStarted.Register(() => startedSource.SetResult());
+        await using var startedCancellationTokenRegistration =
+            hostApplicationLifetime.ApplicationStarted.Register(() => startedSource.SetResult());
         await using var cancellationTokenRegistration = stoppingToken.Register(() => cancelledSource.SetResult());
 
         Task completedTask = await Task.WhenAny(startedSource.Task, cancelledSource.Task).ConfigureAwait(false);

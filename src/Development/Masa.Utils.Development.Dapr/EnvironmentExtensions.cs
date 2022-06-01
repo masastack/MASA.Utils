@@ -1,14 +1,15 @@
 ﻿// Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-namespace Masa.Utils.Development.Dapr.Internal;
+namespace Masa.Utils.Development.Dapr;
 
-internal class EnvironmentUtils
+public static class EnvironmentExtensions
 {
-    public static void TryAdd(string environment, Func<string?> func)
+    public static void TryAdd(string environment, Func<string?> func, out bool isExist)
     {
         var value = Environment.GetEnvironmentVariable(environment);
-        if (value == null)
+        isExist = value == null;
+        if (isExist)
         {
             Environment.SetEnvironmentVariable(environment, func.Invoke());
         }

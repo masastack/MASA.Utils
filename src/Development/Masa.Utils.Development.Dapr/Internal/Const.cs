@@ -15,4 +15,9 @@ internal class Const
     /// Heartbeat detection interval, used to detect dapr status
     /// </summary>
     public const int DEFAULT_HEARTBEATINTERVAL = 5000;
+
+    /// <summary>
+    /// Change the dapr environment variable
+    /// </summary>
+    public const string CHANGE_DAPR_ENVIRONMENT_VARIABLE = "DAPR_CHANGE_ENVIRONMENT_VARIABLE";
 }

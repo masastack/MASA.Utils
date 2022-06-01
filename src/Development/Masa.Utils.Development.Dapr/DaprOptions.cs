@@ -9,7 +9,7 @@ namespace Masa.Utils.Development.Dapr;
 /// </summary>
 public class DaprOptions
 {
-    private string _appid = DefaultOptions.DefaultAppId;
+    private string _appid = DaprExtensions.DefaultAppId;
 
     /// <summary>
     /// The id for your application, used for service discovery
@@ -46,7 +46,7 @@ public class DaprOptions
         }
     }
 
-    private string _appIdSuffix = DefaultOptions.DefaultAppidSuffix;
+    private string _appIdSuffix = DaprExtensions.DefaultAppidSuffix;
 
     /// <summary>
     /// Appid suffix
@@ -271,4 +271,13 @@ public class DaprOptions
     public bool EnableHeartBeat { get; set; } = true;
 
     public bool CreateNoWindow { get; set; } = true;
+
+    public string GetAppId() => DaprExtensions.GetAppId(AppId, AppIdSuffix, AppIdDelimiter);
+
+    public ushort GetAppPort() =>
+        AppPort ?? throw new ArgumentNullException(nameof(AppPort));
+
+    public event DaprEventHandler? OutputDataReceived;
+
+    public void Output(string type, string data) => OutputDataReceived?.Invoke(type, data);
 }
