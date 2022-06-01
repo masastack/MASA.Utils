@@ -97,7 +97,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Extensions.Depen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Extensions.DependencyInjection.Repository.Tests", "test\Masa.Utils.Extensions.DependencyInjection.Repository.Tests\Masa.Utils.Extensions.DependencyInjection.Repository.Tests.csproj", "{22643BF8-A5ED-48CA-BD1A-10BFEC075DBE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Masa.Utils.Extensions.FluentValidation", "src\Extensions\Masa.Utils.Extensions.FluentValidation\Masa.Utils.Extensions.FluentValidation.csproj", "{C42368DE-1A13-484B-AFDD-9C710B7E3E80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Extensions.Validations.FluentValidation", "src\Extensions\Masa.Utils.Extensions.FluentValidation\Masa.Utils.Extensions.Validations.FluentValidation.csproj", "{C42368DE-1A13-484B-AFDD-9C710B7E3E80}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Validations", "Validations", "{533BCE80-61BC-443A-95D3-2C6328921ED8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -288,7 +290,8 @@ Global
 		{B063C9CC-868A-4474-8DCD-1708A65D4F2A} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 		{20960ED7-76FC-4DBD-8358-1A424D1E0DC1} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 		{22643BF8-A5ED-48CA-BD1A-10BFEC075DBE} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
-		{C42368DE-1A13-484B-AFDD-9C710B7E3E80} = {B2DA607D-4A39-4F0C-A9B3-DD9A061B0B4E}
+		{C42368DE-1A13-484B-AFDD-9C710B7E3E80} = {533BCE80-61BC-443A-95D3-2C6328921ED8}
+		{533BCE80-61BC-443A-95D3-2C6328921ED8} = {B2DA607D-4A39-4F0C-A9B3-DD9A061B0B4E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7DAA0E6-098F-4B18-8775-64FDA96F1FF0}
