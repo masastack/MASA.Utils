@@ -2,7 +2,7 @@
 
 ## Masa.Utils.Extensions.DependencyInjection
 
-## Example:
+### Reference package:
 
 ````c#
 Install-Package Masa.Utils.Extensions.DependencyInjection
@@ -36,12 +36,46 @@ public interface IRepository<TEntity> : IScopedDependency
 
 Scan the interfaces and classes that inherit ISingletonDependency, IScopedDependency, and ITransientDependency in the assembly, and automatically register services for them
 
-* When the inherited class is an interface, its ServiceType is the current interface, and its ImplementationType is the implementation class of the current interface
-  > If the current interface has multiple implementation classes, it will be added multiple times
+* When inheriting an interface, its ServiceType is the current interface, and its ImplementationType is the implementation class of the current interface
+   * If the current interface has multiple implementation classes, it will be added multiple times
+
+     ```` C#
+     public interface IUserService : IScopedDependency
+     {
+
+     }
+
+     public class UserService : IUserService
+     {
+
+     }
+     ````
+     > Equivalent to service.AddScoped<IUserService, UserService>();
+
 * When the inherited class is not an interface, its ServiceType is the current class, and its ImplementationType is also the current class
-  > Cascade scan registration service is supported by default, and subclasses of the current class will also be registered
-  >
-  > abstract classes will not be registered
+   * By default, the cascade scan registration service is supported, and subclasses of the current class will also be registered
+
+     ```` C#
+     public class BaseRepository : ISingletonDependency
+     {
+
+     }
+
+     /// <summary>
+     /// Abstract classes are not automatically registered
+     /// </summary>
+     public abstract class CustomizeBaseRepository : ISingletonDependency
+     {
+
+     }
+
+     public class UserRepository : BaseRepository
+     {
+
+     }
+     ````
+
+     > Equivalent to: service.AddSingleton<BaseRepository>();service.AddSingleton<UserRepository>();
 
 ## Features:
 
