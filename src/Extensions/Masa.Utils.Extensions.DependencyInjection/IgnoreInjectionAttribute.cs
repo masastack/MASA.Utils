@@ -8,8 +8,8 @@ public class IgnoreInjectionAttribute : Attribute
 {
     public bool Cascade { get; set; }
 
-    public IgnoreInjectionAttribute(bool casCade = false)
+    public IgnoreInjectionAttribute(bool cascade = false)
     {
-        Cascade = casCade;
+        Cascade = cascade;
     }
 }
