@@ -75,14 +75,15 @@ Scan the interfaces and classes that inherit ISingletonDependency, IScopedDepend
      }
      ````
 
-     > Equivalent to: service.AddSingleton<BaseRepository>();service.AddSingleton<UserRepository>();
+     > Equivalent to: `service.AddSingleton<BaseRepository>();service.AddSingleton<UserRepository>();`
 
 ## Features:
 
-* IgnoreInjection: Ignore injection, used to exclude sub-services from being injected automatically
+* IgnoreInjection: Ignore injection, used to exclude not being injected automatically
 
 ## Methods:
 
-* GetInstance<T>(): Get the instance of service T
-* Any<T>(): whether service T exists, does not support generic services
-* Any<T>(ServiceLifetime.Singleton): Whether there is a service T whose life cycle is Singleton, does not support generic services
+* Extend IServiceCollection
+    * GetInstance<T>(): Get the instance of service T
+    * Any<T>(): Whether there is a service T, does not support generic services
+    * Any<T>(ServiceLifetime.Singleton): Whether there is a service T with a life cycle of Singleton, which does not support generic services

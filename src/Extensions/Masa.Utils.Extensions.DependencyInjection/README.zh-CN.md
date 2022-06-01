@@ -75,14 +75,15 @@ public interface IRepository<TEntity> : IScopedDependency
     }
     ```
 
-    > 等价于: service.AddSingleton<BaseRepository>();service.AddSingleton<UserRepository>();
+    > 等价于: `service.AddSingleton<BaseRepository>();service.AddSingleton<UserRepository>();`
 
 ## 特性:
 
-* IgnoreInjection: 忽略注入，用于排除子服务被自动注入
+* IgnoreInjection: 忽略注入，用于排除不被自动注入
 
 ## 方法:
 
-* GetInstance<T>(): 获取服务T的实例
-* Any<T>(): 是否存在服务T，不支持泛型服务
-* Any<T>(ServiceLifetime.Singleton): 是否存在一个生命周期为Singleton的服务T，不支持泛型服务
+* 扩展IServiceCollection
+  * GetInstance<T>(): 获取服务T的实例
+  * Any<T>(): 是否存在服务T，不支持泛型服务
+  * Any<T>(ServiceLifetime.Singleton): 是否存在一个生命周期为Singleton的服务T，不支持泛型服务
