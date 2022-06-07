@@ -16,23 +16,11 @@ public class DaprProvider : IDaprProvider
 
     public List<DaprRuntimeOptions> GetDaprList(string appId)
     {
-        var stringBuilder = new StringBuilder();
-        _processUtils.OutputDataReceived += delegate(object? sender, DataReceivedEventArgs args)
-        {
-            if (args.Data != null)
-            {
-                lock (stringBuilder)
-                {
-                    stringBuilder.AppendLine(args.Data);
-                }
-            }
-        };
         _processUtils.Exit += delegate
         {
             _logger?.LogDebug("{Name} process has exited", Const.DEFAULT_FILE_NAME);
         };
-        _processUtils.Run(Const.DEFAULT_FILE_NAME, "list -o json", true, true);
-        string response = stringBuilder.ToString().Trim();
+        _processUtils.Run(Const.DEFAULT_FILE_NAME, "list -o json", out string response, true, true);
         List<DaprRuntimeOptions> daprList = new();
         try
         {

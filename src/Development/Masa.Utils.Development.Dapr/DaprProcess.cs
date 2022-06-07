@@ -44,22 +44,16 @@ public class DaprProcess : IDaprProcess
         StopCore(_successDaprOptions, cancellationToken);
 
         var utils = new ProcessUtils(_loggerFactory);
-
-        utils.OutputDataReceived += delegate(object? sender, DataReceivedEventArgs args)
-        {
-            if (_isFirst)
-            {
-                CompleteDaprOptions(options, () => _isFirst = false);
-            }
-            DaprProcess_OutputDataReceived(sender, args);
-        };
-        utils.ErrorDataReceived += DaprProcess_ErrorDataReceived;
         utils.Exit += delegate
         {
             UpdateStatus(DaprProcessStatus.Stopped);
             _logger?.LogDebug("{Name} process has exited", Const.DEFAULT_FILE_NAME);
         };
         var process = utils.Run(Const.DEFAULT_FILE_NAME, $"run {commandLineBuilder}", options.CreateNoWindow);
+        if (_isFirst)
+        {
+            CompleteDaprOptions(options, () => _isFirst = false);
+        }
         _process = new SystemProcess(process);
         if (_heartBeatTimer == null && options.EnableHeartBeat)
         {
@@ -72,48 +66,6 @@ public class DaprProcess : IDaprProcess
             _heartBeatTimer.Start();
         }
         UpdateStatus(DaprProcessStatus.Started);
-    }
-
-    private static void DaprProcess_OutputDataReceived(object? sender, DataReceivedEventArgs e)
-    {
-        if (e.Data == null) return;
-
-        var dataSpan = e.Data.AsSpan();
-        var levelStartIndex = e.Data.IndexOf("level=", StringComparison.Ordinal) + 6;
-        var level = "information";
-        if (levelStartIndex > 5)
-        {
-            var levelLength = dataSpan.Slice(levelStartIndex).IndexOf(' ');
-            level = dataSpan.Slice(levelStartIndex, levelLength).ToString();
-        }
-
-        var color = Console.ForegroundColor;
-        switch (level)
-        {
-            case "warning":
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                break;
-            case "error":
-            case "critical":
-            case "fatal":
-                Console.ForegroundColor = ConsoleColor.Red;
-                break;
-            default:
-                break;
-        }
-
-        Console.WriteLine(e.Data);
-        Console.ForegroundColor = color;
-    }
-
-    private static void DaprProcess_ErrorDataReceived(object? sender, DataReceivedEventArgs e)
-    {
-        if (e.Data == null) return;
-
-        var color = Console.ForegroundColor;
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(e.Data);
-        Console.ForegroundColor = color;
     }
 
     public void Stop(CancellationToken cancellationToken = default)
