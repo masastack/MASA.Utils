@@ -246,7 +246,7 @@ public class DaprOptions
         }
     }
 
-    private int _heartBeatInterval = Const.DEFAULT_HEARTBEATINTERVAL;
+    private int _heartBeatInterval = Const.DEFAULT_HEARTBEAT_INTERVAL;
 
     /// <summary>
     /// Heartbeat detection interval, used to detect dapr status
@@ -260,7 +260,7 @@ public class DaprOptions
             if (value < 0)
                 throw new NotSupportedException($"{nameof(DaprMaxRequestSize)} must be greater than or equal to 0 .");
 
-            _heartBeatInterval = value ?? Const.DEFAULT_HEARTBEATINTERVAL;
+            _heartBeatInterval = value ?? Const.DEFAULT_HEARTBEAT_INTERVAL;
         }
     }
 
