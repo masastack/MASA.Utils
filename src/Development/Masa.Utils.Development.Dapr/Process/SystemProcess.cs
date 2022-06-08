@@ -20,8 +20,7 @@ public class SystemProcess : IProcess
 
     public void Kill()
     {
-        if (IsRun)
-            _process.Kill();
+        if (IsRun) _process.Kill();
     }
 
     public bool Start() => _process.Start();

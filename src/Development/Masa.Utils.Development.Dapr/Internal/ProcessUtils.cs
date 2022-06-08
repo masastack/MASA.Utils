@@ -17,6 +17,14 @@ internal class ProcessUtils
         string arguments,
         bool createNoWindow = true,
         bool isWait = false)
+        => Run(fileName, arguments, out string _, createNoWindow, isWait);
+
+    public System.Diagnostics.Process Run(
+        string fileName,
+        string arguments,
+        out string response,
+        bool createNoWindow = true,
+        bool isWait = false)
     {
         _logger?.LogDebug("FileName: {FileName}, Arguments: {Arguments}", fileName, arguments);
         var processStartInfo = new ProcessStartInfo
@@ -36,22 +44,31 @@ internal class ProcessUtils
             processStartInfo.RedirectStandardError = true;
             processStartInfo.RedirectStandardOutput = true;
 
-            daprProcess.OutputDataReceived += (_, args) => OnOutputDataReceived(args);
-            daprProcess.ErrorDataReceived += (_, args) => OnErrorDataReceived(args);
+            if (!isWait)
+            {
+                daprProcess.OutputDataReceived += (_, args) => OnOutputDataReceived(args);
+                daprProcess.ErrorDataReceived += (_, args) => OnErrorDataReceived(args);
+            }
         }
         daprProcess.Start();
-        if (createNoWindow)
+        if (createNoWindow && !isWait)
         {
             daprProcess.BeginOutputReadLine();
             daprProcess.BeginErrorReadLine();
         }
         daprProcess.Exited += (_, _) => OnExited();
-        string command = daprProcess.ProcessName + arguments;
-        _logger?.LogDebug("Process: {ProcessName}, Command: {Command}, PID: {ProcessId} executed successfully", daprProcess.ProcessName, command, daprProcess.Id);
+        string command = $"{fileName} {arguments}";
+        _logger?.LogDebug("Process: {ProcessName}, Command: {Command}, PID: {ProcessId} executed successfully", fileName,
+            command, daprProcess.Id);
 
         if (isWait)
         {
+            response = daprProcess.StandardOutput.ReadToEnd();
             daprProcess.WaitForExit();
+        }
+        else
+        {
+            response = string.Empty;
         }
         return daprProcess;
     }

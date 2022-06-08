@@ -15,6 +15,7 @@ public class DaprProcess : IDaprProcess
     private DaprProcessStatus Status { get; set; }
     private System.Timers.Timer? _heartBeatTimer;
     private DaprCoreOptions? _successDaprOptions;
+    private int _retryTime;
 
     /// <summary>
     /// record whether dapr is initialized for the first time
@@ -59,6 +60,7 @@ public class DaprProcess : IDaprProcess
             UpdateStatus(DaprProcessStatus.Stopped);
             _logger?.LogDebug("{Name} process has exited", Const.DEFAULT_FILE_NAME);
         };
+        _retryTime = 0;
         var process = utils.Run(Const.DEFAULT_FILE_NAME, $"run {commandLineBuilder}", options.CreateNoWindow);
         _process = new SystemProcess(process);
         if (_heartBeatTimer == null && options.EnableHeartBeat)
@@ -71,7 +73,6 @@ public class DaprProcess : IDaprProcess
             _heartBeatTimer.Elapsed += (sender, args) => HeartBeat(cancellationToken);
             _heartBeatTimer.Start();
         }
-        UpdateStatus(DaprProcessStatus.Started);
     }
 
     private static void DaprProcess_OutputDataReceived(object? sender, DataReceivedEventArgs e)
@@ -126,7 +127,7 @@ public class DaprProcess : IDaprProcess
 
     private void StopCore(DaprCoreOptions? options, CancellationToken cancellationToken = default)
     {
-        _process?.WaitForExit();
+        _process?.Kill();
         if (options != null)
         {
             List<DaprRuntimeOptions> daprList = _daprProvider.GetDaprList(options.AppId);
@@ -185,7 +186,7 @@ public class DaprProcess : IDaprProcess
                     port,
                     pId,
                     process.Name,
-                    nameof(Masa.Utils.Development.Dapr));
+                    nameof(Dapr));
                 process.Kill();
             }
         }
@@ -202,10 +203,32 @@ public class DaprProcess : IDaprProcess
                     _logger?.LogWarning("Dapr stopped, restarting, please wait...");
                     StartCore(_successDaprOptions, cancellationToken);
                 }
+                else if (Status == DaprProcessStatus.Starting)
+                {
+                    if (_retryTime < Const.DEFAULT_RETRY_TIME)
+                    {
+                        _retryTime++;
+                        _logger?.LogDebug("Dapr is not started: The {retries}th heartbeat check. AppId is {AppId}",
+                            _retryTime,
+                            _successDaprOptions.AppId);
+                    }
+                    else
+                    {
+                        _logger?.LogWarning(
+                            "Dapr is not started: The {retries}th heartbeat check. Dapr stopped, restarting, please wait...",
+                            _retryTime + 1);
+                        StartCore(_successDaprOptions, cancellationToken);
+                    }
+                }
                 else
                 {
                     _logger?.LogWarning("Dapr is restarting, the current state is {State}, please wait...", Status);
                 }
+            }
+            else
+            {
+                _retryTime = 0;
+                UpdateStatus(DaprProcessStatus.Started);
             }
         }
     }
@@ -324,8 +347,5 @@ public class DaprProcess : IDaprProcess
         isChange = !gRpcPortIsExist || !httpPortIsExist;
     }
 
-    public void Dispose()
-    {
-        Stop();
-    }
+    public void Dispose() => Stop();
 }
