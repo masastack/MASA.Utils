@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
         options.Invoke(callerOption);
 
         services.TryAddSingleton<ICallerFactory, DefaultCallerFactory>();
-        services.TryAdd(new ServiceDescriptor(typeof(IRequestMessage), _ => new JsonRequestMessage(callerOption.JsonSerializerOptions), callerOption.CallerLifetime));
+        services.TryAddSingleton<IRequestMessage>(_ => new JsonRequestMessage(callerOption.JsonSerializerOptions));
         services.TryAddSingleton<IResponseMessage, DefaultResponseMessage>();
         services.TryAddScoped(serviceProvider => serviceProvider.GetRequiredService<ICallerFactory>().CreateClient());
 
