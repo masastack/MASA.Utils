@@ -1,11 +1,11 @@
 中 | [EN](README.md)
 
-## Masa.Utils.Caller.HttpClient
+## Masa.Utils.Caller.DaprClient
 
 ## 用例:
 
 ```c#
-Install-Package Masa.Utils.Caller.HttpClient
+Install-Package Masa.Utils.Caller.DaprClient
 ```
 
 ### 基本用法:
@@ -15,10 +15,10 @@ Install-Package Masa.Utils.Caller.HttpClient
     ``` C#
     builder.Services.AddCaller(options =>
     {
-        options.UseHttpClient(httpClientBuilder =>
+        options.UseDapr(clientBuilder =>
         {
-            httpClientBuilder.Name = "UserCaller";// 当前Caller的别名，仅存在一个HttpClient时，可以不对Name赋值
-            httpClientBuilder.BaseAddress = "http://localhost:5000" ;
+            clientBuilder.Name = "UserCaller";// 当前Caller的别名，仅存在一个Provider时，可以不对Name赋值
+            clientBuilder.AppId = "<Replace-You-Dapr-AppID>" ;//被调用方dapr的AppID
         });
     });
     ```
@@ -30,22 +30,22 @@ Install-Package Masa.Utils.Caller.HttpClient
         => userCallerProvider.GetAsync<string>($"/Hello", new { Name = name }));
     ```
 
-   > 完整请求的接口地址是：http://localhost:5000/Hello?Name={name}
+    > 完整请求的接口地址是：http://localhost:3500/v1.0/invoke/<Replace-You-Dapr-AppID>/method/Hello?Name={name}
 
-3. 当存在多个HttpClient时，则修改`Program.cs`为
+3. 当存在多个DaprClient时，则修改`Program.cs`为
 
     ``` C#
     builder.Services.AddCaller(options =>
     {
-        options.UseHttpClient(httpClientBuilder =>
+        options.UseDapr(clientBuilder =>
         {
-            httpClientBuilder.Name = "UserCaller";
-            httpClientBuilder.BaseAddress = "http://localhost:5000" ;
+            clientBuilder.Name = "UserCaller";
+            clientBuilder.AppId = "<Replace-You-Dapr-AppID>" ;//被调用方User服务Dapr的AppID
         });
-        options.UseHttpClient(httpClientBuilder =>
+        options.UseDapr(clientBuilder =>
         {
-            httpClientBuilder.Name = "OrderCaller";
-            httpClientBuilder.BaseAddress = "http://localhost:6000" ;
+            clientBuilder.Name = "OrderCaller";
+            clientBuilder.AppId = "<Replace-You-Dapr-AppID>" ;//被调用方Order服务Dapr的AppID
         });
     });
     ```
@@ -81,24 +81,15 @@ Install-Package Masa.Utils.Caller.HttpClient
 2. 新增加类`UserCaller`
 
     ``` C#
-    public class UserCaller: HttpClientCallerBase
+    public class UserCaller: DaprCallerBase
     {
-        protected override string BaseAddress { get; set; } = "http://localhost:5000";
+        protected override string AppId { get; set; } = "<Replace-You-UserService-Dapr-AppID>";
 
         public HttpCaller(IServiceProvider serviceProvider) : base(serviceProvider)
         {
         }
 
         public Task<string> HelloAsync(string name) => CallerProvider.GetStringAsync($"/Hello", new { Name = name });
-
-        /// <summary>
-        /// 默认不需要重载，对httpClient有特殊需求时可重载
-        /// </summary>
-        /// <param name="httpClient"></param>
-        protected override void ConfigureHttpClient(System.Net.Http.HttpClient httpClient)
-        {
-            httpClient.Timeout = TimeSpan.FromSeconds(5);
-        }
     }
     ```
 

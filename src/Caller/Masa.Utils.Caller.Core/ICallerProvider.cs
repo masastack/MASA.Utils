@@ -62,7 +62,8 @@ public interface ICallerProvider
         CancellationToken cancellationToken = default);
 
     Task<string> GetStringAsync<TRequest>(
-        string? methodName, TRequest data,
+        string? methodName,
+        TRequest data,
         bool autoThrowUserFriendlyException = true,
         CancellationToken cancellationToken = default) where TRequest : class;
 
