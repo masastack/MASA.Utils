@@ -10,7 +10,6 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="$(MicrosoftPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftPackageVersion)" />
     <PackageReference Include="System.Text.Json" Version="$(MicrosoftPackageVersion)" />
-    <PackageReference Include="Util.Reflection" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,9 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
+using System.Collections;
+using System.Reflection;
+
 namespace Masa.Utils.Caching.DistributedMemory;
 
 public class MemoryCacheClient : IMemoryCacheClient
@@ -13,7 +16,6 @@ public class MemoryCacheClient : IMemoryCacheClient
 
     private readonly object _locker = new();
     private readonly IList<string> _subscribeChannels = new List<string>();
-    private Func<List<string>> GetCacheKeys { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MemoryCacheClient"/> class.
@@ -22,7 +24,7 @@ public class MemoryCacheClient : IMemoryCacheClient
     /// <param name="distributedClient">The distributed client.</param>
     /// <param name="subscribeKeyType">The type of subscribe key.</param>
     /// <param name="subscribeKeyPrefix">The prefix of subscribe key.</param>
-    public MemoryCacheClient(MemoryCache cache, IDistributedCacheClient distributedClient, SubscribeKeyTypes subscribeKeyType,
+    public MemoryCacheClient(IMemoryCache cache, IDistributedCacheClient distributedClient, SubscribeKeyTypes subscribeKeyType,
         string subscribeKeyPrefix = "")
     {
         _cache = cache;
@@ -30,8 +32,6 @@ public class MemoryCacheClient : IMemoryCacheClient
 
         _subscribeKeyType = subscribeKeyType;
         _subscribeKeyPrefix = subscribeKeyPrefix;
-
-        GetCacheKeys = BuilderGetCacgeKeysDelegate(cache);
     }
 
     /// <inheritdoc />
@@ -409,15 +409,19 @@ public class MemoryCacheClient : IMemoryCacheClient
         }
     }
 
-    private Func<List<string>> BuilderGetCacgeKeysDelegate(MemoryCache memoryCache)
+    private List<string> GetCacheKeys()
     {
-        var keys = Expr.Constant(memoryCache)["_entries"]["Keys"].Convert<IEnumerable<object>>();
-        Var result = Expr.New<List<string>>();
-        Expr.Foreach(keys, (key, c, r) =>
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+        var entries = _cache.GetType().GetField("_entries", flags)!.GetValue(_cache);
+        var cacheItems = entries as IDictionary;
+        var keys = new List<string>();
+        if (cacheItems == null) return keys;
+        foreach (DictionaryEntry cacheItem in cacheItems)
         {
-            result.BlockMethod("Add", key.Method("ToString"));
-        });
-        return result.BuildDelegate<Func<List<string>>>();
+            var key = cacheItem.Key.ToString();
+            if(key is not null) keys.Add(key);
+        }
+        return keys;
     }
 
     /// <inheritdoc />
