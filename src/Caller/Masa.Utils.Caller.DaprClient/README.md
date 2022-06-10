@@ -1,11 +1,11 @@
 [中](README.zh-CN.md) | EN
 
-## Masa.Utils.Caller.HttpClient
+## Masa.Utils.Caller.DaprClient
 
 ## Example:
 
 ````c#
-Install-Package Masa.Utils.Caller.HttpClient
+Install-Package Masa.Utils.Caller.DaprClient
 ````
 
 ### Basic usage:
@@ -15,10 +15,10 @@ Install-Package Masa.Utils.Caller.HttpClient
     ```` C#
     builder.Services.AddCaller(options =>
     {
-        options.UseHttpClient(httpClientBuilder =>
+        options.UseDapr(clientBuilder =>
         {
-            httpClientBuilder.Name = "UserCaller";// The alias of the current Caller, when there is only one HttpClient, you can not assign a value to Name
-            httpClientBuilder.BaseAddress = "http://localhost:5000" ;
+            clientBuilder.Name = "UserCaller";// The alias of the current Caller, when there is only one Provider, you can not assign a value to Name
+            clientBuilder.AppId = "<Replace-You-Dapr-AppID>" ;//AppID of the callee dapr
         });
     });
     ````
@@ -30,22 +30,22 @@ Install-Package Masa.Utils.Caller.HttpClient
         => userCallerProvider.GetAsync<string>($"/Hello", new { Name = name }));
     ````
 
-    > The interface address of the complete request is: http://localhost:5000/Hello?Name={name}
+   > The interface address of the complete request is: http://localhost:3500/v1.0/invoke/<Replace-You-Dapr-AppID>/method/Hello?Name={name}
 
-3. When there are multiple HttpClients, modify `Program.cs`
+3. When there are multiple DaprClients, modify `Program.cs`
 
     ```` C#
     builder.Services.AddCaller(options =>
     {
-        options.UseHttpClient(httpClientBuilder =>
+        options.UseDapr(clientBuilder =>
         {
-            httpClientBuilder.Name = "UserCaller";
-            httpClientBuilder.BaseAddress = "http://localhost:5000" ;
+            clientBuilder.Name = "UserCaller";
+            clientBuilder.AppId = "<Replace-You-Dapr-AppID>" ;//AppID of the callee User service Dapr
         });
-        options.UseHttpClient(httpClientBuilder =>
+        options.UseDapr(clientBuilder =>
         {
-            httpClientBuilder.Name = "OrderCaller";
-            httpClientBuilder.BaseAddress = "http://localhost:6000" ;
+            clientBuilder.Name = "OrderCaller";
+            clientBuilder.AppId = "<Replace-You-Dapr-AppID>" ;//AppID of the callee Order service Dapr
         });
     });
     ````
@@ -81,24 +81,15 @@ Install-Package Masa.Utils.Caller.HttpClient
 2. Add a new class `UserCaller`
 
     ```` C#
-    public class UserCaller: HttpClientCallerBase
+    public class UserCaller: DaprCallerBase
     {
-        protected override string BaseAddress { get; set; } = "http://localhost:5000";
+        protected override string AppId { get; set; } = "<Replace-You-UserService-Dapr-AppID>";
 
         public HttpCaller(IServiceProvider serviceProvider) : base(serviceProvider)
         {
         }
 
         public Task<string> HelloAsync(string name) => CallerProvider.GetStringAsync($"/Hello", new { Name = name });
-
-        /// <summary>
-        /// There is no need to overload by default, and it can be overloaded when there are special requirements for httpClient
-        /// </summary>
-        /// <param name="httpClient"></param>
-        protected override void ConfigureHttpClient(System.Net.Http.HttpClient httpClient)
-        {
-            httpClient.Timeout = TimeSpan.FromSeconds(5);
-        }
     }
     ````
 
