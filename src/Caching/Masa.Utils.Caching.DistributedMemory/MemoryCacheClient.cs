@@ -1,9 +1,6 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-using System.Collections;
-using System.Reflection;
-
 namespace Masa.Utils.Caching.DistributedMemory;
 
 public class MemoryCacheClient : IMemoryCacheClient
@@ -16,6 +13,7 @@ public class MemoryCacheClient : IMemoryCacheClient
 
     private readonly object _locker = new();
     private readonly IList<string> _subscribeChannels = new List<string>();
+    private readonly IDictionary _cacheMap;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MemoryCacheClient"/> class.
@@ -32,6 +30,9 @@ public class MemoryCacheClient : IMemoryCacheClient
 
         _subscribeKeyType = subscribeKeyType;
         _subscribeKeyPrefix = subscribeKeyPrefix;
+
+        var entries = _cache.GetType().GetField("_entries", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(_cache)!;
+        _cacheMap = (IDictionary)entries;
     }
 
     /// <inheritdoc />
@@ -411,15 +412,10 @@ public class MemoryCacheClient : IMemoryCacheClient
 
     private List<string> GetCacheKeys()
     {
-        const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-        var entries = _cache.GetType().GetField("_entries", flags)!.GetValue(_cache);
-        var cacheItems = entries as IDictionary;
         var keys = new List<string>();
-        if (cacheItems == null) return keys;
-        foreach (DictionaryEntry cacheItem in cacheItems)
+        foreach (var key in _cacheMap.Keys)
         {
-            var key = cacheItem.Key.ToString();
-            if(key is not null) keys.Add(key);
+            if(key is not null) keys.Add(key.ToString()!);
         }
         return keys;
     }
