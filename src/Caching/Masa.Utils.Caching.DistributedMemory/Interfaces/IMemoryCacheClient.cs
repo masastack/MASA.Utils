@@ -23,4 +23,12 @@ public interface IMemoryCacheClient : ICacheClient
     /// <param name="valueChanged">The handler to invoke when the request value changed.</param>
     /// <returns>The <see cref="Task"/> that represents the asynchronous opertion, containing the located value or null.</returns>
     Task<T?> GetAsync<T>(string key, Action<T?> valueChanged);
+
+    /// <summary>
+    /// Gets a list of values with fuzzy matching
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="pattern"></param>
+    /// <returns></returns>
+    Task<List<T>> FilterAsync<T>(string pattern);
 }

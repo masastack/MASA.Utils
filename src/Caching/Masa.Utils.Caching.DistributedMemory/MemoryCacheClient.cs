@@ -13,6 +13,7 @@ public class MemoryCacheClient : IMemoryCacheClient
 
     private readonly object _locker = new();
     private readonly IList<string> _subscribeChannels = new List<string>();
+    private Func<List<string>> GetCacheKeys { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MemoryCacheClient"/> class.
@@ -21,7 +22,7 @@ public class MemoryCacheClient : IMemoryCacheClient
     /// <param name="distributedClient">The distributed client.</param>
     /// <param name="subscribeKeyType">The type of subscribe key.</param>
     /// <param name="subscribeKeyPrefix">The prefix of subscribe key.</param>
-    public MemoryCacheClient(IMemoryCache cache, IDistributedCacheClient distributedClient, SubscribeKeyTypes subscribeKeyType,
+    public MemoryCacheClient(MemoryCache cache, IDistributedCacheClient distributedClient, SubscribeKeyTypes subscribeKeyType,
         string subscribeKeyPrefix = "")
     {
         _cache = cache;
@@ -29,6 +30,8 @@ public class MemoryCacheClient : IMemoryCacheClient
 
         _subscribeKeyType = subscribeKeyType;
         _subscribeKeyPrefix = subscribeKeyPrefix;
+
+        GetCacheKeys = BuilderGetCacgeKeysDelegate(cache);
     }
 
     /// <inheritdoc />
@@ -123,6 +126,14 @@ public class MemoryCacheClient : IMemoryCacheClient
         }
 
         return value;
+    }
+
+    public async Task<List<T>> FilterAsync<T>(string pattern)
+    {
+        ArgumentNullException.ThrowIfNull(pattern);
+
+        var keys = GetCacheKeys().Where(key => key.Contains(pattern)).ToArray();
+        return (await GetListAsync<T>(keys)).Where(value => value is not null).ToList()!;
     }
 
     /// <inheritdoc />
@@ -365,7 +376,7 @@ public class MemoryCacheClient : IMemoryCacheClient
         });
     }
 
-    private async Task PubSubAsync<T>(string key, SubscribeOperation operation, T? value=default,
+    private async Task PubSubAsync<T>(string key, SubscribeOperation operation, T? value = default,
         CombinedCacheEntryOptions<T>? options = null)
     {
         var channel = FormatSubscribeChannel<T>(key);
@@ -396,6 +407,17 @@ public class MemoryCacheClient : IMemoryCacheClient
         {
             _cache.Set(formattedKey, value, options);
         }
+    }
+
+    private Func<List<string>> BuilderGetCacgeKeysDelegate(MemoryCache memoryCache)
+    {
+        var keys = Expr.Constant(memoryCache)["_entries"]["Keys"].Convert<IEnumerable<object>>();
+        Var result = Expr.New<List<string>>();
+        Expr.Foreach(keys, (key, c, r) =>
+        {
+            result.BlockMethod("Add", key.Method("ToString"));
+        });
+        return result.BuildDelegate<Func<List<string>>>();
     }
 
     /// <inheritdoc />
