@@ -1,7 +1,7 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-namespace Masa.Utils.Exceptions.Extensions;
+namespace Microsoft.AspNetCore.Builder;
 
 public static class ApplicationBuilderExtensions
 {
@@ -9,7 +9,6 @@ public static class ApplicationBuilderExtensions
     /// Use localizable <see cref="ExceptionHandlingMiddleware"/>
     /// </summary>
     /// <param name="app"></param>
-    /// <param name="action"></param>
     /// <param name="exceptionHandlingOptions"></param>
     /// <returns></returns>
     public static IApplicationBuilder UseMasaExceptionHandling(
