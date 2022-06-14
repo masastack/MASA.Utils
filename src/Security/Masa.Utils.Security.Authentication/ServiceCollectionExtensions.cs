@@ -1,7 +1,7 @@
 ﻿// Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-namespace Masa.Utils.Security.Authentication;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
@@ -82,7 +82,7 @@ public static class ServiceCollectionExtensions
         {
             SystemCode = systemCode
         };
-        services.TryAddSingleton(typeof(IOptions<MasaAuthOptions>), _ => Options.Create(masaAuthOptions));
+        services.TryAddSingleton(typeof(IOptions<MasaAuthOptions>), _ => Microsoft.Extensions.Options.Options.Create(masaAuthOptions));
         action?.Invoke();
         return services;
     }

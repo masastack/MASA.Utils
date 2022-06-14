@@ -3,5 +3,4 @@
 
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.DependencyInjection.Options;
-global using System.Collections.Concurrent;
 global using System.Reflection;

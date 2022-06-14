@@ -13,7 +13,6 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.Controllers;
 global using Microsoft.AspNetCore.Mvc.Filters;
-global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Protocols.OpenIdConnect;

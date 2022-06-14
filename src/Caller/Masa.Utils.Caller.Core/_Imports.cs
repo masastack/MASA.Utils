@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
 global using Google.Protobuf;
+global using Masa.Utils.Caller.Core;
 global using Masa.Utils.Caller.Core.Internal;
 global using Masa.Utils.Caller.Core.Internal.Options;
 global using Masa.Utils.Exceptions;
