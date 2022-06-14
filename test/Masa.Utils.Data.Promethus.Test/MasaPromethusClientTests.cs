@@ -40,13 +40,13 @@ namespace Masa.Utils.Data.Promethus.Test
             {
                 var data = result.Data.Result as QueryResultInstantVectorResponse[];
 
-                Assert.IsNotNull(data);
+            Assert.IsNotNull(data);
                 Assert.IsNotNull(data[0].Metric);
                 Assert.IsNotNull(data[0].Value);
 
                 Assert.IsNotNull(data[0].Metric.Keys);
                 Assert.AreEqual(2, data[0].Value.Length);
-            }
+        }
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace Masa.Utils.Data.Promethus.Test
             if (result.Data.ResultType == ResultTypes.Matrix)
             {
                 var data = result.Data.Result as QueryResultMatrixRangeResponse[];
-                Assert.IsNotNull(data);
+            Assert.IsNotNull(data);
                 Assert.IsNotNull(data[0].Metric);
                 Assert.IsNotNull(data[0].Values);
             }
@@ -102,12 +102,13 @@ namespace Masa.Utils.Data.Promethus.Test
             Assert.IsTrue(result.Data.Count() > 0);
         }
 
+
         [TestMethod]
         [DataRow()]
         public async Task TestExemplarQueryAsync()
         {
             var param = new QueryExemplarRequest
-            {
+        {
                 Query = "up",
                 Start = "2022-06-17T02:00:00.000Z",
                 End = "2022-06-17T02:30:00.000Z"
