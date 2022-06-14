@@ -3,3 +3,4 @@
 
 global using Masa.Utils.Data.Promethus.Enums;
 global using Masa.Utils.Data.Promethus.Model;
+global using System.Runtime.CompilerServices;
