@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
 global using Elasticsearch.Net;
+global using Masa.Utils.Data.Elasticsearch;
 global using Masa.Utils.Data.Elasticsearch.Internal.BulkOperation;
 global using Masa.Utils.Data.Elasticsearch.Options;
 global using Masa.Utils.Data.Elasticsearch.Options.Alias;
