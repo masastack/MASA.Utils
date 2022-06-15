@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -36,10 +35,7 @@ public static class ServiceCollectionExtensions
         string clientSecret,
         params string[] scopes)
     {
-        if (!services.Any((ServiceDescriptor s) => s.ServiceType.Equals(typeof(IHttpContextAccessor))))
-        {
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        }
+        services.AddHttpContextAccessor();
 
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         services.AddAuthentication(options =>
