@@ -1,28 +1,47 @@
-﻿// Copyright (c) MASA Stack All rights reserved.
+// Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
 namespace Masa.Utils.Security.Authentication;
 
 public class MasaUser
 {
-    private static IMasaUserClaims _masaUserClaims = new MasaUserClaims(new HttpContextAccessor()
+    readonly ICurrentPrincipalAccessor _principalAccessor;
+
+    public MasaUser(ICurrentPrincipalAccessor principalAccessor)
     {
-        HttpContext = HttpContextUtility.GetCurrentHttpContext()
-    });
+        _principalAccessor = principalAccessor;
+    }
 
-    public static ClaimsPrincipal? Principal => _masaUserClaims.Principal;
+    public virtual Claim? FindClaim(string claimType)
+    {
+        return _principalAccessor.Principal?.Claims.FirstOrDefault(c => c.Type == claimType);
+    }
 
-    public static Guid UserId => _masaUserClaims.UserId;
+    public virtual Claim[] FindClaims(string claimType)
+    {
+        return _principalAccessor.Principal?.Claims.Where(c => c.Type == claimType).ToArray() ?? new Claim[0];
+    }
 
-    public static string UserName => _masaUserClaims.DepartmentName;
+    public virtual Claim[] GetAllClaims()
+    {
+        return _principalAccessor.Principal?.Claims.ToArray() ?? new Claim[0];
+    }
 
-    public static string NickName => _masaUserClaims.NickName;
+    public Guid? UserId => _principalAccessor.Principal?.FindUserId();
 
-    public static string DepartmentName => _masaUserClaims.DepartmentName;
+    public string UserName => _principalAccessor.Principal?.FindClaimValue(MasaClaimTypes.USER_NAME) ?? "";
 
-    public static IEnumerable<Guid> DepartmentIdList => _masaUserClaims.DepartmentIdList;
+    public string Name => _principalAccessor.Principal?.FindClaimValue(MasaClaimTypes.NAME) ?? "";
 
-    public static bool IsAdministrator => _masaUserClaims.IsAdministrator;
+    public string PhoneNumber => _principalAccessor.Principal?.FindClaimValue(MasaClaimTypes.PHONE_NUMBER) ?? "";
 
-    public static IEnumerable<Claim> Claims => _masaUserClaims.Claims;
+    public bool PhoneNumberVerified => string.Equals(_principalAccessor.Principal?.FindClaimValue(MasaClaimTypes.PHONE_NUMBER_VERIFIED), "true", StringComparison.InvariantCultureIgnoreCase);
+
+    public string Email => _principalAccessor.Principal?.FindClaimValue(MasaClaimTypes.EMAIL) ?? "";
+
+    public bool EmailVerified => string.Equals(_principalAccessor.Principal?.FindClaimValue(MasaClaimTypes.EMAIL_VERIFIED), "true", StringComparison.InvariantCultureIgnoreCase);
+
+    public Guid? TenantId => _principalAccessor.Principal?.FindTenantId();
+
+    public string Eevironment => _principalAccessor.Principal?.FindEevironment() ?? string.Empty;
 }
