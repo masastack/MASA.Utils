@@ -22,7 +22,7 @@ public class CallerTest
             callerOptions.UseHttpClient(httpClientBuilder =>
             {
                 httpClientBuilder.Configure = builder => builder.Timeout = TimeSpan.FromSeconds(3);
-                httpClientBuilder.BaseApi = "https://github.com/masastack";
+                httpClientBuilder.BaseAddress = "https://github.com/masastack";
             });
         });
         _ = _builder.Build();
