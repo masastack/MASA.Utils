@@ -3,7 +3,12 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-public class ResponseSerieResultModel : ResponseResultBaseModel
+internal class RequestQueryExemplarModel
 {
-    public IEnumerable<IDictionary<string, string>>? Data { get; set; }
+    public string? Query { get; set; }
+
+    public string? Start { get; set; }
+
+    public string? End { get; set; }
 }
+
