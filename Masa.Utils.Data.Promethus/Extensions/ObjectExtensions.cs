@@ -1,24 +1,15 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
-using Masa.Utils.Caller.Core;
+
 using System.Collections;
 using System.Reflection;
 using System.Text;
 using System.Web;
 
-[assembly: InternalsVisibleTo("Masa.Utils.Data.Promethus.Test")]
+namespace Masa.Utils.Data.Promethus;
 
-namespace System.Net.Http;
-
-internal static class HttpClientExtensition
+public static class ObjectExtensions
 {
-    public static async Task<string> GetAsync(this ICallerProvider caller, string url,object data)
-    {
-        var request=new HttpRequestMessage(HttpMethod.Get, $"{url}?{data?.ToUrlParam()}");
-        var response= await caller.SendAsync(request);
-        return await response.Content.ReadAsStringAsync();
-    }
-
     /// <summary>
     /// not support System.text.json
     /// </summary>
@@ -113,7 +104,7 @@ internal static class HttpClientExtensition
 
         var name = info.Name;
         if (isCamelCase)
-            name = ToCamelCase(name);
+            name = name.ToCamelCase();
 
         return GetValue(value, AppendValue(preStr, name, ".", isUrlEncode) ?? default!, isEnumString, isCamelCase, isUrlEncode);
     }
@@ -128,7 +119,7 @@ internal static class HttpClientExtensition
             {
                 var name = keyValue.Key;
                 if (isCamelCase)
-                    name = ToCamelCase(name);
+                    name = name.ToCamelCase();
                 var str = GetValue(keyValue.Value, AppendValue(preStr, name, ".", isUrlEncode) ?? default!, isEnumString, isCamelCase, isUrlEncode);
                 if (!string.IsNullOrEmpty(str))
                     list.Add(str);
@@ -154,15 +145,5 @@ internal static class HttpClientExtensition
             return $"{preStr}{splitChar}{HttpUtility.UrlEncode(value, Encoding.UTF8)}";
         else
             return $"{preStr}{splitChar}{value}";
-    }
-
-    public static string ToCamelCase(this string str)
-    {
-        if (string.IsNullOrEmpty(str)) return str;
-        var c = str[0];
-        if (c - 'A' >= 0 && c - 'Z' <= 0)
-            return $"{(char)(c + 32)}{str.AsSpan().Slice(1)}";
-
-        return str;
     }
 }

@@ -102,7 +102,6 @@ namespace Masa.Utils.Data.Promethus.Test
             Assert.IsTrue(result.Data.Count() > 0);
         }
 
-
         [TestMethod]
         [DataRow()]
         public async Task TestExemplarQueryAsync()

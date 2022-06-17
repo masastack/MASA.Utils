@@ -1,9 +1,6 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-using Masa.Utils.Caller.Core;
-using System.Text.Json;
-
 [assembly: InternalsVisibleTo("Masa.Utils.Data.Promethus.Test")]
 
 namespace Masa.Utils.Data.Promethus;
@@ -13,7 +10,7 @@ internal class MasaPromethusClient : IMasaPromethusClient
     private readonly ICallerProvider _caller;
     private static JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
     {
-        PropertyNameCaseInsensitive = true,
+        PropertyNameCaseInsensitive = true
     };
 
     public MasaPromethusClient(ICallerProvider caller)
@@ -21,7 +18,7 @@ internal class MasaPromethusClient : IMasaPromethusClient
         _caller = caller;
     }
 
-    public async Task<ResponseExemplarResultModel> ExemplarQueryAsync(RequestQueryModel query)
+    public async Task<ResponseExemplarResultModel> ExemplarQueryAsync(RequestQueryExemplarModel query)
     {
         return await QueryDataAsync<ResponseExemplarResultModel>("/api/v1/query_exemplars", query);
     }
@@ -31,9 +28,11 @@ internal class MasaPromethusClient : IMasaPromethusClient
         return await QueryDataAsync<ResponseLabelResultModel>("/api/v1/labels", query);
     }
 
-    public async Task<ResponseLabelResultModel> LabelValuesQueryAsync(RequestMetaDataQueryModel query)
+    public async Task<ResponseLabelResultModel> LabelValuesQueryAsync(RequestLableValueQueryModel query)
     {
-        return await QueryDataAsync<ResponseLabelResultModel>("/api/v1/label/<label_name>/values", query);
+        var name = query.Lable;
+        query.Lable = null;
+        return await QueryDataAsync<ResponseLabelResultModel>($"/api/v1/label/{name}/values", query);
     }
 
     public async Task<ResponseQueryResultCommonModel> QueryAsync(RequestQueryModel query)
@@ -51,13 +50,23 @@ internal class MasaPromethusClient : IMasaPromethusClient
         return await QueryDataAsync<ResponseSerieResultModel>("/api/v1/series", query);
     }
 
+    private void CheckOption()
+    {
+        if (_jsonSerializerOptions.Converters.Any(t => t.GetType() == typeof(JsonStringEnumConverter)))
+            return;
+        else
+            _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    }
+
     private async Task<T> QueryDataAsync<T>(string url, object data) where T : ResponseResultBaseModel
     {
         var str = await _caller.GetAsync(url, data);
         if (string.IsNullOrEmpty(str))
             return default!;
 
+        CheckOption();
         var baseResult = JsonSerializer.Deserialize<T>(str, _jsonSerializerOptions);
+
         if (baseResult == null || baseResult.Status != ResultStatuses.Success)
         {
             return baseResult ?? default!;
