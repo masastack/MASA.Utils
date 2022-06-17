@@ -4,7 +4,7 @@
 namespace Masa.Utils.Data.Promethus.Test;
 
 [TestClass]
-public class HttpClientExtensitionTests
+public class ObjectExtensionsTests
 {
     [TestMethod]
     [DataRow(1)]
