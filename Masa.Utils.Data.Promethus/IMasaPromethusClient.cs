@@ -13,7 +13,7 @@ internal interface IMasaPromethusClient
 
     Task<ResponseLabelResultModel> LabelsQueryAsync(RequestMetaDataQueryModel query);
 
-    Task<ResponseLabelResultModel> LabelValuesQueryAsync(RequestMetaDataQueryModel query);
+    Task<ResponseLabelResultModel> LabelValuesQueryAsync(RequestLableValueQueryModel query);
 
-    Task<ResponseExemplarResultModel> ExemplarQueryAsync(RequestQueryModel query);
+    Task<ResponseExemplarResultModel> ExemplarQueryAsync(RequestQueryExemplarModel query);
 }
