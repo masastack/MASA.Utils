@@ -83,17 +83,57 @@ internal class MasaPromethusClient : IMasaPromethusClient
                     {
                         var temp = JsonSerializer.Serialize(result.Data.Result, _jsonSerializerOptions);
                         result.Data.Result = JsonSerializer.Deserialize<MatrixRangeModel[]>(temp, _jsonSerializerOptions);
+                        if (result.Data.Result != null && result.Data.Result.Any())
+                        {
+                            foreach (MatrixRangeModel item in result.Data.Result)
+                            {
+                                if (item.Values == null || !item.Values.Any())
+                                    continue;
+                                var array = item.Values.ToArray();
+                                int i = 0, max = array.Length - 1;
+                                do
+                                {
+                                    array[i] = ConvertJsonToObjValue(array[i]);
+                                    i++;
+                                }
+                                while (max - i >= 0);
+                                item.Values = array;
+                            }
+                        }
                         return result as T ?? default!;
                     }
                 case ResultTypes.Vector:
                     {
                         var temp = JsonSerializer.Serialize(result.Data.Result, _jsonSerializerOptions);
                         result.Data.Result = JsonSerializer.Deserialize<InstantVectorModel[]>(temp, _jsonSerializerOptions);
+                        if (result.Data.Result != null && result.Data.Result.Any())
+                        {
+                            foreach (InstantVectorModel item in result.Data.Result)
+                            {
+                                item.Value = ConvertJsonToObjValue(item.Value);
+                            }
+                        }
                         return result as T ?? default!;
                     }
+                default:
+                    {
+                        if (result.Data.Result != null && result.Data.Result.Any())
+                        {
+                            result.Data.Result = ConvertJsonToObjValue(result.Data.Result);
+                        }
+                    }
+                    break;
             }
         }
 
         return baseResult;
+    }
+
+    private static object[] ConvertJsonToObjValue(object[]? values)
+    {
+        if (values == null || values.Length - 2 < 0)
+            return default!;
+
+        return new object[] { Convert.ToDouble(values[0]), values[1]?.ToString() ?? default! };
     }
 }
