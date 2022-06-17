@@ -40,7 +40,7 @@ public static class ClaimsIdentityExtensions
         return null;
     }
 
-    public static string FindEevironment(this ClaimsPrincipal principal)
+    public static string FindEnvironment(this ClaimsPrincipal principal)
     {
         var evironmentOrNull = principal.Claims?.FirstOrDefault(c => c.Type == MasaClaimTypes.ENVIRONMENT);
         if (evironmentOrNull == null || string.IsNullOrWhiteSpace(evironmentOrNull.Value))

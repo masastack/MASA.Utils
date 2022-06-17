@@ -43,5 +43,5 @@ public class MasaUser
 
     public Guid? TenantId => _principalAccessor.Principal?.FindTenantId();
 
-    public string Eevironment => _principalAccessor.Principal?.FindEevironment() ?? string.Empty;
+    public string Environment => _principalAccessor.Principal?.FindEnvironment() ?? string.Empty;
 }
