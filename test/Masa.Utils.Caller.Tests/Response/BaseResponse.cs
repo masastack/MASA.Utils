@@ -8,7 +8,7 @@ namespace Masa.Utils.Caller.Tests.Response;
 public class BaseResponse
 {
     [XmlElement]
-    public string Code { get; set; }
+    public string Code { get; set; } = default!;
 
     public BaseResponse() { }
 
