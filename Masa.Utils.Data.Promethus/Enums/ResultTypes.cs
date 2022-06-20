@@ -5,6 +5,7 @@ namespace Masa.Utils.Data.Promethus.Enums;
 
 public enum ResultTypes
 {
+    None,
     Matrix,
     Vector,
     Scalar,
