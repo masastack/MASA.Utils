@@ -7,14 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(MicrosoftPackageVersion)"/>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftPackageVersion)"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(MicrosoftPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(MicrosoftPackageVersion)" />
     <FrameworkReference Include="Microsoft.AspNetCore.App"></FrameworkReference>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="$(IdentityPackageVersion)"/>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="$(IdentityPackageVersion)" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Caching\Masa.Utils.Caching.Memory\Masa.Utils.Caching.Memory.csproj"/>
+    <ProjectReference Include="..\..\Caching\Masa.Utils.Caching.Memory\Masa.Utils.Caching.Memory.csproj" />
+    <ProjectReference Include="..\..\Extensions\Masa.Utils.Extensions.DependencyInjection\Masa.Utils.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
 </Project>
