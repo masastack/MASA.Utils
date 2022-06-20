@@ -27,23 +27,25 @@ public static class ObjectExtensions
     {
         if (obj == null) return null;
         var type = obj.GetType();
-        if (type == typeof(string))//string
+        if (type == typeof(string))
         {
             var str = (string)obj;
             return AppendValue(preStr, str, "=", isUrlEncode);
         }
         else if (type.IsValueType)
         {
-            if (type.IsEnum)//enum
+            if (type.IsEnum)
             {
                 var str = isEnumString ? obj.ToString() : Convert.ToInt32(obj).ToString();
                 return AppendValue(preStr, str, "=", isUrlEncode);
             }
-            else if (!type.IsPrimitive) //struct
+            //struct
+            else if (!type.IsPrimitive)
             {
                 return GetObjValue(type, obj, preStr, isEnumString, isCamelCase, isUrlEncode);
             }
-            else //sample value
+            //sample value
+            else
             {
                 var str = obj.ToString();
                 return AppendValue(preStr, str, "=", isUrlEncode);
@@ -57,9 +59,9 @@ public static class ObjectExtensions
         {
             return GetObjValue(type, obj, preStr, isEnumString, isCamelCase, isUrlEncode);
         }
+        //current not suport
         else
         {
-            //
             return null;
         }
     }
@@ -69,26 +71,21 @@ public static class ObjectExtensions
         var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty);
         var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetField);
         var list = new List<string>();
-        if (properties.Length > 0)
+
+        foreach (var item in properties)
         {
-            foreach (var item in properties)
-            {
-                var str = GetMemerInfoValue(item, item.GetValue(obj), preStr, isEnumString, isCamelCase, isUrlEncode);
-                if (string.IsNullOrEmpty(str))
-                    continue;
-                list.Add(str);
-            }
+            var str = GetMemerInfoValue(item, item.GetValue(obj), preStr, isEnumString, isCamelCase, isUrlEncode);
+            if (string.IsNullOrEmpty(str))
+                continue;
+            list.Add(str);
         }
 
-        if (fields.Length > 0)
+        foreach (var item in fields)
         {
-            foreach (var item in fields)
-            {
-                var str = GetMemerInfoValue(item, item.GetValue(obj), preStr, isEnumString, isCamelCase, isUrlEncode);
-                if (string.IsNullOrEmpty(str))
-                    continue;
-                list.Add(str);
-            }
+            var str = GetMemerInfoValue(item, item.GetValue(obj), preStr, isEnumString, isCamelCase, isUrlEncode);
+            if (string.IsNullOrEmpty(str))
+                continue;
+            list.Add(str);
         }
 
         if (!list.Any())
@@ -111,7 +108,6 @@ public static class ObjectExtensions
 
     private static string? GetEnumerableValue(object obj, string preStr, bool isEnumString = false, bool isCamelCase = true, bool isUrlEncode = true)
     {
-        StringBuilder builder = new StringBuilder(4096);
         var list = new List<string>();
         foreach (var item in (IEnumerable)obj)
         {
