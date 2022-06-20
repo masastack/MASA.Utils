@@ -12,7 +12,7 @@ public class DefaultTypeProvider : BaseTypeProvider
 
     public virtual List<ServiceDescriptorOptions> GetServiceDescriptorCore(List<Type> types, Type type, ServiceLifetime lifetime)
     {
-        List<ServiceDescriptorOptions> descriptors = new();
+        List<ServiceDescriptorStateOptions> descriptors = new();
         var serviceTypes = GetServiceTypes(types, type);
         foreach (var serviceType in serviceTypes)
         {
@@ -24,11 +24,36 @@ public class DefaultTypeProvider : BaseTypeProvider
                     serviceType.GetTypeInfo().GenericTypeParameters.Length != implementationType.GetTypeInfo().GenericTypeParameters.Length)
                     continue;
 
-                descriptors.Add(new ServiceDescriptorOptions(serviceType, implementationType, lifetime, AutoFire(serviceType)));
+                var dependency = implementationType.GetCustomAttribute<DependencyAttribute>();
+                var descriptor = descriptors.FirstOrDefault(d => d.ServiceType == serviceType);
+                if (dependency != null)
+                {
+                    if (descriptor != null && descriptor.ReplaceServices != true)
+                    {
+                        if (dependency.ReplaceServices)
+                            descriptors.Remove(descriptor);
+                        else if (dependency.TryRegister)
+                            continue;
+                    }
+                }
+                else
+                {
+                    if (descriptor is { ReplaceServices: true })
+                    {
+                        continue;
+                    }
+                }
+
+                descriptors.Add(new ServiceDescriptorStateOptions(serviceType, implementationType, lifetime, AutoFire(serviceType))
+                {
+                    ReplaceServices = dependency?.ReplaceServices
+                });
             }
         }
 
-        return descriptors;
+        return descriptors
+            .Select(d => new ServiceDescriptorOptions(d.ServiceType, d.ImplementationType, d.Lifetime, d.AutoFire))
+            .ToList();
     }
 
     public virtual bool AutoFire(Type serviceType)

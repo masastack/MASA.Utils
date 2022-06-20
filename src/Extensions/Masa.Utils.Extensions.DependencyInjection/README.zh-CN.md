@@ -52,6 +52,27 @@ public interface IRepository<TEntity> : IScopedDependency
     ```
     > 等价于 service.AddScoped<IUserService, UserService>();
 
+  * 如果不希望接口被多次添加，只希望接口只有一个实现类，则在希望添加的实现类上方增加[Dependency(ReplaceServices = true)]的特性
+
+    ``` C#
+    public interface IUserService : IScopedDependency
+    {
+
+    }
+
+    public class UserService : IUserService
+    {
+
+    }
+
+    [Dependency(ReplaceServices = true)]
+    public class UserService2 : IUserService
+    {
+
+    }
+    ```
+    > 等价于 service.AddScoped<IUserService, UserService2>();
+
 * 当继承的类不是接口时，其ServiceType是当前类，其ImplementationType也是当前类
   * 默认支持级联扫描注册服务，当前类的子类也会被注册
 
@@ -84,6 +105,10 @@ public interface IRepository<TEntity> : IScopedDependency
 ## 方法:
 
 * 扩展IServiceCollection
-  * GetInstance<T>(): 获取服务T的实例
-  * Any<T>(): 是否存在服务T，不支持泛型服务
-  * Any<T>(ServiceLifetime.Singleton): 是否存在一个生命周期为Singleton的服务T，不支持泛型服务
+  * GetInstance<TService>(): 获取服务T的实例
+  * Any<TService>(): 是否存在服务TService，不支持泛型服务
+  * Any<TService, TImplementation>(): 是否存在接口为TService、且实现类为TImplementation的服务
+  * Any<TService>(ServiceLifetime.Singleton): 是否存在一个生命周期为Singleton的服务TService(不支持泛型服务)
+  * Any<TService, TImplementation>(ServiceLifetime.Singleton): 是否存在一个生命周期为Singleton的接口为TService，实现为TImplementation的服务(不支持泛型服务)
+  * Replace<TService>(typeof(TImplementation), ServiceLifetime.Singleton): 移除服务集合中具有相同服务类型的第一个服务，并将 typeof(TImplementation) 添加到集合中，生命周期为单例
+  * ReplaceAll<TService>(typeof(TImplementation), ServiceLifetime.Singleton): 移除服务集合中具有相同服务类型的所有服务，并将 typeof(TImplementation) 添加到集合中，生命周期为单例

@@ -189,4 +189,16 @@ public class DependencyInjectionTest
         Assert.IsTrue(services.Any<User>(ServiceLifetime.Scoped));
         Assert.IsFalse(services.Any<User>(ServiceLifetime.Transient));
     }
+
+    [TestMethod]
+    public void TestDependencyReturnProviderServiceIs1()
+    {
+        var services = new ServiceCollection();
+        services.AddAutoInject();
+        var serviceProvider = services.BuildServiceProvider();
+        var factories = serviceProvider.GetServices<IClientFactory>().ToList();
+        Assert.IsTrue(factories.Count == 1);
+
+        Assert.IsTrue(factories[0].GetClientName() == nameof(CustomizeClientFactory));
+    }
 }
