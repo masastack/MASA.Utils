@@ -101,6 +101,9 @@ Scan the interfaces and classes that inherit ISingletonDependency, IScopedDepend
 ## Features:
 
 * IgnoreInjection: Ignore injection, used to exclude not being injected automatically
+* Dependency:
+    * TryRegister: Set true to be registered only when the service is not registered, similar to TryAdd of IServiceCollection... extension method
+    * ReplaceServices: Set true to replace previously registered services, similar to the Replace... extension method of IServiceCollection.
 
 ## Methods:
 
