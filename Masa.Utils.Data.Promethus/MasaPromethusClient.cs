@@ -123,6 +123,6 @@ internal class MasaPromethusClient : IMasaPromethusClient
         if (values == null || values.Length - 2 < 0)
             return default!;
 
-        return new object[] { Convert.ToDouble(values[0]), values[1]?.ToString() ?? default! };
+        return new object[] { ((JsonElement)values[0]).GetDouble(), ((JsonElement)values[1]).GetString() ?? default! };
     }
 }
