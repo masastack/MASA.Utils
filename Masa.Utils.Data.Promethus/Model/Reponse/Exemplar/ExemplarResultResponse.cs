@@ -3,7 +3,7 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-public class ResponseExemplarResultModel : ResponseResultBaseModel
+public class ExemplarResultResponse : ResultBaseResponse
 {
     public IEnumerable<ExemplarDataModel>? Data { get; set; }
 }

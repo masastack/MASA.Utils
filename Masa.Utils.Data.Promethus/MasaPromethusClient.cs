@@ -8,7 +8,7 @@ namespace Masa.Utils.Data.Promethus;
 internal class MasaPromethusClient : IMasaPromethusClient
 {
     private readonly ICallerProvider _caller;
-    private static JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
+    private static JsonSerializerOptions _jsonSerializerOptions = new()
     {
         PropertyNameCaseInsensitive = true
     };
@@ -18,47 +18,39 @@ internal class MasaPromethusClient : IMasaPromethusClient
         _caller = caller;
     }
 
-    public async Task<ResponseExemplarResultModel> ExemplarQueryAsync(RequestQueryExemplarModel query)
+    public async Task<ExemplarResultResponse> ExemplarQueryAsync(QueryExemplarRequest query)
     {
-        return await QueryDataAsync<ResponseExemplarResultModel>("/api/v1/query_exemplars", query);
+        return await QueryDataAsync<ExemplarResultResponse>("/api/v1/query_exemplars", query);
     }
 
-    public async Task<ResponseLabelResultModel> LabelsQueryAsync(RequestMetaDataQueryModel query)
+    public async Task<LabelResultResponse> LabelsQueryAsync(MetaDataQueryRequest query)
     {
-        return await QueryDataAsync<ResponseLabelResultModel>("/api/v1/labels", query);
+        return await QueryDataAsync<LabelResultResponse>("/api/v1/labels", query);
     }
 
-    public async Task<ResponseLabelResultModel> LabelValuesQueryAsync(RequestLableValueQueryModel query)
+    public async Task<LabelResultResponse> LabelValuesQueryAsync(LableValueQueryRequest query)
     {
         var name = query.Lable;
         query.Lable = null;
-        return await QueryDataAsync<ResponseLabelResultModel>($"/api/v1/label/{name}/values", query);
+        return await QueryDataAsync<LabelResultResponse>($"/api/v1/label/{name}/values", query);
     }
 
-    public async Task<ResponseQueryResultCommonModel> QueryAsync(RequestQueryModel query)
+    public async Task<QueryResultCommonResponse> QueryAsync(QueryRequest query)
     {
-        return await QueryDataAsync<ResponseQueryResultCommonModel>("/api/v1/query", query);
+        return await QueryDataAsync<QueryResultCommonResponse>("/api/v1/query", query);
     }
 
-    public async Task<ResponseQueryResultCommonModel> QueryRangeAsync(RequestQueryRangeModel query)
+    public async Task<QueryResultCommonResponse> QueryRangeAsync(QueryRangeRequest query)
     {
-        return await QueryDataAsync<ResponseQueryResultCommonModel>("/api/v1/query_range", query);
+        return await QueryDataAsync<QueryResultCommonResponse>("/api/v1/query_range", query);
     }
 
-    public async Task<ResponseSerieResultModel> SeriesAsync(RequestMetaDataQueryModel query)
+    public async Task<SerieResultResponse> SeriesAsync(MetaDataQueryRequest query)
     {
-        return await QueryDataAsync<ResponseSerieResultModel>("/api/v1/series", query);
+        return await QueryDataAsync<SerieResultResponse>("/api/v1/series", query);
     }
 
-    private void CheckOption()
-    {
-        if (_jsonSerializerOptions.Converters.Any(t => t.GetType() == typeof(JsonStringEnumConverter)))
-            return;
-        else
-            _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    }
-
-    private async Task<T> QueryDataAsync<T>(string url, object data) where T : ResponseResultBaseModel
+    private async Task<T> QueryDataAsync<T>(string url, object data) where T : ResultBaseResponse
     {
         var str = await _caller.GetAsync(url, data);
         if (string.IsNullOrEmpty(str))
@@ -72,9 +64,9 @@ internal class MasaPromethusClient : IMasaPromethusClient
             return baseResult ?? default!;
         }
 
-        if (typeof(T) == typeof(ResponseQueryResultCommonModel))
+        if (typeof(T) == typeof(QueryResultCommonResponse))
         {
-            var result = baseResult as ResponseQueryResultCommonModel;
+            var result = baseResult as QueryResultCommonResponse;
             if (result == null || result.Data == null)
                 return baseResult;
             switch (result.Data.ResultType)
@@ -82,10 +74,10 @@ internal class MasaPromethusClient : IMasaPromethusClient
                 case ResultTypes.Matrix:
                     {
                         var temp = JsonSerializer.Serialize(result.Data.Result, _jsonSerializerOptions);
-                        result.Data.Result = JsonSerializer.Deserialize<MatrixRangeModel[]>(temp, _jsonSerializerOptions);
+                        result.Data.Result = JsonSerializer.Deserialize<QueryResultMatrixRangeResponse[]>(temp, _jsonSerializerOptions);
                         if (result.Data.Result != null && result.Data.Result.Any())
                         {
-                            foreach (MatrixRangeModel item in result.Data.Result)
+                            foreach (QueryResultMatrixRangeResponse item in result.Data.Result)
                             {
                                 if (item.Values == null || !item.Values.Any())
                                     continue;
@@ -105,10 +97,10 @@ internal class MasaPromethusClient : IMasaPromethusClient
                 case ResultTypes.Vector:
                     {
                         var temp = JsonSerializer.Serialize(result.Data.Result, _jsonSerializerOptions);
-                        result.Data.Result = JsonSerializer.Deserialize<InstantVectorModel[]>(temp, _jsonSerializerOptions);
+                        result.Data.Result = JsonSerializer.Deserialize<QueryResultInstantVectorResponse[]>(temp, _jsonSerializerOptions);
                         if (result.Data.Result != null && result.Data.Result.Any())
                         {
-                            foreach (InstantVectorModel item in result.Data.Result)
+                            foreach (QueryResultInstantVectorResponse item in result.Data.Result)
                             {
                                 item.Value = ConvertJsonToObjValue(item.Value);
                             }
@@ -127,6 +119,12 @@ internal class MasaPromethusClient : IMasaPromethusClient
         }
 
         return baseResult;
+    }
+
+    private static void CheckOption()
+    {
+        if (!_jsonSerializerOptions.Converters.Any(t => t.GetType() == typeof(JsonStringEnumConverter)))
+            _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     }
 
     private static object[] ConvertJsonToObjValue(object[]? values)

@@ -3,12 +3,7 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-internal class RequestQueryExemplarModel
+public class LableValueQueryRequest: MetaDataQueryRequest
 {
-    public string? Query { get; set; }
-
-    public string? Start { get; set; }
-
-    public string? End { get; set; }
+    public string Lable { get; set; } = "__name__";
 }
-

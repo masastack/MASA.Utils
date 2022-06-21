@@ -3,15 +3,11 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-public class RequestQueryRangeModel
+public class MetaDataQueryRequest
 {
-    public string? Query { get; set; }
+    public IEnumerable<string>? Match { get; set; }
 
     public string? Start { get; set; }
 
     public string? End { get; set; }
-
-    public string? Step { get; set; }
-
-    public string? TimeOut { get; set; }
 }

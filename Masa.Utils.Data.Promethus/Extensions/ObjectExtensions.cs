@@ -1,29 +1,27 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-using System.Collections;
-using System.Reflection;
-using System.Text;
-using System.Web;
-
-namespace Masa.Utils.Data.Promethus;
+namespace System;
 
 public static class ObjectExtensions
 {
     /// <summary>
-    /// not support System.text.json
+    /// 当前支持类型:class、struct和实现IEnumerable接口的类型，
+    /// struct默认和class 使用公开get属性和字段，
+    /// IEnumerable<KeyValuePair>类型直接转化为:key[]=value1&key[]=value2
+    /// enum 默认使用字符串，如果需要使用数值，请设置isEnumString=false
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="isEnumString"></param>
     /// <param name="isCamelCase"></param>
     /// <param name="isUrlEncode"></param>
     /// <returns></returns>
-    public static string? ToUrlParam(this object obj, bool isEnumString = true, bool isCamelCase = true, bool isUrlEncode = true)
+    public static string? ToUrlParam(this object? obj, bool isEnumString = true, bool isCamelCase = true, bool isUrlEncode = true)
     {
         return GetValue(obj, string.Empty, isEnumString, isCamelCase, isUrlEncode);
     }
 
-    private static string? GetValue(object obj, string preStr, bool isEnumString = false, bool isCamelCase = true, bool isUrlEncode = true)
+    private static string? GetValue(object? obj, string preStr, bool isEnumString = false, bool isCamelCase = true, bool isUrlEncode = true)
     {
         if (obj == null) return null;
         var type = obj.GetType();
@@ -32,38 +30,34 @@ public static class ObjectExtensions
             var str = (string)obj;
             return AppendValue(preStr, str, "=", isUrlEncode);
         }
-        else if (type.IsValueType)
+
+        if (type.IsValueType)
         {
             if (type.IsEnum)
             {
                 var str = isEnumString ? obj.ToString() : Convert.ToInt32(obj).ToString();
                 return AppendValue(preStr, str, "=", isUrlEncode);
             }
-            //struct
-            else if (!type.IsPrimitive)
-            {
-                return GetObjValue(type, obj, preStr, isEnumString, isCamelCase, isUrlEncode);
-            }
+
             //sample value
-            else
+            if (type.IsPrimitive)
             {
                 var str = obj.ToString();
                 return AppendValue(preStr, str, "=", isUrlEncode);
             }
+
+            //struct           
+            return GetObjValue(type, obj, preStr, isEnumString, isCamelCase, isUrlEncode);            
         }
-        else if (type.IsArray || type.GetInterfaces().Any(t => t.Name.IndexOf("IEnumerable") == 0))
-        {
+
+        if (type.IsArray || type.GetInterfaces().Any(t => t.Name.IndexOf("IEnumerable") == 0))
             return GetEnumerableValue(obj, preStr, isEnumString, isCamelCase, isUrlEncode);
-        }
-        else if (type.IsClass)
-        {
+
+        if (type.IsClass)
             return GetObjValue(type, obj, preStr, isEnumString, isCamelCase, isUrlEncode);
-        }
-        //current not suport
-        else
-        {
-            return null;
-        }
+
+        //current type not suport
+        return null;
     }
 
     private static string GetObjValue(Type type, object obj, string preStr, bool isEnumString = false, bool isCamelCase = true, bool isUrlEncode = true)
@@ -90,6 +84,7 @@ public static class ObjectExtensions
 
         if (!list.Any())
             return default!;
+
         list.Sort();
         return string.Join('&', list);
     }
@@ -129,6 +124,7 @@ public static class ObjectExtensions
         }
         if (!list.Any())
             return default!;
+
         list.Sort();
         return string.Join('&', list);
     }
@@ -137,6 +133,7 @@ public static class ObjectExtensions
     {
         if (string.IsNullOrEmpty(preStr) || string.IsNullOrEmpty(value))
             return value;
+
         if (isUrlEncode)
             return $"{preStr}{splitChar}{HttpUtility.UrlEncode(value, Encoding.UTF8)}";
         else
