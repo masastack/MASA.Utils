@@ -39,13 +39,15 @@ public class DefaultTypeProvider : BaseTypeProvider
                 else
                 {
                     if (descriptor is { ReplaceServices: true })
-                    {
                         continue;
-                    }
+
+                    if (descriptor is { TryRegister: true })
+                        descriptors.Remove(descriptor);
                 }
 
                 descriptors.Add(new ServiceDescriptorStateOptions(serviceType, implementationType, lifetime, AutoFire(serviceType))
                 {
+                    TryRegister = dependency?.TryRegister,
                     ReplaceServices = dependency?.ReplaceServices
                 });
             }

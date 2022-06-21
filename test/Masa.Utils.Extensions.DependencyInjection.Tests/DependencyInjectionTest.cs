@@ -30,10 +30,10 @@ public class DependencyInjectionTest
     }
 
     [TestMethod]
-    public void TestGetServiceTypesReturnCountIs4()
+    public void TestGetServiceTypesReturnCountIs5()
     {
         var serviceTypes = _typeProvider.GetServiceTypes(_allTypes.ToList(), typeof(ISingletonDependency));
-        Assert.IsTrue(serviceTypes.Count == 4);
+        Assert.IsTrue(serviceTypes.Count == 5);
     }
 
     [TestMethod]

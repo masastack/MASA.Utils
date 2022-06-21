@@ -10,6 +10,8 @@ internal class ServiceDescriptorStateOptions : ServiceDescriptorOptions
 {
     public bool? ReplaceServices { get; set; }
 
+    public bool? TryRegister { get; set; }
+
     public ServiceDescriptorStateOptions(Type serviceType, Type implementationType, ServiceLifetime lifetime, bool autoFire)
         : base(serviceType, implementationType, lifetime, autoFire)
     {
