@@ -52,6 +52,27 @@ Scan the interfaces and classes that inherit ISingletonDependency, IScopedDepend
      ````
      > Equivalent to service.AddScoped<IUserService, UserService>();
 
+  * If you want the interface to have only one implementation class, add [Dependency(ReplaceServices = true)] above the implementation class
+
+      ```` C#
+      public interface IUserService : IScopedDependency
+      {
+
+      }
+
+      public class UserService : IUserService
+      {
+
+      }
+
+      [Dependency(ReplaceServices = true)]
+      public class UserService2 : IUserService
+      {
+
+      }
+      ````
+  > Equivalent to service.AddScoped<IUserService, UserService2>();
+
 * When the inherited class is not an interface, its ServiceType is the current class, and its ImplementationType is also the current class
    * By default, the cascade scan registration service is supported, and subclasses of the current class will also be registered
 
@@ -84,6 +105,10 @@ Scan the interfaces and classes that inherit ISingletonDependency, IScopedDepend
 ## Methods:
 
 * Extend IServiceCollection
-    * GetInstance<T>(): Get the instance of service T
-    * Any<T>(): Whether there is a service T, does not support generic services
-    * Any<T>(ServiceLifetime.Singleton): Whether there is a service T with a life cycle of Singleton, which does not support generic services
+* GetInstance<TService>(): Get the instance of service T
+    * Any<TService>(): Whether there is a service TService, does not support generic services
+    * Any<TService, TImplementation>(): Whether there is a service whose interface is TService and whose implementation class is TImplementation
+    * Any<TService>(ServiceLifetime.Singleton): Whether there is a service TService with a life cycle of Singleton (generic services are not supported)
+    * Any<TService, TImplementation>(ServiceLifetime.Singleton): Is there an interface whose life cycle is Singleton as TService and is implemented as a TImplementation service (generic services are not supported)
+    * Replace<TService>(typeof(TImplementation), ServiceLifetime.Singleton): Remove the first service with the same service type in the service collection, and add typeof(TImplementation) to the collection, the life cycle is a singleton
+    * ReplaceAll<TService>(typeof(TImplementation), ServiceLifetime.Singleton): Remove all services with the same service type in the service collection, and add typeof(TImplementation) to the collection, the life cycle is a singleton
