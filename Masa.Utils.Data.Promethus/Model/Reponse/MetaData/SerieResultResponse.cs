@@ -3,11 +3,7 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-public class RequestMetaDataQueryModel
+public class SerieResultResponse : ResultBaseResponse
 {
-    public IEnumerable<string>? Match { get; set; }
-
-    public string? Start { get; set; }
-
-    public string? End { get; set; }
+    public IEnumerable<IDictionary<string, string>>? Data { get; set; }
 }

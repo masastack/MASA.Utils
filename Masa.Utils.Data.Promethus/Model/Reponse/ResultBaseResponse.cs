@@ -3,7 +3,7 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-public class ResponseResultBaseModel
+public class ResultBaseResponse
 {
     public ResultStatuses Status { get; set; }
 
