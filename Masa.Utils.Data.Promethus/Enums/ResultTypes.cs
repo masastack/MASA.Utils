@@ -3,6 +3,9 @@
 
 namespace Masa.Utils.Data.Promethus.Enums;
 
+/// <summary>
+/// reference https://prometheus.io/docs/prometheus/latest/querying/api/#expression-query-result-formats
+/// </summary>
 public enum ResultTypes
 {
     None,

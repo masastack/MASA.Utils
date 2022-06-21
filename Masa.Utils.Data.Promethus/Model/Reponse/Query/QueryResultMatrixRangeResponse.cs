@@ -3,21 +3,7 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-public class ResponseQueryResultDataModel
-{
-    public ResultTypes ResultType { get; set; }
-
-    public object[]? Result { get; set; }
-}
-
-public class InstantVectorModel
-{
-    public IDictionary<string, object>? Metric { get; set; }
-
-    public object[]? Value { get; set; }
-}
-
-public class MatrixRangeModel
+public class QueryResultMatrixRangeResponse
 {
     public IDictionary<string, object>? Metric { get; set; }
 

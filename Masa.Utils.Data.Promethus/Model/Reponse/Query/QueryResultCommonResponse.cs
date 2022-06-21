@@ -3,7 +3,7 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-public class ResponseLabelResultModel : ResponseResultBaseModel
+public class QueryResultCommonResponse: ResultBaseResponse
 {
-    public IEnumerable<string>? Data { get; set; }
+    public QueryResultDataResponse? Data { get; set; }
 }
