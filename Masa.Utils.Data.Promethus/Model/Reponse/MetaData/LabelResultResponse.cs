@@ -3,7 +3,7 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-public class RequestLableValueQueryModel: RequestMetaDataQueryModel
+public class LabelResultResponse : ResultBaseResponse
 {
-    public string Lable { get; set; } = "__name__";
+    public IEnumerable<string>? Data { get; set; }
 }

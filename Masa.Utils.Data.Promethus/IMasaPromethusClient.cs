@@ -5,15 +5,15 @@ namespace Masa.Utils.Data.Promethus;
 
 internal interface IMasaPromethusClient
 {
-    Task<ResponseQueryResultCommonModel> QueryAsync(RequestQueryModel query);
+    Task<QueryResultCommonResponse> QueryAsync(QueryRequest query);
 
-    Task<ResponseQueryResultCommonModel> QueryRangeAsync(RequestQueryRangeModel query);
+    Task<QueryResultCommonResponse> QueryRangeAsync(QueryRangeRequest query);
 
-    Task<ResponseSerieResultModel> SeriesAsync(RequestMetaDataQueryModel query);
+    Task<SerieResultResponse> SeriesAsync(MetaDataQueryRequest query);
 
-    Task<ResponseLabelResultModel> LabelsQueryAsync(RequestMetaDataQueryModel query);
+    Task<LabelResultResponse> LabelsQueryAsync(MetaDataQueryRequest query);
 
-    Task<ResponseLabelResultModel> LabelValuesQueryAsync(RequestLableValueQueryModel query);
+    Task<LabelResultResponse> LabelValuesQueryAsync(LableValueQueryRequest query);
 
-    Task<ResponseExemplarResultModel> ExemplarQueryAsync(RequestQueryExemplarModel query);
+    Task<ExemplarResultResponse> ExemplarQueryAsync(QueryExemplarRequest query);
 }
