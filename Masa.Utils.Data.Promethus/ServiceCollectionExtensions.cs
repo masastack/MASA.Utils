@@ -20,7 +20,19 @@ public static class ServiceCollectionExtensions
             });
         });
 
-        services.AddScoped<IMasaPromethusClient, MasaPromethusClient>();
+        var jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        jsonOptions.Converters.Add(new JsonStringEnumConverter());
+
+        services.AddScoped<IMasaPromethusClient>(ServiceProvider =>
+        {
+            var callerFactory = ServiceProvider.GetService<ICallerFactory>();
+            if (callerFactory == null)
+                return default!;
+            return new MasaPromethusClient(callerFactory.CreateClient(PROMETHUS_HTTP_CLIENT_NAME), jsonOptions);
+        });
         return services;
     }
 }
