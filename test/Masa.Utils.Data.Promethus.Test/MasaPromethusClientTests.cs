@@ -19,7 +19,7 @@ namespace Masa.Utils.Data.Promethus.Test
         [TestMethod]
         public async Task TestQueryAsync()
         {
-            var result = await _client.QueryAsync(new RequestQueryModel
+            var result = await _client.QueryAsync(new QueryRequest
             {
                 Query = "up"
             });
@@ -31,14 +31,14 @@ namespace Masa.Utils.Data.Promethus.Test
         [TestMethod]
         public async Task TestQueryVectorAsync()
         {
-            var result = await _client.QueryAsync(new RequestQueryModel
+            var result = await _client.QueryAsync(new QueryRequest
             {
                 Query = "up"
             });
 
             if (result.Data.Result != null)
             {
-                var data = result.Data.Result as InstantVectorModel[];
+                var data = result.Data.Result as QueryResultInstantVectorResponse[];
 
                 Assert.IsNotNull(data);
                 Assert.IsNotNull(data[0].Metric);
@@ -52,7 +52,7 @@ namespace Masa.Utils.Data.Promethus.Test
         [TestMethod]
         public async Task TestQueryRangeAsync()
         {
-            var result = await _client.QueryRangeAsync(new RequestQueryRangeModel
+            var result = await _client.QueryRangeAsync(new QueryRangeRequest
             {
                 Query = "up",
                 Start = "2022-06-17T02:00:00.000Z",
@@ -64,7 +64,7 @@ namespace Masa.Utils.Data.Promethus.Test
             Assert.IsNotNull(result.Data);
             if (result.Data.ResultType == ResultTypes.Matrix)
             {
-                var data = result.Data.Result as MatrixRangeModel[];
+                var data = result.Data.Result as QueryResultMatrixRangeResponse[];
                 Assert.IsNotNull(data);
                 Assert.IsNotNull(data[0].Metric);
                 Assert.IsNotNull(data[0].Values);
@@ -74,7 +74,7 @@ namespace Masa.Utils.Data.Promethus.Test
         [TestMethod]
         public async Task TestSeriesAsync()
         {
-            var result = await _client.SeriesAsync(new RequestMetaDataQueryModel
+            var result = await _client.SeriesAsync(new MetaDataQueryRequest
             {
                 Match = new string[] { "up" },
                 Start = "2022-06-17T02:00:00.000Z",
@@ -96,7 +96,7 @@ namespace Masa.Utils.Data.Promethus.Test
         [TestMethod]
         public async Task TestLabelValuesQueryAsync()
         {
-            var result = await _client.LabelValuesQueryAsync(new RequestLableValueQueryModel());
+            var result = await _client.LabelValuesQueryAsync(new LableValueQueryRequest());
             Assert.IsNotNull(result);
             Assert.AreEqual(result.Status, ResultStatuses.Success);
             Assert.IsTrue(result.Data.Count() > 0);
@@ -106,7 +106,7 @@ namespace Masa.Utils.Data.Promethus.Test
         [DataRow()]
         public async Task TestExemplarQueryAsync()
         {
-            var param = new RequestQueryExemplarModel
+            var param = new QueryExemplarRequest
             {
                 Query = "up",
                 Start = "2022-06-17T02:00:00.000Z",

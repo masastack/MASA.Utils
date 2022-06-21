@@ -3,7 +3,11 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-public class ResponseQueryResultCommonModel: ResponseResultBaseModel
+public class QueryRequest
 {
-    public ResponseQueryResultDataModel? Data { get; set; }
+    public string? Query { get; set; }
+
+    public string? Time { get; set; }
+
+    public string? TimeOut { get; set; }
 }
