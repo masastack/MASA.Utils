@@ -38,12 +38,14 @@ public static class ServiceCollectionExtensions
             return services;
 
         services.AddSingleton<DependencyInjectionService>();
-
+        services.TryAddSingleton<IServiceRegistrar, DefaultServiceRegistrar>();
         services.TryAddSingleton<ITypeProvider, DefaultTypeProvider>();
         var typeProvider = services.GetInstance<ITypeProvider>();
         var serviceDescriptors = typeProvider.GetServiceDescriptors(typeProvider.GetAllTypes(assemblies));
+
+        var registrar = services.GetInstance<IServiceRegistrar>();
         foreach (var descriptor in serviceDescriptors)
-            services.Add(new ServiceDescriptor(descriptor.ServiceType, descriptor.ImplementationType, descriptor.Lifetime));
+            registrar.Add(services, descriptor.ServiceType, descriptor.ImplementationType, descriptor.Lifetime);
 
         if (!serviceDescriptors.Any(d => d.AutoFire))
             return services;
