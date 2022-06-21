@@ -8,14 +8,12 @@ namespace Masa.Utils.Data.Promethus;
 internal class MasaPromethusClient : IMasaPromethusClient
 {
     private readonly ICallerProvider _caller;
-    private static JsonSerializerOptions _jsonSerializerOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-    public MasaPromethusClient(ICallerProvider caller)
+    public MasaPromethusClient(ICallerProvider caller, JsonSerializerOptions jsonSerializerOptions)
     {
         _caller = caller;
+        _jsonSerializerOptions = jsonSerializerOptions;
     }
 
     public async Task<ExemplarResultResponse> ExemplarQueryAsync(QueryExemplarRequest query)
@@ -56,7 +54,6 @@ internal class MasaPromethusClient : IMasaPromethusClient
         if (string.IsNullOrEmpty(str))
             return default!;
 
-        CheckOption();
         var baseResult = JsonSerializer.Deserialize<T>(str, _jsonSerializerOptions);
 
         if (baseResult == null || baseResult.Status != ResultStatuses.Success)
@@ -119,12 +116,6 @@ internal class MasaPromethusClient : IMasaPromethusClient
         }
 
         return baseResult;
-    }
-
-    private static void CheckOption()
-    {
-        if (!_jsonSerializerOptions.Converters.Any(t => t.GetType() == typeof(JsonStringEnumConverter)))
-            _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     }
 
     private static object[] ConvertJsonToObjValue(object[]? values)
