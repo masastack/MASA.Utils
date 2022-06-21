@@ -101,6 +101,9 @@ public interface IRepository<TEntity> : IScopedDependency
 ## 特性:
 
 * IgnoreInjection: 忽略注入，用于排除不被自动注入
+* Dependency:
+  * TryRegister: 设置true则仅当服务未注册时才会被注册，类似IServiceCollection的TryAdd ... 扩展方法
+  * ReplaceServices: 设置true则替换之前已经注册过的服务，类似IServiceCollection的Replace ... 扩展方法.
 
 ## 方法:
 
