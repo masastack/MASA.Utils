@@ -3,11 +3,9 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-public class RequestQueryModel
+public class QueryResultInstantVectorResponse
 {
-    public string? Query { get; set; }
+    public IDictionary<string, object>? Metric { get; set; }
 
-    public string? Time { get; set; }
-
-    public string? TimeOut { get; set; }
+    public object[]? Value { get; set; }
 }

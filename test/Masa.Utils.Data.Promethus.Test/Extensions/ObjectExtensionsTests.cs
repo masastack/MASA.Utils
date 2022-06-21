@@ -79,13 +79,13 @@ public class ObjectExtensionsTests
     [TestMethod]
     public void ObjArrayTest()
     {
-        var array = new RequestQueryModel[] {
-            new RequestQueryModel{
+        var array = new QueryRequest[] {
+            new QueryRequest{
                  Query="where1",
                   Time="2021-01-02",
                    TimeOut="5s"
             },
-            new RequestQueryModel{
+            new QueryRequest{
                  Query="where2",
                   Time="2021-01-01",
                    TimeOut="5s"
@@ -120,13 +120,13 @@ public class ObjectExtensionsTests
     [TestMethod]
     public void ObjListTest()
     {
-        var array = new List<RequestQueryModel> {
-            new RequestQueryModel{
+        var array = new List<QueryRequest> {
+            new QueryRequest{
                  Query="where1",
                   Time="2021-01-02",
                    TimeOut="5s"
             },
-            new RequestQueryModel{
+            new QueryRequest{
                  Query="where2",
                   Time="2021-01-01",
                    TimeOut="5s"
