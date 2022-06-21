@@ -3,7 +3,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public interface IServiceRegistrar
+public interface IServiceRegister
 {
     void Add(IServiceCollection services, Type serviceType, Type implementationType, ServiceLifetime lifetime);
 }

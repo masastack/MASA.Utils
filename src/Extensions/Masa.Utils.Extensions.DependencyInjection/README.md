@@ -52,7 +52,7 @@ Scan the interfaces and classes that inherit ISingletonDependency, IScopedDepend
      ````
      > Equivalent to service.AddScoped<IUserService, UserService>();
 
-   * If you do not want the interface to be added multiple times and only want the interface to have only one implementation class, add the [Dependency(ReplaceServices = true)] feature above the implementation class you want to add
+  * If you want the interface to have only one implementation class, add [Dependency(ReplaceServices = true)] above the implementation class
 
       ```` C#
       public interface IUserService : IScopedDependency

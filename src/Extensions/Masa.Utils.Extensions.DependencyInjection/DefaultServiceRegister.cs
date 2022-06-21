@@ -3,7 +3,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public class DefaultServiceRegistrar : IServiceRegistrar
+public class DefaultServiceRegister : IServiceRegister
 {
     public void Add(IServiceCollection services, Type serviceType, Type implementationType, ServiceLifetime lifetime)
     {

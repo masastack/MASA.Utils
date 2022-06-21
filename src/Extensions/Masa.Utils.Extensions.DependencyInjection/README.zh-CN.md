@@ -52,7 +52,7 @@ public interface IRepository<TEntity> : IScopedDependency
     ```
     > 等价于 service.AddScoped<IUserService, UserService>();
 
-  * 如果不希望接口被多次添加，只希望接口只有一个实现类，则在希望添加的实现类上方增加[Dependency(ReplaceServices = true)]的特性
+  * 如果希望接口只有一个实现类，则在实现类上方增加[Dependency(ReplaceServices = true)]即可
 
     ``` C#
     public interface IUserService : IScopedDependency
