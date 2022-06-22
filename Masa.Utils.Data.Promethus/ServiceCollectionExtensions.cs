@@ -11,6 +11,9 @@ public static class ServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(uri, nameof(uri));
 
+        if (services.Any(service => service.GetType() == typeof(IMasaPromethusClient)))
+            return services;
+
         services.AddCaller(builder =>
         {
             builder.UseHttpClient(options =>
@@ -28,10 +31,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IMasaPromethusClient>(ServiceProvider =>
         {
-            var callerFactory = ServiceProvider.GetService<ICallerFactory>();
-            if (callerFactory == null)
-                return default!;
-            return new MasaPromethusClient(callerFactory.CreateClient(PROMETHUS_HTTP_CLIENT_NAME), jsonOptions);
+            var caller = ServiceProvider.GetRequiredService<ICallerFactory>().CreateClient(PROMETHUS_HTTP_CLIENT_NAME);
+            return new MasaPromethusClient(caller, jsonOptions);
         });
         return services;
     }
