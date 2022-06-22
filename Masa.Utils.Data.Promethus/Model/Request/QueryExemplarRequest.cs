@@ -3,7 +3,7 @@
 
 namespace Masa.Utils.Data.Promethus.Model;
 
-internal class QueryExemplarRequest
+public class QueryExemplarRequest
 {
     public string? Query { get; set; }
 

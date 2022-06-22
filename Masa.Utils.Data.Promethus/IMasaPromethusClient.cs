@@ -3,7 +3,7 @@
 
 namespace Masa.Utils.Data.Promethus;
 
-internal interface IMasaPromethusClient
+public interface IMasaPromethusClient
 {
     Task<QueryResultCommonResponse> QueryAsync(QueryRequest query);
 
