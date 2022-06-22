@@ -25,36 +25,44 @@ public static class ServiceCollectionExtensions
         CallerOptions callerOption = new CallerOptions(services);
         options.Invoke(callerOption);
 
-        services.TryAddSingleton<ICallerFactory>(serviceProvider => new DefaultCallerFactory(serviceProvider, callerOption));
-        services.TryAddSingleton<IRequestMessage>(_ => new JsonRequestMessage(callerOption.JsonSerializerOptions));
-        services.TryAddSingleton<IResponseMessage>(serviceProvider
-            => new DefaultResponseMessage(callerOption, serviceProvider.GetService<ILogger<DefaultResponseMessage>>()));
+        services.TryAddSingleton<ICallerFactory, DefaultCallerFactory>();
+        services.TryAddSingleton<IRequestMessage, JsonRequestMessage>();
+        services.TryAddSingleton<IResponseMessage, DefaultResponseMessage>();
         services.TryAddScoped(serviceProvider => serviceProvider.GetRequiredService<ICallerFactory>().CreateClient());
 
         services.TryAddSingleton<ITypeConvertProvider, DefaultTypeConvertProvider>();
         services.AddAutomaticCaller(callerOption);
-        CheckCallerOptions(callerOption);
+        TryOrUpdateCallerOptions(services, callerOption);
         return services;
     }
 
-    private static void CheckCallerOptions(CallerOptions options)
+    private static IServiceCollection TryOrUpdateCallerOptions(this IServiceCollection services, CallerOptions options)
     {
-        if (options.Callers.GroupBy(r => r.Name).Any(x => x.Count() > 1))
-        {
-            var callerName = options.Callers.GroupBy(r => r.Name).Where(x => x.Count() > 1).Select(r => r.Key).FirstOrDefault();
-            throw new ArgumentException($"The caller name already exists, please change the name, the repeat name is [{callerName}]");
-        }
+        services.TryAddSingleton(new CallerOptions(options.Services));
+        var serviceProvider = services.BuildServiceProvider();
+        var callerOptions = serviceProvider.GetRequiredService<CallerOptions>();
 
-        if (options.Callers.Where(r => r.IsDefault).GroupBy(r => r.IsDefault).Any(x => x.Count() > 1))
+        options.Callers.ForEach(caller =>
         {
-            string errorCallerNames = string.Join("、", options.Callers
-                .Where(relation => relation.IsDefault)
-                .Select(relation => relation.Name)
-                .Concat(options.Callers.Where(relation => relation.IsDefault).Select(relation => relation.Name))
-                .Distinct());
-            throw new ArgumentException(
-                $"There can only be at most one default Caller Provider, and now the following Caller Providers are found to be default: {errorCallerNames}");
-        }
+            if (callerOptions.Callers.Any(relation => relation.Name == caller.Name))
+                throw new ArgumentException(
+                    $"The caller name already exists, please change the name, the repeat name is [{caller.Name}]");
+
+            if (callerOptions.Callers.Any(relation => relation.IsDefault && caller.IsDefault))
+            {
+                string errorCallerNames = string.Join("、", callerOptions.Callers
+                    .Where(relation => relation.IsDefault)
+                    .Select(relation => relation.Name)
+                    .Concat(options.Callers.Where(relation => relation.IsDefault).Select(relation => relation.Name))
+                    .Distinct());
+                throw new ArgumentException(
+                    $"There can only be at most one default Caller Provider, and now the following Caller Providers are found to be default: {errorCallerNames}");
+            }
+
+            callerOptions.Callers.Add(caller);
+        });
+
+        return services;
     }
 
     private static void AddAutomaticCaller(this IServiceCollection services, CallerOptions callerOptions)
@@ -62,8 +70,11 @@ public static class ServiceCollectionExtensions
         var callerTypes = callerOptions.Assemblies.SelectMany(x => x.GetTypes())
             .Where(type => typeof(CallerBase).IsAssignableFrom(type) && !type.IsAbstract).ToList();
 
+        callerTypes = callerTypes.Except(services.Select(d => d.ServiceType)).ToList();
+
         if (callerTypes.Count == 0)
             return;
+
 
         callerTypes.Arrangement().ForEach(type =>
         {
