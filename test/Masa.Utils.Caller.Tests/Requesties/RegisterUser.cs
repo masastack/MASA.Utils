@@ -7,10 +7,10 @@ namespace Masa.Utils.Caller.Tests.Requesties;
 public class RegisterUser
 {
     [XmlElement]
-    public string Account { get; set; }
+    public string Account { get; set; } = default!;
 
     [XmlElement]
-    public string Password { get; set; }
+    public string Password { get; set; } = default!;
 
     public RegisterUser() { }
 

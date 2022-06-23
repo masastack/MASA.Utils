@@ -175,4 +175,30 @@ public class CallerTest
             });
         });
     }
+
+    [TestMethod]
+    public void TestAddMultiCaller()
+    {
+        IServiceCollection services = new ServiceCollection();
+        services.AddCaller(opt =>
+        {
+            opt.UseHttpClient(builder =>
+            {
+                builder.Name = "masastack";
+                builder.BaseAddress = "https://github.com/masastack";
+                builder.IsDefault = true;
+            });
+        });
+        services.AddCaller(opt =>
+        {
+            opt.UseHttpClient(builder =>
+            {
+                builder.Name = "masastack2";
+                builder.BaseAddress = "https://github.com/masastack";
+            });
+        });
+        var serviceProvider = services.BuildServiceProvider();
+        Assert.IsNotNull(serviceProvider.GetRequiredService<ICallerFactory>().CreateClient("masastack"));
+        Assert.IsNotNull(serviceProvider.GetRequiredService<ICallerFactory>().CreateClient("masastack2"));
+    }
 }

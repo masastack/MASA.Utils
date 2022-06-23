@@ -7,9 +7,7 @@ public class JsonRequestMessage : IRequestMessage
 {
     private readonly JsonSerializerOptions? _jsonSerializerOptions;
 
-    public JsonRequestMessage() : this(null) { }
-
-    public JsonRequestMessage(JsonSerializerOptions? jsonSerializerOptions) => _jsonSerializerOptions = jsonSerializerOptions;
+    public JsonRequestMessage(CallerOptions callerOptions) => _jsonSerializerOptions = callerOptions.JsonSerializerOptions;
 
     public virtual Task<HttpRequestMessage> ProcessHttpRequestMessageAsync(HttpRequestMessage requestMessage)
         => Task.FromResult(requestMessage);

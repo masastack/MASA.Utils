@@ -8,7 +8,7 @@ public class DefaultResponseMessage : IResponseMessage
     private readonly ILogger<DefaultResponseMessage>? _logger;
     private readonly CallerOptions _callerOptions;
 
-    public DefaultResponseMessage(CallerOptions callerOptions, ILogger<DefaultResponseMessage>? logger)
+    public DefaultResponseMessage(CallerOptions callerOptions, ILogger<DefaultResponseMessage>? logger = null)
     {
         _callerOptions = callerOptions;
         _logger = logger;

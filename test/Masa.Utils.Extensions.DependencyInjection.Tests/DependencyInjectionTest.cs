@@ -1,15 +1,13 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-using Masa.Utils.Extensions.DependencyInjection.Repository.Tests;
-
 namespace Masa.Utils.Extensions.DependencyInjection.Tests;
 
 [TestClass]
 public class DependencyInjectionTest
 {
-    private DefaultTypeProvider _typeProvider;
-    private IEnumerable<Type> _allTypes;
+    private DefaultTypeProvider _typeProvider = default!;
+    private IEnumerable<Type> _allTypes = default!;
 
     [TestInitialize]
     public void Initialize()
@@ -32,10 +30,10 @@ public class DependencyInjectionTest
     }
 
     [TestMethod]
-    public void TestGetServiceTypesReturnCountIs4()
+    public void TestGetServiceTypesReturnCountIs5()
     {
         var serviceTypes = _typeProvider.GetServiceTypes(_allTypes.ToList(), typeof(ISingletonDependency));
-        Assert.IsTrue(serviceTypes.Count == 4);
+        Assert.IsTrue(serviceTypes.Count == 5);
     }
 
     [TestMethod]
@@ -190,5 +188,17 @@ public class DependencyInjectionTest
         Assert.IsFalse(services.Any<User>(ServiceLifetime.Singleton));
         Assert.IsTrue(services.Any<User>(ServiceLifetime.Scoped));
         Assert.IsFalse(services.Any<User>(ServiceLifetime.Transient));
+    }
+
+    [TestMethod]
+    public void TestDependencyReturnProviderServiceIs1()
+    {
+        var services = new ServiceCollection();
+        services.AddAutoInject();
+        var serviceProvider = services.BuildServiceProvider();
+        var factories = serviceProvider.GetServices<IClientFactory>().ToList();
+        Assert.IsTrue(factories.Count == 1);
+
+        Assert.IsTrue(factories[0].GetClientName() == nameof(CustomizeClientFactory));
     }
 }
