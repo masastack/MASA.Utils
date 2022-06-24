@@ -6,10 +6,10 @@ namespace System;
 public static class ObjectExtensions
 {
     /// <summary>
-    /// 当前支持类型:class、struct和实现IEnumerable接口的类型，
-    /// struct默认和class 使用公开get属性和字段，
-    /// IEnumerable<KeyValuePair>类型直接转化为:key[]=value1&key[]=value2
-    /// enum 默认使用字符串，如果需要使用数值，请设置isEnumString=false
+    /// Currently supported types: class, struct and types implementing the IEnumerable interface,
+    /// struct and class use public get properties and fields by default,
+    /// The IEnumerable<KeyValuePair> type is directly converted to: key[]=value1&key[]=value2
+    /// enum uses strings by default. If you need to use numeric values, please set isEnumString=false
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="isEnumString"></param>
