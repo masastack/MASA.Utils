@@ -14,4 +14,8 @@
     <PackageReference Include="coverlet.collector" Version="3.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Data\Masa.Utils.Data.Promethus\Masa.Utils.Data.Promethus.csproj" />
+  </ItemGroup>
+
 </Project>
