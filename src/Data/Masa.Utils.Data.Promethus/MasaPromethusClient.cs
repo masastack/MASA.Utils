@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
 [assembly: InternalsVisibleTo("Masa.Utils.Data.Promethus.Test")]
-
 namespace Masa.Utils.Data.Promethus;
 
 internal class MasaPromethusClient : IMasaPromethusClient

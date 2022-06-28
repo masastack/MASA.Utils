@@ -11,7 +11,7 @@ Install-Package Masa.Utils.Data.Promethus
 
 ### 用法:
 
-1. 注入services
+1. 注册services
 
 ```` C#
 builder.Services.AddPromethusClient("http://127.0.0.1:9090");
@@ -31,7 +31,33 @@ builder.Services.AddPromethusClient("http://127.0.0.1:9090");
 
         public async Task QueryAsync()
         {
-            var result=await _client.QueryAsync(...);
+            var query= new QueryRequest {
+                Query = "up", //metric name
+                Time = "2022-06-01T09:00:00.000Z" //标准时间格式或unix时间戳，如：1654045200或1654045200.000
+            };
+            var result = await _client.QueryAsync(query);
+            if(result.Status == ResultStatuses.Success){
+                switch(result.Data.ResultType){
+                    case ResultTypes.Vector:
+                    {
+                        var data=result.Data.Result as QueryResultInstantVectorResponse[];
+                        ...
+                    }
+                    break;
+                    case ResultTypes.Matrix:
+                    {
+                        var data=result.Data.Result as QueryResultMatrixRangeResponse[];
+                        ...
+                    }
+                    break;
+                    default:
+                    {
+                        var timeSpan=(double)result.Data.Result[0];
+                        var value=(string)result.Data.Result[1];
+                    }
+                    break;
+                }
+            }
         }
     }
 ```
