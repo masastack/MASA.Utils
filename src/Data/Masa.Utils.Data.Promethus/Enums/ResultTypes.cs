@@ -8,8 +8,7 @@ namespace Masa.Utils.Data.Promethus.Enums;
 /// </summary>
 public enum ResultTypes
 {
-    None,
-    Matrix,
+    Matrix = 1,
     Vector,
     Scalar,
     String

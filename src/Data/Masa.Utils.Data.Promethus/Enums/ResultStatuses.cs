@@ -5,7 +5,6 @@ namespace Masa.Utils.Data.Promethus.Enums;
 
 public enum ResultStatuses
 {
-    None,
-    Success,
+    Success=1,
     Error
 }
