@@ -8,7 +8,7 @@ MASA.Utils是MASA的工具库，这些工具被[MASA Stack](https://github.com/m
 
 ## 路线图
 * [发行说明](https://github.com/masastack/MASA.Utils/releases)
-* [最新路线图](https://github.com/masastack/MASA.Utils/issues/40)
+* [最新路线图](https://github.com/masastack/MASA.Utils/issues/41)
 
 
 
@@ -18,23 +18,15 @@ MASA.Utils是MASA的工具库，这些工具被[MASA Stack](https://github.com/m
   * Redis
   * DistributedMemory: 分布式内存缓存
 * Caller
-  * HttpClient
-  * DaprClient
-* [Elasticsearch](./src/Data/Masa.Utils.Data.Elasticsearch/README.zh-CN.md)
-* [EntityFrameworkCore](./src/Data/Masa.Utils.Data.EntityFrameworkCore/README.zh-CN.md)
-  * [SqlServer](./src/Data/Masa.Utils.Data.EntityFrameworkCore.SqlServer/README.zh-CN.md)
-  * [MySql](./src/Data/Masa.Utils.Data.EntityFrameworkCore.MySql/README.zh-CN.md)
-  * [Pomelo.MySql](./src/Data/Masa.Utils.Data.EntityFrameworkCore.Pomelo.MySql/README.zh-CN.md)
-  * [Sqlite](./src/Data/Masa.Utils.Data.EntityFrameworkCore.Sqlite/README.zh-CN.md)
-  * [Cosmos](./src/Data/Masa.Utils.Data.EntityFrameworkCore.Cosmos/README.zh-CN.md)
-  * [InMemory](./src/Data/Masa.Utils.Data.EntityFrameworkCore.InMemory/README.zh-CN.md)
-  * [Oracle](./src/Data/Masa.Utils.Data.EntityFrameworkCore.Oracle/README.zh-CN.md)
-  * [PostgreSql](./src/Data/Masa.Utils.Data.EntityFrameworkCore.PostgreSql/README.zh-CN.md)
-* Dapr
+  * [HttpClient](./src/Caller/Masa.Utils.Caller.HttpClient/README.zh-CN.md)
+  * [DaprClient](./src/Caller/Masa.Utils.Caller.DaprClient/README.zh-CN.md)
+* Data
+  * [Elasticsearch](./src/Data/Masa.Utils.Data.Elasticsearch/README.zh-CN.md)
+* Development
   * [Development.Dapr](./src/Development/Masa.Utils.Development.Dapr/README.zh-CN.md): Dapr Starter核心库
-  * [Development.Dapr.AspNetCore](./src/Development/Masa.Utils.Development.Dapr.AspNetCore/README.zh-CN.md)
+  * [Development.Dapr.AspNetCore](./src/Development/Masa.Utils.Development.Dapr.AspNetCore/README.zh-CN.md): Dapr AspNetCore库
 * Extensions
-  * DependencyInjection: 注入扩展
+  * [DependencyInjection](./src/Extensions/Masa.Utils.Extensions.DependencyInjection/README.zh-CN.md): 注入扩展
   * DotNet: DotNet扩展
   * Enums: 枚举扩展
   * Expressions: 表达式扩展
