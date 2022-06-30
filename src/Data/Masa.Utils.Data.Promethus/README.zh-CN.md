@@ -20,7 +20,8 @@ builder.Services.AddPromethusClient("http://127.0.0.1:9090");
 2. 查询样例
 
 ```C#
-public class SampleService{
+public class SampleService
+{
 
     private IMasaPromethusClient _client;
 
