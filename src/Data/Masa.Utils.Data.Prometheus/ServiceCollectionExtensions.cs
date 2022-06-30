@@ -5,7 +5,7 @@ namespace Masa.Utils.Data.Prometheus;
 
 public static class ServiceCollectionExtensions
 {
-    private const string Prometheus_HTTP_CLIENT_NAME = "prometheus_client_name";
+    private const string PROMETHEUS_HTTP_CLIENT_NAME = "prometheus_client_name";
 
     public static IServiceCollection AddPrometheusClient(this IServiceCollection services, string url)
     {
@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
             builder.UseHttpClient(options =>
             {
                 options.BaseAddress = url;
-                options.Name = Prometheus_HTTP_CLIENT_NAME;
+                options.Name = PROMETHEUS_HTTP_CLIENT_NAME;
             });
         });
 
@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IMasaPrometheusClient>(ServiceProvider =>
         {
-            var caller = ServiceProvider.GetRequiredService<ICallerFactory>().CreateClient(Prometheus_HTTP_CLIENT_NAME);
+            var caller = ServiceProvider.GetRequiredService<ICallerFactory>().CreateClient(PROMETHEUS_HTTP_CLIENT_NAME);
             return new MasaPrometheusClient(caller, jsonOptions);
         });
         return services;

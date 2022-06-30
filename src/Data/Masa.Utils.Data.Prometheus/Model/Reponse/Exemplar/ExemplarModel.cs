@@ -3,7 +3,9 @@
 
 namespace Masa.Utils.Data.Prometheus.Model;
 
-public class ExemplarResultResponse : ResultBaseResponse
+public class ExemplarDataModel
 {
-    public IEnumerable<ExemplarDataModel>? Data { get; set; }
+    public IDictionary<string, object>? SeriesLabels { get; set; }
+
+    public IEnumerable<ExemplarModel>? Exemplars { get; set; }
 }

@@ -3,7 +3,11 @@
 
 namespace Masa.Utils.Data.Prometheus.Model;
 
-public class ExemplarResultResponse : ResultBaseResponse
+public class ExemplarModel
 {
-    public IEnumerable<ExemplarDataModel>? Data { get; set; }
+    public IDictionary<string, object>? Labels { get; set; }
+
+    public string? Value { get; set; }
+
+    public float TimeStamp { get; set; }
 }
