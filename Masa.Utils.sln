@@ -103,9 +103,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Extensions.Valid
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Security.Authentication.OpenIdConnect", "src\Security\Masa.Utils.Security.Authentication.OpenIdConnect\Masa.Utils.Security.Authentication.OpenIdConnect.csproj", "{D17B5B36-5773-4827-9D5D-44390DF666CA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.Prometheus.Test", "test\Masa.Utils.Data.Promethus.Test\Masa.Utils.Data.Prometheus.Test.csproj", "{AC19E221-D3CF-49E9-8E41-A7580C0736AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.Prometheus", "src\Data\Masa.Utils.Data.Prometheus\Masa.Utils.Data.Prometheus.csproj", "{81E8A8F5-91EA-43F2-9B19-83B85EED7DB7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.Prometheus", "src\Data\Masa.Utils.Data.Promethus\Masa.Utils.Data.Prometheus.csproj", "{B108BA38-AC93-4983-8361-43BF819985C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.Prometheus.Test", "test\Masa.Utils.Data.Prometheus.Test\Masa.Utils.Data.Prometheus.Test.csproj", "{CAB4132B-82E4-4B37-AF05-7F446DE3AF04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -253,14 +253,14 @@ Global
 		{D17B5B36-5773-4827-9D5D-44390DF666CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D17B5B36-5773-4827-9D5D-44390DF666CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D17B5B36-5773-4827-9D5D-44390DF666CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC19E221-D3CF-49E9-8E41-A7580C0736AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC19E221-D3CF-49E9-8E41-A7580C0736AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC19E221-D3CF-49E9-8E41-A7580C0736AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC19E221-D3CF-49E9-8E41-A7580C0736AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B108BA38-AC93-4983-8361-43BF819985C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B108BA38-AC93-4983-8361-43BF819985C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B108BA38-AC93-4983-8361-43BF819985C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B108BA38-AC93-4983-8361-43BF819985C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81E8A8F5-91EA-43F2-9B19-83B85EED7DB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81E8A8F5-91EA-43F2-9B19-83B85EED7DB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81E8A8F5-91EA-43F2-9B19-83B85EED7DB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81E8A8F5-91EA-43F2-9B19-83B85EED7DB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAB4132B-82E4-4B37-AF05-7F446DE3AF04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAB4132B-82E4-4B37-AF05-7F446DE3AF04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAB4132B-82E4-4B37-AF05-7F446DE3AF04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAB4132B-82E4-4B37-AF05-7F446DE3AF04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -311,8 +311,8 @@ Global
 		{533BCE80-61BC-443A-95D3-2C6328921ED8} = {B2DA607D-4A39-4F0C-A9B3-DD9A061B0B4E}
 		{B0E3CA19-C101-4E30-9401-C017B7088F4E} = {533BCE80-61BC-443A-95D3-2C6328921ED8}
 		{D17B5B36-5773-4827-9D5D-44390DF666CA} = {4FB3BD6D-D4C1-4BEF-AD62-8FD6EAEEB4DF}
-		{AC19E221-D3CF-49E9-8E41-A7580C0736AA} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
-		{B108BA38-AC93-4983-8361-43BF819985C7} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
+		{81E8A8F5-91EA-43F2-9B19-83B85EED7DB7} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
+		{CAB4132B-82E4-4B37-AF05-7F446DE3AF04} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7DAA0E6-098F-4B18-8775-64FDA96F1FF0}

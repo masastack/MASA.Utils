@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Data\Masa.Utils.Data.Promethus\Masa.Utils.Data.Prometheus.csproj" />
+    <ProjectReference Include="..\..\src\Data\Masa.Utils.Data.Prometheus\Masa.Utils.Data.Prometheus.csproj" />
   </ItemGroup>
 
 </Project>

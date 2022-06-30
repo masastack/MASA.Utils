@@ -36,14 +36,13 @@ public class MasaPrometheusClientTests
             Query = "up"
         });
 
-        if (result.Data.Result != null)
+        if (result != null && result.Data != null && result.Data.Result != null)
         {
             var data = result.Data.Result as QueryResultInstantVectorResponse[];
 
             Assert.IsNotNull(data);
             Assert.IsNotNull(data[0].Metric);
             Assert.IsNotNull(data[0].Value);
-
             Assert.IsNotNull(data[0].Metric.Keys);
             Assert.AreEqual(2, data[0].Value.Length);
         }
@@ -90,7 +89,6 @@ public class MasaPrometheusClientTests
         var result = await _client.LabelsQueryAsync(default!);
         Assert.IsNotNull(result);
         Assert.AreEqual(result.Status, ResultStatuses.Success);
-        Assert.IsTrue(result.Data.Count() > 0);
     }
 
     [TestMethod]
@@ -99,7 +97,6 @@ public class MasaPrometheusClientTests
         var result = await _client.LabelValuesQueryAsync(new LableValueQueryRequest());
         Assert.IsNotNull(result);
         Assert.AreEqual(result.Status, ResultStatuses.Success);
-        Assert.IsTrue(result.Data.Count() > 0);
     }
 
     [TestMethod]
