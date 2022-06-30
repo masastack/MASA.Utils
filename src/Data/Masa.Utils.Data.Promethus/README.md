@@ -11,55 +11,57 @@ Install-Package Masa.Utils.Data.Promethus
 
 ### Usage:
 
-1. Inject services
+1. Inject
 
 ```` C#
 builder.Services.AddPromethusClient("http://127.0.0.1:9090");
 ````
 
-2. Call
+2. Example
 
 ```C#
-    public class SampleService{
+public class SampleService{
 
-        private IMasaPromethusClient _client;
+    private IMasaPromethusClient _client;
 
-        public SampleService(IMasaPromethusClient client)
+    public SampleService(IMasaPromethusClient client)
+    {
+        _client=client;
+    }
+
+    public async Task QueryAsync()
+    {
+        var query= new QueryRequest {
+            Query = "up", //metric name
+            Time = "2022-06-01T09:00:00.000Z" //standard time format or unix timestamp, such as: 1654045200 or 1654045200.000
+        };
+        var result = await _client.QueryAsync(query);
+        if(result.Status == ResultStatuses.Success)
         {
-            _client=client;
-        }
-
-        public async Task QueryAsync()
-        {
-            var query= new QueryRequest {
-                Query = "up", //metric name
-                Time = "2022-06-01T09:00:00.000Z" //standard time format or unix timestamp, such as: 1654045200 or 1654045200.000
-            };
-            var result = await _client.QueryAsync(query);
-            if(result.Status == ResultStatuses.Success){
-                switch(result.Data.ResultType){
-                    case ResultTypes.Vector:
+            switch(result.Data.ResultType)
+            {
+                case ResultTypes.Vector:
                     {
                         var data=result.Data.Result as QueryResultInstantVectorResponse[];
                         ...
                     }
                     break;
-                    case ResultTypes.Matrix:
+                case ResultTypes.Matrix:
                     {
                         var data=result.Data.Result as QueryResultMatrixRangeResponse[];
                         ...
                     }
                     break;
-                    default:
+                default:
                     {
                         var timeSpan=(double)result.Data.Result[0];
                         var value=(string)result.Data.Result[1];
                     }
                     break;
-                }
             }
         }
     }
+}
 ```
 
 ### Current suports:
