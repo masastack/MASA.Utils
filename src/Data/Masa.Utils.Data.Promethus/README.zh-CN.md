@@ -11,55 +11,57 @@ Install-Package Masa.Utils.Data.Promethus
 
 ### 用法:
 
-1. 注册services
+1. 注册
 
 ```` C#
 builder.Services.AddPromethusClient("http://127.0.0.1:9090");
 ````
 
-2. 调用
+2. 示例
 
 ```C#
-    public class SampleService{
+public class SampleService{
 
-        private IMasaPromethusClient _client;
+    private IMasaPromethusClient _client;
 
-        public SampleService(IMasaPromethusClient client)
+    public SampleService(IMasaPromethusClient client)
+    {
+        _client=client;
+    }
+
+    public async Task QueryAsync()
+    {
+        var query= new QueryRequest {
+            Query = "up", //metric name
+            Time = "2022-06-01T09:00:00.000Z" //标准时间格式或unix时间戳，如：1654045200或1654045200.000
+        };
+        var result = await _client.QueryAsync(query);
+        if(result.Status == ResultStatuses.Success)
         {
-            _client=client;
-        }
-
-        public async Task QueryAsync()
-        {
-            var query= new QueryRequest {
-                Query = "up", //metric name
-                Time = "2022-06-01T09:00:00.000Z" //标准时间格式或unix时间戳，如：1654045200或1654045200.000
-            };
-            var result = await _client.QueryAsync(query);
-            if(result.Status == ResultStatuses.Success){
-                switch(result.Data.ResultType){
-                    case ResultTypes.Vector:
+            switch(result.Data.ResultType)
+            {
+                case ResultTypes.Vector:
                     {
                         var data=result.Data.Result as QueryResultInstantVectorResponse[];
                         ...
                     }
                     break;
-                    case ResultTypes.Matrix:
+                case ResultTypes.Matrix:
                     {
                         var data=result.Data.Result as QueryResultMatrixRangeResponse[];
                         ...
                     }
                     break;
-                    default:
+                default:
                     {
                         var timeSpan=(double)result.Data.Result[0];
                         var value=(string)result.Data.Result[1];
                     }
                     break;
-                }
             }
         }
     }
+}
 ```
 
 ### 目前只支持以下api:
