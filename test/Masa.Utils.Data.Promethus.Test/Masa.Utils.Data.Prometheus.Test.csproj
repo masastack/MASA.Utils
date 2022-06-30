@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Data\Masa.Utils.Data.Promethus\Masa.Utils.Data.Promethus.csproj" />
+    <ProjectReference Include="..\..\src\Data\Masa.Utils.Data.Promethus\Masa.Utils.Data.Prometheus.csproj" />
   </ItemGroup>
 
 </Project>

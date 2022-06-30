@@ -1,7 +1,7 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-namespace Masa.Utils.Data.Promethus.Test;
+namespace Masa.Utils.Data.Prometheus.Test;
 
 public struct UserStruct
 {
@@ -9,5 +9,5 @@ public struct UserStruct
 
     public int Age { get; set; }
 
-    public string gender { get; set; }
+    public string Gender { get; set; }
 }

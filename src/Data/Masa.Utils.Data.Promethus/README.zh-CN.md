@@ -1,12 +1,12 @@
 [EN](README.md) | 中
 
-## Masa.Utils.Data.Promethus
+## Masa.Utils.Data.Prometheus
 
-[Promethus Http Api](https://www.prometheus.io/docs/prometheus/latest/querying/api/) 客户端类库
+[Prometheus Http Api](https://www.prometheus.io/docs/prometheus/latest/querying/api/) 客户端类库
 
 ## 安装:
 ```c#
-Install-Package Masa.Utils.Data.Promethus
+Install-Package Masa.Utils.Data.Prometheus
 ```
 
 ### 示例:
@@ -14,7 +14,7 @@ Install-Package Masa.Utils.Data.Promethus
 1. 注册
 
 ```` C#
-builder.Services.AddPromethusClient("http://127.0.0.1:9090");
+builder.Services.AddPrometheusClient("http://127.0.0.1:9090");
 ````
 
 2. 查询样例
@@ -23,9 +23,9 @@ builder.Services.AddPromethusClient("http://127.0.0.1:9090");
 public class SampleService
 {
 
-    private IMasaPromethusClient _client;
+    private IMasaPrometheusClient _client;
 
-    public SampleService(IMasaPromethusClient client)
+    public SampleService(IMasaPrometheusClient client)
     {
         _client=client;
     }

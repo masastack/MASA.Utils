@@ -1,25 +1,25 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-namespace Masa.Utils.Data.Promethus;
+namespace Masa.Utils.Data.Prometheus;
 
 public static class ServiceCollectionExtensions
 {
-    private const string PROMETHUS_HTTP_CLIENT_NAME = "promethus_client_name";
+    private const string Prometheus_HTTP_CLIENT_NAME = "prometheus_client_name";
 
-    public static IServiceCollection AddPromethusClient(this IServiceCollection services, string uri)
+    public static IServiceCollection AddPrometheusClient(this IServiceCollection services, string url)
     {
-        ArgumentNullException.ThrowIfNull(uri, nameof(uri));
+        ArgumentNullException.ThrowIfNull(url, nameof(url));
 
-        if (services.Any(service => service.GetType() == typeof(IMasaPromethusClient)))
+        if (services.Any(service => service.GetType() == typeof(IMasaPrometheusClient)))
             return services;
 
         services.AddCaller(builder =>
         {
             builder.UseHttpClient(options =>
             {
-                options.BaseAddress = uri;
-                options.Name = PROMETHUS_HTTP_CLIENT_NAME;
+                options.BaseAddress = url;
+                options.Name = Prometheus_HTTP_CLIENT_NAME;
             });
         });
 
@@ -29,10 +29,10 @@ public static class ServiceCollectionExtensions
         };
         jsonOptions.Converters.Add(new JsonStringEnumConverter());
 
-        services.AddScoped<IMasaPromethusClient>(ServiceProvider =>
+        services.AddScoped<IMasaPrometheusClient>(ServiceProvider =>
         {
-            var caller = ServiceProvider.GetRequiredService<ICallerFactory>().CreateClient(PROMETHUS_HTTP_CLIENT_NAME);
-            return new MasaPromethusClient(caller, jsonOptions);
+            var caller = ServiceProvider.GetRequiredService<ICallerFactory>().CreateClient(Prometheus_HTTP_CLIENT_NAME);
+            return new MasaPrometheusClient(caller, jsonOptions);
         });
         return services;
     }

@@ -1,19 +1,19 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-namespace Masa.Utils.Data.Promethus.Test;
+namespace Masa.Utils.Data.Prometheus.Test;
 
 [TestClass]
-public class MasaPromethusClientTests
+public class MasaPrometheusClientTests
 {
-    private IMasaPromethusClient _client;
+    private IMasaPrometheusClient _client;
 
     [TestInitialize]
     public void Initialize()
     {
         IServiceCollection service = new ServiceCollection();
-        service.AddPromethusClient("http://localhost:9090");
-        _client = service.BuildServiceProvider().GetService<IMasaPromethusClient>();
+        service.AddPrometheusClient("http://localhost:9090");
+        _client = service.BuildServiceProvider().GetService<IMasaPrometheusClient>();
     }
 
     [TestMethod]
@@ -72,9 +72,9 @@ public class MasaPromethusClientTests
     }
 
     [TestMethod]
-    public async Task TestSeriesAsync()
+    public async Task TestSeriesQueryAsync()
     {
-        var result = await _client.SeriesAsync(new MetaDataQueryRequest
+        var result = await _client.SeriesQueryAsync(new MetaDataQueryRequest
         {
             Match = new string[] { "up" },
             Start = "2022-06-17T02:00:00.000Z",

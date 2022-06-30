@@ -3,8 +3,8 @@
 
 global using Masa.Utils.Caller.Core;
 global using Masa.Utils.Caller.HttpClient;
-global using Masa.Utils.Data.Promethus.Enums;
-global using Masa.Utils.Data.Promethus.Model;
+global using Masa.Utils.Data.Prometheus.Enums;
+global using Masa.Utils.Data.Prometheus.Model;
 global using Microsoft.Extensions.DependencyInjection;
 global using System.Collections;
 global using System.Reflection;

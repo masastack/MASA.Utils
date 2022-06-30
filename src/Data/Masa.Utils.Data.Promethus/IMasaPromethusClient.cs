@@ -1,15 +1,15 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-namespace Masa.Utils.Data.Promethus;
+namespace Masa.Utils.Data.Prometheus;
 
-public interface IMasaPromethusClient
+public interface IMasaPrometheusClient
 {
     Task<QueryResultCommonResponse> QueryAsync(QueryRequest query);
 
     Task<QueryResultCommonResponse> QueryRangeAsync(QueryRangeRequest query);
 
-    Task<SerieResultResponse> SeriesAsync(MetaDataQueryRequest query);
+    Task<SeriesResultResponse> SeriesQueryAsync(MetaDataQueryRequest query);
 
     Task<LabelResultResponse> LabelsQueryAsync(MetaDataQueryRequest query);
 

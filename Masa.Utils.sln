@@ -103,9 +103,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Extensions.Valid
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Security.Authentication.OpenIdConnect", "src\Security\Masa.Utils.Security.Authentication.OpenIdConnect\Masa.Utils.Security.Authentication.OpenIdConnect.csproj", "{D17B5B36-5773-4827-9D5D-44390DF666CA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.Promethus.Test", "test\Masa.Utils.Data.Promethus.Test\Masa.Utils.Data.Promethus.Test.csproj", "{AC19E221-D3CF-49E9-8E41-A7580C0736AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.Prometheus.Test", "test\Masa.Utils.Data.Promethus.Test\Masa.Utils.Data.Prometheus.Test.csproj", "{AC19E221-D3CF-49E9-8E41-A7580C0736AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.Promethus", "src\Data\Masa.Utils.Data.Promethus\Masa.Utils.Data.Promethus.csproj", "{B108BA38-AC93-4983-8361-43BF819985C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Masa.Utils.Data.Prometheus", "src\Data\Masa.Utils.Data.Promethus\Masa.Utils.Data.Prometheus.csproj", "{B108BA38-AC93-4983-8361-43BF819985C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -248,7 +248,7 @@ Global
 		{B0E3CA19-C101-4E30-9401-C017B7088F4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B0E3CA19-C101-4E30-9401-C017B7088F4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0E3CA19-C101-4E30-9401-C017B7088F4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B0E3CA19-C101-4E30-9401-C017B7088F4E}.Release|Any CPU.Build.0 = Release|Any CPU		
+		{B0E3CA19-C101-4E30-9401-C017B7088F4E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D17B5B36-5773-4827-9D5D-44390DF666CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D17B5B36-5773-4827-9D5D-44390DF666CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D17B5B36-5773-4827-9D5D-44390DF666CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -310,8 +310,8 @@ Global
 		{22643BF8-A5ED-48CA-BD1A-10BFEC075DBE} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 		{533BCE80-61BC-443A-95D3-2C6328921ED8} = {B2DA607D-4A39-4F0C-A9B3-DD9A061B0B4E}
 		{B0E3CA19-C101-4E30-9401-C017B7088F4E} = {533BCE80-61BC-443A-95D3-2C6328921ED8}
-		{AC19E221-D3CF-49E9-8E41-A7580C0736AA} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 		{D17B5B36-5773-4827-9D5D-44390DF666CA} = {4FB3BD6D-D4C1-4BEF-AD62-8FD6EAEEB4DF}
+		{AC19E221-D3CF-49E9-8E41-A7580C0736AA} = {4F908878-0EB8-43E4-96E4-8B1F32E9B635}
 		{B108BA38-AC93-4983-8361-43BF819985C7} = {F844C2A1-C36D-400E-A0D8-7658EF9C3B93}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

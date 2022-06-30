@@ -1,7 +1,7 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-namespace Masa.Utils.Data.Promethus.Test;
+namespace Masa.Utils.Data.Prometheus.Test;
 
 [TestClass]
 public class ObjectExtensionsTests
@@ -29,15 +29,15 @@ public class ObjectExtensionsTests
         {
             Name = "Bob",
             Age = 30,
-            gender = "Male"
+            Gender = "Male"
         };
 
         var result = user.ToUrlParam();
-        var str = $"age={user.Age}&gender={user.gender}&name={user.Name}";
+        var str = $"age={user.Age}&gender={user.Gender}&name={user.Name}";
         Assert.AreEqual(str, result);
 
         user.Name = "王占山";
-        str = $"age={user.Age}&gender={user.gender}&name={System.Web.HttpUtility.UrlEncode(user.Name, System.Text.Encoding.UTF8)}";
+        str = $"age={user.Age}&gender={user.Gender}&name={System.Web.HttpUtility.UrlEncode(user.Name, Encoding.UTF8)}";
         result = user.ToUrlParam();
         Assert.AreEqual(str, result);
     }
@@ -54,11 +54,11 @@ public class ObjectExtensionsTests
         };
 
         var result = obj.ToUrlParam(isEnumString: true);
-        var str = $"a={obj.a}&ch={System.Web.HttpUtility.UrlEncode(obj.ch, System.Text.Encoding.UTF8)}&d={obj.d}&t={obj.t}";
+        var str = $"a={obj.a}&ch={System.Web.HttpUtility.UrlEncode(obj.ch, Encoding.UTF8)}&d={obj.d}&t={obj.t}";
         Assert.AreEqual(str, result);
 
         result = obj.ToUrlParam(isEnumString: false);
-        str = $"a={obj.a}&ch={System.Web.HttpUtility.UrlEncode(obj.ch, System.Text.Encoding.UTF8)}&d={obj.d}&t={(int)obj.t}";
+        str = $"a={obj.a}&ch={System.Web.HttpUtility.UrlEncode(obj.ch, Encoding.UTF8)}&d={obj.d}&t={(int)obj.t}";
         Assert.AreEqual(str, result);
 
         result = obj.ToUrlParam(isEnumString: false, isUrlEncode: false);

@@ -1,15 +1,15 @@
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-[assembly: InternalsVisibleTo("Masa.Utils.Data.Promethus.Test")]
-namespace Masa.Utils.Data.Promethus;
+[assembly: InternalsVisibleTo("Masa.Utils.Data.Prometheus.Test")]
+namespace Masa.Utils.Data.Prometheus;
 
-internal class MasaPromethusClient : IMasaPromethusClient
+internal class MasaPrometheusClient : IMasaPrometheusClient
 {
     private readonly ICallerProvider _caller;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-    public MasaPromethusClient(ICallerProvider caller, JsonSerializerOptions jsonSerializerOptions)
+    public MasaPrometheusClient(ICallerProvider caller, JsonSerializerOptions jsonSerializerOptions)
     {
         _caller = caller;
         _jsonSerializerOptions = jsonSerializerOptions;
@@ -42,9 +42,9 @@ internal class MasaPromethusClient : IMasaPromethusClient
         return await QueryDataAsync<QueryResultCommonResponse>("/api/v1/query_range", query);
     }
 
-    public async Task<SerieResultResponse> SeriesAsync(MetaDataQueryRequest query)
+    public async Task<SeriesResultResponse> SeriesQueryAsync(MetaDataQueryRequest query)
     {
-        return await QueryDataAsync<SerieResultResponse>("/api/v1/series", query);
+        return await QueryDataAsync<SeriesResultResponse>("/api/v1/series", query);
     }
 
     private async Task<T> QueryDataAsync<T>(string url, object data) where T : ResultBaseResponse
