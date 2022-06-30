@@ -9,7 +9,7 @@
 Install-Package Masa.Utils.Data.Promethus
 ```
 
-### 用法:
+### 示例:
 
 1. 注册
 
@@ -17,7 +17,7 @@ Install-Package Masa.Utils.Data.Promethus
 builder.Services.AddPromethusClient("http://127.0.0.1:9090");
 ````
 
-2. 示例
+2. 查询样例
 
 ```C#
 public class SampleService{

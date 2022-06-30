@@ -9,7 +9,7 @@
 Install-Package Masa.Utils.Data.Promethus
 ```
 
-### Usage:
+### Example:
 
 1. Inject
 
@@ -17,7 +17,7 @@ Install-Package Masa.Utils.Data.Promethus
 builder.Services.AddPromethusClient("http://127.0.0.1:9090");
 ````
 
-2. Example
+2. Query Example
 
 ```C#
 public class SampleService{
