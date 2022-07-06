@@ -8,7 +8,7 @@ MASA.Utils is a library of MASA tools used by projects such as [MASA Stack](http
 
 ## Roadmap
 * [Release Notes](https://github.com/masastack/MASA.Utils/releases)
-* [Latest Roadmap](https://github.com/masastack/MASA.Utils/issues/40)
+* [Latest Roadmap](https://github.com/masastack/MASA.Utils/issues/41)
 
 
 
@@ -18,29 +18,21 @@ MASA.Utils is a library of MASA tools used by projects such as [MASA Stack](http
   * Redis
   * DistributedMemory: Distributed memory cache
 * Caller
-  * HttpClient
-  * DaprClient
-* [Elasticsearch](./src/Data/Masa.Utils.Data.Elasticsearch/README.md)
-* [EntityFrameworkCore](./src/Data/Masa.Utils.Data.EntityFrameworkCore/README.md)
-  * [SqlServer](./src/Data/Masa.Utils.Data.EntityFrameworkCore.SqlServer/README.md)
-  * [MySql](./src/Data/Masa.Utils.Data.EntityFrameworkCore.MySql/README.md)
-  * [Pomelo.MySql](./src/Data/Masa.Utils.Data.EntityFrameworkCore.Pomelo.MySql/README.md)
-  * [Sqlite](./src/Data/Masa.Utils.Data.EntityFrameworkCore.Sqlite/README.md)
-  * [Cosmos](./src/Data/Masa.Utils.Data.EntityFrameworkCore.Cosmos/README.md)
-  * [InMemory](./src/Data/Masa.Utils.Data.EntityFrameworkCore.InMemory/README.md)
-  * [Oracle](./src/Data/Masa.Utils.Data.EntityFrameworkCore.Oracle/README.md)
-  * [PostgreSql](./src/Data/Masa.Utils.Data.EntityFrameworkCore.PostgreSql/README.md)
-*Dapr
+  * [HttpClient](./src/Caller/Masa.Utils.Caller.HttpClient/README.md)
+  * [DaprClient](./src/Caller/Masa.Utils.Caller.DaprClient/README.md)
+* Data
+  * [Elasticsearch](./src/Data/Masa.Utils.Data.Elasticsearch/README.md)
+* Development
   * [Development.Dapr](./src/Development/Masa.Utils.Development.Dapr/README.md): Dapr Starter Core Library
-  * [Development.Dapr.AspNetCore](./src/Development/Masa.Utils.Development.Dapr.AspNetCore/README.md)
-*Extensions
-  * DependencyInjection: inject extension
+  * [Development.Dapr.AspNetCore](./src/Development/Masa.Utils.Development.Dapr.AspNetCore/README.md): Dapr AspNetCore library
+* Extensions
+  * [DependencyInjection](./src/Extensions/Masa.Utils.Extensions.DependencyInjection/README.md): inject extension
   * DotNet: DotNet extension
   * Enums: enum extension
   * Expressions: Expression expansion
 * Ldap
   * Ldap.Novell: Novell-based LDAP client library
-* Exceptions: exception extension
+* Exceptions: Exception extension
 * Security: security
   * Authentication: Authentication
   * Cryptography: Password extension, support AES encryption and decryption, DES encryption and decryption, Base64 encoding, MD5 encryption, SHA encryption, etc.

@@ -60,6 +60,8 @@ public class MasaPrometheusClientTests
             Assert.IsNotNull(data);
             Assert.IsNotNull(data[0].Metric);
             Assert.IsNotNull(data[0].Value);
+            Assert.IsNotNull(data[0].Metric.Keys);
+            Assert.AreEqual(2, data[0].Value.Length);
         }
     }
 
@@ -112,8 +114,10 @@ public class MasaPrometheusClientTests
             Assert.IsNotNull(result.Error);
         }
         else
-        {
-            Assert.AreEqual(result.Status, ResultStatuses.Success);
+    {
+        var result = await _client.LabelsQueryAsync(default!);
+        Assert.IsNotNull(result);
+        Assert.AreEqual(result.Status, ResultStatuses.Success);
             if (matches == null || matches.Any(s => s == "up"))
             {
                 Assert.IsTrue(result.Data?.Any());
