@@ -3,14 +3,22 @@
 
 namespace Masa.Utils.Caller.Core;
 
-public class JsonRequestMessage : IRequestMessage
+public class JsonRequestMessage : DefaultRequestMessage, IRequestMessage
 {
     private readonly JsonSerializerOptions? _jsonSerializerOptions;
 
-    public JsonRequestMessage(CallerOptions callerOptions) => _jsonSerializerOptions = callerOptions.JsonSerializerOptions;
+    public JsonRequestMessage(
+        CallerOptions callerOptions,
+        IRequestIdGenerator requestIdGenerator,
+        IHttpContextAccessor? httpContextAccessor = null)
+        : base(callerOptions.RequestIdKey, requestIdGenerator, httpContextAccessor)
+        => _jsonSerializerOptions = callerOptions.JsonSerializerOptions;
 
     public virtual Task<HttpRequestMessage> ProcessHttpRequestMessageAsync(HttpRequestMessage requestMessage)
-        => Task.FromResult(requestMessage);
+    {
+        TrySetRequestId(requestMessage);
+        return Task.FromResult(requestMessage);
+    }
 
     public virtual async Task<HttpRequestMessage> ProcessHttpRequestMessageAsync<TRequest>(HttpRequestMessage requestMessage, TRequest data)
     {

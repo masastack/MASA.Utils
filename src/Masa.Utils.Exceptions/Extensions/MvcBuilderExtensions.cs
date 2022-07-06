@@ -10,9 +10,9 @@ public static class MvcBuilderExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static IMvcBuilder AddMasaExceptionHandling(this IMvcBuilder builder)
+    public static IMvcBuilder AddMasaExceptionHandler(this IMvcBuilder builder)
     {
-        return builder.AddMasaExceptionHandling(_ => { });
+        return builder.AddMasaExceptionHandler(_ => { });
     }
 
     /// <summary>
@@ -21,7 +21,7 @@ public static class MvcBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="action">Configure handling options</param>
     /// <returns></returns>
-    public static IMvcBuilder AddMasaExceptionHandling(this IMvcBuilder builder, Action<MasaExceptionHandlingOptions> action)
+    public static IMvcBuilder AddMasaExceptionHandler(this IMvcBuilder builder, Action<MasaExceptionHandlerOptions> action)
     {
         builder.Services.AddLocalization();
 
