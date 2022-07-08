@@ -4,7 +4,7 @@
 
 Provides a model for handling web application exceptions
 
-* Support custom handling exceptions for handling non-framework exceptions
+* Support custom handling exceptions for handling exceptions not provided by Masa
 * Take over the `UserFriendlyException` exception and respond with a status code of 299 and return a friendly error message
 * Handle all exceptions by default, and output `An error occur in masa framework` externally
 
@@ -32,30 +32,95 @@ app.MapGet("/Test", ()
 3. Error response message, where Http status code is 299
 
 ``` js
-This method is deprecated
+axios
+    .get('/Test')
+    .then(response => {
+        if (response.status === 299) {
+            alert(response.data);
+        }
+    })
 ```
 
 ## How to customize exception handling?
 
-``` C#
-app.UseMasaExceptionHandler(option =>
-{
-    option.CatchAllException = true;//Whether to catch all exceptions, the default is true, the default output of caught exceptions: An error occur in masa framework
+1. By specifying `ExceptionHandler`
 
-    // Custom handling exceptions, similar to ExceptionFilter, can handle exception information according to the exception type, and output the response result through the ToResult method
-    option.ExceptionHandler = context =>
+    ```` C#
+    app.UseMasaExceptionHandler(option =>
     {
-        if (context.Exception is ArgumentNullException argumentNullException)
+        option.CatchAllException = true;//Whether to catch all exceptions, the default is true, the default output of caught exceptions: An error occur in masa framework
+
+        // Custom handling exceptions, similar to ExceptionFilter, can handle exception information according to the exception type, and output the response result through the ToResult method
+        option.ExceptionHandler = context =>
         {
-            context.ToResult("Parameter cannot be empty");
+            if (context.Exception is ArgumentNullException argumentNullException)
+            {
+                context.ExceptionHandled = true;
+                context.Message = "Parameter cannot be empty";
+                // or abbreviated as: context.ToResult("Parameter cannot be empty");
+            }
+        };
+    });
+    ````
+
+2. Implement the `IExceptionHandler` interface and register it with the service
+
+    ```` C#
+    public class ExceptionHandler : IMasaExceptionHandler
+    {
+        private readonly ILogger<ExceptionHandler> _logger;
+
+        public ExceptionHandler(ILogger<ExceptionHandler> logger)
+        {
+            _logger = logger;
         }
-    };
-});
-```
+
+        public void OnException(MasaExceptionContext context)
+        {
+            if (context.Exception is ArgumentNullException)
+            {
+                _logger.LogWarning(context.Message);
+                context.ToResult(context.Exception.Message);
+            }
+        }
+    }
+    builder.Services.AddSingleton<ExceptionHandler>();
+
+    app.UseMasaExceptionHandler();
+    ````
+
+3. Implement the `IExceptionHandler` interface and specify the use of Handler
+
+    ```` C#
+    public class ExceptionHandler : IMasaExceptionHandler
+    {
+        private readonly ILogger<ExceptionHandler> _logger;
+
+        public ExceptionHandler(ILogger<ExceptionHandler> logger)
+        {
+            _logger = logger;
+        }
+
+        public void OnException(MasaExceptionContext context)
+        {
+            if (context.Exception is ArgumentNullException)
+            {
+                _logger.LogWarning(context.Message);
+                context.ToResult(context.Exception.Message);
+            }
+        }
+    }
+    app.UseMasaExceptionHandler(option =>
+    {
+        option.UseExceptionHanlder<ExceptionHandler>();
+    });
+    ````
 
 ## common problem
 
-1. Don't want to record the error message when the exception is UserFriendlyException?
+The default log level of `UserFriendlyException` is `Information`, other types of exceptions are `Error`
+
+1. How to modify the log level of UserFriendlyException?
 
      ```` C#
      builder.Services.Configure<MasaExceptionLogRelationOptions>(options =>

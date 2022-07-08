@@ -6,18 +6,21 @@ namespace Masa.Utils.Exceptions.Handlers;
 public class ExceptionHandlerMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly IMasaExceptionHandler? _masaExceptionHandler;
     private readonly MasaExceptionHandlerOptions _options;
     private readonly MasaExceptionLogRelationOptions _logRelationOptions;
     private readonly ILogger<ExceptionHandlerMiddleware>? _logger;
 
     public ExceptionHandlerMiddleware(
         RequestDelegate next,
+        IServiceProvider serviceProvider,
         IOptions<MasaExceptionHandlerOptions> options,
         IOptions<MasaExceptionLogRelationOptions> logRelationOptions,
         ILogger<ExceptionHandlerMiddleware>? logger = null)
     {
         _next = next;
         _options = options.Value;
+        _masaExceptionHandler = ExceptionHandlerExtensions.GetMasaExceptionHandler(serviceProvider, _options.MasaExceptionHandlerType);
         _logRelationOptions = logRelationOptions.Value;
         _logger = logger;
     }
@@ -31,7 +34,14 @@ public class ExceptionHandlerMiddleware
         catch (Exception exception)
         {
             var masaExceptionContext = new MasaExceptionContext(exception, httpContext);
-            _options.ExceptionHandler?.Invoke(masaExceptionContext);
+            if (_options.ExceptionHandler != null)
+            {
+                _options.ExceptionHandler.Invoke(masaExceptionContext);
+            }
+            else if (_masaExceptionHandler != null)
+            {
+                _masaExceptionHandler.OnException(masaExceptionContext);
+            }
 
             if (httpContext.Response.HasStarted)
                 return;
@@ -45,11 +55,14 @@ public class ExceptionHandlerMiddleware
                 return;
             }
 
-            _logger?.WriteLog(masaExceptionContext.Exception, LogLevel.Error, _logRelationOptions);
+            _logger?.WriteLog(masaExceptionContext.Exception,
+                masaExceptionContext.Exception is UserFriendlyException ? LogLevel.Information : LogLevel.Error,
+                _logRelationOptions);
 
             if (masaExceptionContext.Exception is UserFriendlyException)
             {
-                await httpContext.Response.WriteTextAsync((int)MasaHttpStatusCode.UserFriendlyException, masaExceptionContext.Exception.Message);
+                await httpContext.Response.WriteTextAsync((int)MasaHttpStatusCode.UserFriendlyException,
+                    masaExceptionContext.Exception.Message);
             }
             else if (masaExceptionContext.Exception is MasaException || _options.CatchAllException)
             {
@@ -62,4 +75,6 @@ public class ExceptionHandlerMiddleware
             }
         }
     }
+
+
 }

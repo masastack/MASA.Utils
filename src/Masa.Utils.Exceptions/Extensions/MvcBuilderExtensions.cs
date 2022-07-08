@@ -5,27 +5,16 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class MvcBuilderExtensions
 {
-    /// <summary>
-    /// Register <see cref="GlobalExceptionFilter"/> to <see cref="MvcOptions"/>
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <returns></returns>
     public static IMvcBuilder AddMasaExceptionHandler(this IMvcBuilder builder)
     {
         return builder.AddMasaExceptionHandler(_ => { });
     }
 
-    /// <summary>
-    /// Register <see cref="GlobalExceptionFilter"/> to <see cref="MvcOptions"/>
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="action">Configure handling options</param>
-    /// <returns></returns>
     public static IMvcBuilder AddMasaExceptionHandler(this IMvcBuilder builder, Action<MasaExceptionHandlerOptions> action)
     {
         builder.Services.AddLocalization();
 
-        builder.Services.Configure<MvcOptions>(options => { options.Filters.Add<GlobalExceptionFilter>(); });
+        builder.Services.Configure<MvcOptions>(options => { options.Filters.Add<MvcGlobalExcetionFilter>(); });
 
         builder.Services.Configure(action);
 

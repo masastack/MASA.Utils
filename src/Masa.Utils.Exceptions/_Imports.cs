@@ -12,3 +12,5 @@ global using Microsoft.Extensions.Options;
 global using System.Net;
 global using System.Runtime.Serialization;
 global using System.Text;
+global using Microsoft.Extensions.DependencyInjection;
+global using System.Reflection;

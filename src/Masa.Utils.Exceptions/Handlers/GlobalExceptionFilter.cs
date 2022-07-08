@@ -6,17 +6,20 @@ namespace Masa.Utils.Exceptions.Handlers;
 /// <summary>
 /// Mvc pipeline exception filter to catch global exception
 /// </summary>
-public class GlobalExceptionFilter : IExceptionFilter
+public class MvcGlobalExcetionFilter : IExceptionFilter
 {
+    private readonly IMasaExceptionHandler? _masaExceptionHandler;
     private readonly MasaExceptionHandlerOptions _options;
     private readonly MasaExceptionLogRelationOptions _logRelationOptions;
-    private readonly ILogger<GlobalExceptionFilter>? _logger;
+    private readonly ILogger<MvcGlobalExcetionFilter>? _logger;
 
-    public GlobalExceptionFilter(IOptions<MasaExceptionHandlerOptions> options,
+    public MvcGlobalExcetionFilter(IServiceProvider serviceProvider,
+        IOptions<MasaExceptionHandlerOptions> options,
         IOptions<MasaExceptionLogRelationOptions> logRelationOptions,
-        ILogger<GlobalExceptionFilter>? logger = null)
+        ILogger<MvcGlobalExcetionFilter>? logger = null)
     {
         _options = options.Value;
+        _masaExceptionHandler = ExceptionHandlerExtensions.GetMasaExceptionHandler(serviceProvider, _options.MasaExceptionHandlerType);
         _logRelationOptions = logRelationOptions.Value;
         _logger = logger;
     }
@@ -39,7 +42,9 @@ public class GlobalExceptionFilter : IExceptionFilter
             return;
         }
 
-        _logger?.WriteLog(masaExceptionContext.Exception, LogLevel.Error, _logRelationOptions);
+        _logger?.WriteLog(masaExceptionContext.Exception,
+            masaExceptionContext.Exception is UserFriendlyException ? LogLevel.Information : LogLevel.Error,
+            _logRelationOptions);
 
         if (masaExceptionContext.Exception is UserFriendlyException userFriendlyException)
         {

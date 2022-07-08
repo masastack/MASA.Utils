@@ -4,7 +4,7 @@
 
 提供了用于处理Web应用程序异常的模型
 
-* 支持自定义处理异常，用于处理非框架类异常
+* 支持自定义处理异常，用于处理非Masa提供的异常
 * 接管`UserFriendlyException`异常，并响应状态码为299，返回友好的错误信息
 * 默认处理所有异常，并对外输出`An error occur in masa framework`
 
@@ -32,34 +32,99 @@ app.MapGet("/Test", ()
 3. 错误响应消息，其中Http状态码为299
 
 ``` js
-This method is deprecated
+axios
+    .get('/Test')
+    .then(response => {
+        if (response.status === 299) {
+            alert(response.data);
+        }
+    })
 ```
 
 ## 如何自定义异常处理？
 
-``` C#
-app.UseMasaExceptionHandler(option =>
-{
-    option.CatchAllException = true;//是否捕获所有异常，默认为true，捕获到的异常默认输出：An error occur in masa framework
+1. 通过指定`ExceptionHandler`
 
-    // 自定义处理异常，与ExceptionFilter类似，可根据异常类型处理异常信息，并通过ToResult方法输出响应结果
-    option.ExceptionHandler = context =>
+    ``` C#
+    app.UseMasaExceptionHandler(option =>
     {
-        if (context.Exception is ArgumentNullException argumentNullException)
+        option.CatchAllException = true;//是否捕获所有异常，默认为true，捕获到的异常默认输出：An error occur in masa framework
+
+        // 自定义处理异常，与ExceptionFilter类似，可根据异常类型处理异常信息，并通过ToResult方法输出响应结果
+        option.ExceptionHandler = context =>
         {
-            context.ToResult("参数不能为空");
+            if (context.Exception is ArgumentNullException argumentNullException)
+            {
+                context.ExceptionHandled = true;
+                context.Message = "参数不能为空";
+                // 或者简写为context.ToResult("参数不能为空");
+            }
+        };
+    });
+    ```
+
+2. 实现`IExceptionHandler`接口，并注册到服务中
+
+    ``` C#
+    public class ExceptionHandler : IMasaExceptionHandler
+    {
+        private readonly ILogger<ExceptionHandler> _logger;
+
+        public ExceptionHandler(ILogger<ExceptionHandler> logger)
+        {
+            _logger = logger;
         }
-    };
-});
-```
+
+        public void OnException(MasaExceptionContext context)
+        {
+            if (context.Exception is ArgumentNullException)
+            {
+                _logger.LogWarning(context.Message);
+                context.ToResult(context.Exception.Message);
+            }
+        }
+    }
+    builder.Services.AddSingleton<ExceptionHandler>();
+
+    app.UseMasaExceptionHandler();
+    ```
+
+3. 实现`IExceptionHandler`接口，并指定使用Handler
+
+    ``` C#
+    public class ExceptionHandler : IMasaExceptionHandler
+    {
+        private readonly ILogger<ExceptionHandler> _logger;
+
+        public ExceptionHandler(ILogger<ExceptionHandler> logger)
+        {
+            _logger = logger;
+        }
+
+        public void OnException(MasaExceptionContext context)
+        {
+            if (context.Exception is ArgumentNullException)
+            {
+                _logger.LogWarning(context.Message);
+                context.ToResult(context.Exception.Message);
+            }
+        }
+    }
+    app.UseMasaExceptionHandler(option =>
+    {
+        option.UseExceptionHanlder<ExceptionHandler>();
+    });
+    ```
 
 ## 常见问题
 
-1. 不希望记录异常为UserFriendlyException时的错误信息？
+1. 如何修改UserFriendlyException的日志等级？
 
-    ``` C#
-    builder.Services.Configure<MasaExceptionLogRelationOptions>(options =>
-    {
-        options.MapLogLevel<UserFriendlyException>(LogLevel.None);
-    });
-    ```
+默认`UserFriendlyException`的日志等级为`Information`, 其它类型异常为`Error`
+
+``` C#
+builder.Services.Configure<MasaExceptionLogRelationOptions>(options =>
+{
+    options.MapLogLevel<UserFriendlyException>(LogLevel.None);
+});
+```

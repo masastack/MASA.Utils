@@ -8,4 +8,11 @@ public class MasaExceptionHandlerOptions
     public bool CatchAllException { get; set; } = true;
 
     public Action<MasaExceptionContext>? ExceptionHandler { get; set; }
+
+    internal Type? MasaExceptionHandlerType { get; private set; }
+
+    public void UseExceptionHanlder<TExceptionHanlder>() where TExceptionHanlder : IMasaExceptionHandler
+    {
+        MasaExceptionHandlerType = typeof(TExceptionHanlder);
+    }
 }

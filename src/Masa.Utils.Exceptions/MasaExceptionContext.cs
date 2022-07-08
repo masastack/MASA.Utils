@@ -11,7 +11,15 @@ public class MasaExceptionContext
 
     public bool ExceptionHandled { get; set; }
 
+    /// <summary>
+    /// Http status code
+    /// </summary>
     public int StatusCode { get; set; }
+
+    /// <summary>
+    /// Error code to provide support for subsequent I18n
+    /// </summary>
+    public string ErrorCode { get; set; }
 
     public string? Message { get; set; }
 
@@ -21,6 +29,7 @@ public class MasaExceptionContext
     {
         Exception = exception;
         HttpContext = httpContext;
+        StatusCode = (int)MasaHttpStatusCode.UserFriendlyException;
         ExceptionHandled = false;
         ContentType = Constant.DEFAULT_HTTP_CONTENT_TYPE;
     }
