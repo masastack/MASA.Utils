@@ -32,7 +32,7 @@ MASA.Utils是MASA的工具库，这些工具被[MASA Stack](https://github.com/m
   * Expressions: 表达式扩展
 * Ldap
   * Ldap.Novell: 基于Novell的LDAP客户端库
-* Exceptions: 异常扩展
+* [Exceptions](https://github.com/masastack/MASA.Utils/blob/main/src/Masa.Utils.Exceptions/README.zh-CN.md): 异常扩展
 * Security: 安全
   * Authentication: 身份验证
   * Cryptography: 密码扩展，支持AES加解密、DES加解密、Base64编码、MD5加密、SHA加密等

@@ -32,7 +32,7 @@ MASA.Utils is a library of MASA tools used by projects such as [MASA Stack](http
   * Expressions: Expression expansion
 * Ldap
   * Ldap.Novell: Novell-based LDAP client library
-* Exceptions: Exception extension
+* [Exceptions](https://github.com/masastack/MASA.Utils/blob/main/src/Masa.Utils.Exceptions/README.md): Exception extension
 * Security: security
   * Authentication: Authentication
   * Cryptography: Password extension, support AES encryption and decryption, DES encryption and decryption, Base64 encoding, MD5 encryption, SHA encryption, etc.
