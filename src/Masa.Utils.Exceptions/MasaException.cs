@@ -5,7 +5,7 @@ namespace System;
 
 public class MasaException : Exception
 {
-    public string ErrorCode { get; set; } = string.Empty;
+    public string? ErrorCode { get; set; }
 
     public MasaException()
     {

@@ -19,7 +19,7 @@ public class MasaExceptionContext
     /// <summary>
     /// Error code to provide support for subsequent I18n
     /// </summary>
-    public string ErrorCode { get; set; }
+    public string? ErrorCode { get; set; }
 
     public string? Message { get; set; }
 
