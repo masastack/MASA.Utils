@@ -3,7 +3,7 @@
 
 namespace System;
 
-public class UserFriendlyException : Exception
+public class UserFriendlyException : MasaException
 {
     public UserFriendlyException(string message)
         : base(message)

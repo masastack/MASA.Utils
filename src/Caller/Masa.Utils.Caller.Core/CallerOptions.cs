@@ -26,6 +26,8 @@ public class CallerOptions
 
     public JsonSerializerOptions? JsonSerializerOptions { get; set; }
 
+    public string RequestIdKey { get; set; } = "Masa-Request-Id";
+
     public CallerOptions(IServiceCollection services)
     {
         Services = services;
