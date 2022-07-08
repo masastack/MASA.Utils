@@ -1,9 +1,7 @@
-using Masa.Utils.Exceptions.Internal;
-
 // Copyright (c) MASA Stack All rights reserved.
 // Licensed under the MIT License. See LICENSE.txt in the project root for license information.
 
-namespace Masa.Utils.Exceptions.Handling;
+namespace Masa.Utils.Exceptions.Handlers;
 
 public class ExceptionHandlingMiddleware
 {
@@ -45,7 +43,7 @@ public class ExceptionHandlingMiddleware
             }
             else if (exception is MasaException || _options.CatchAllException)
             {
-                var message = "An error occur in masa framework";
+                var message = Constant.DEFAULT_EXCEPTION_MESSAGE;
                 _logger.LogError(exception, message);
                 await httpContext.Response.WriteTextAsync((int)HttpStatusCode.InternalServerError, message);
             }

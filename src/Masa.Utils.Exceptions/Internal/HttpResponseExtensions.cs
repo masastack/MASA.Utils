@@ -11,11 +11,16 @@ internal static class HttpResponseExtensions
     /// <param name="httpResponse"></param>
     /// <param name="statusCode"></param>
     /// <param name="text"></param>
+    /// <param name="contentType"></param>
     /// <returns></returns>
-    public static async Task WriteTextAsync(this HttpResponse httpResponse, int statusCode, string text)
+    public static async Task WriteTextAsync(
+        this HttpResponse httpResponse,
+        int statusCode,
+        string text,
+        string contentType = "text/plain; charset=utf-8")
     {
         httpResponse.StatusCode = statusCode;
-        httpResponse.ContentType = "text/plain; charset=utf-8";
+        httpResponse.ContentType = contentType;
         await httpResponse.WriteAsync(text, Encoding.UTF8);
     }
 }
