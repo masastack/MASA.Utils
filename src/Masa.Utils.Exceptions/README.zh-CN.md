@@ -118,9 +118,9 @@ axios
 
 ## 常见问题
 
-1. 如何修改UserFriendlyException的日志等级？
-
 默认`UserFriendlyException`的日志等级为`Information`, 其它类型异常为`Error`
+
+1. 如何修改UserFriendlyException的日志等级？
 
 ``` C#
 builder.Services.Configure<MasaExceptionLogRelationOptions>(options =>

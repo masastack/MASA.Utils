@@ -116,7 +116,7 @@ axios
     });
     ````
 
-## common problem
+## Common problem
 
 The default log level of `UserFriendlyException` is `Information`, other types of exceptions are `Error`
 
