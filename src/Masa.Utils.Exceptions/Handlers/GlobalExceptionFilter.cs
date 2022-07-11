@@ -27,7 +27,14 @@ public class MvcGlobalExcetionFilter : IExceptionFilter
     public void OnException(ExceptionContext context)
     {
         var masaExceptionContext = new MasaExceptionContext(context.Exception, context.HttpContext);
-        _options.ExceptionHandler?.Invoke(masaExceptionContext);
+        if (_options.ExceptionHandler != null)
+        {
+            _options.ExceptionHandler.Invoke(masaExceptionContext);
+        }
+        else
+        {
+            _masaExceptionHandler?.OnException(masaExceptionContext);
+        }
 
         if (masaExceptionContext.HttpContext.Response.HasStarted)
             return;
