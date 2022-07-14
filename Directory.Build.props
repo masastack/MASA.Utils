@@ -7,7 +7,7 @@
     <MicrosoftTeskSdkPackageVersion>16.9.4</MicrosoftTeskSdkPackageVersion>
     <CoverletPackageVersion>3.0.2</CoverletPackageVersion>
     <MoqPackageVersion>4.16.1</MoqPackageVersion>
-    <NESTPackageVersion>7.16.0</NESTPackageVersion>
+    <NESTPackageVersion>7.17.4</NESTPackageVersion>
     <NpgsqlPackageVersion>6.0.1</NpgsqlPackageVersion>
     <GrpcNetPackageVersion>2.40.0</GrpcNetPackageVersion>
     <DaprPackageVersion>1.5.0</DaprPackageVersion>
