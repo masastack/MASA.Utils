@@ -12,6 +12,7 @@ global using Masa.Utils.Data.Elasticsearch.Options.Document.Query;
 global using Masa.Utils.Data.Elasticsearch.Options.Document.Set;
 global using Masa.Utils.Data.Elasticsearch.Options.Document.Update;
 global using Masa.Utils.Data.Elasticsearch.Options.Index;
+global using Masa.Utils.Data.Elasticsearch.Tests.Models;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Nest;
