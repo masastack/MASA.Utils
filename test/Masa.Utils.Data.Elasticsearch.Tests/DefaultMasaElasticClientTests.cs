@@ -540,4 +540,32 @@ public class DefaultMasaElasticClientTests
 
         await _builder.Client.DeleteIndexByAliasAsync(alias);
     }
+
+    [TestMethod]
+    public async Task TestAsync()
+    {
+        string userIndexName = $"user_index";
+
+        IServiceCollection service = new ServiceCollection();
+        var builder = service.AddElasticsearchClient("es", "http://localhost:9200");
+        await builder.Client.DeleteIndexAsync(userIndexName);
+        var serviceProvider = builder.Services.BuildServiceProvider();
+        var client = serviceProvider.GetRequiredService<IMasaElasticClient>();
+
+        var list = new AutoCompleteDocument<long>[]
+        {
+            new()
+            {
+                Text = "999999999@qq.com",
+                Value = 1
+            }
+        };
+        var request = new SetDocumentRequest<AutoCompleteDocument<long>>(userIndexName);
+        foreach (var document in list)
+            request.AddDocument(document, document.Id);
+
+        var response = await client.SetDocumentAsync(request, default);
+        Assert.IsTrue(response.IsValid);
+        await builder.Client.DeleteIndexAsync(userIndexName);
+    }
 }

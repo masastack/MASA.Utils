@@ -58,7 +58,8 @@ public class DefaultElasticsearchFactory : IElasticsearchFactory
 
     private ConnectionSettings GetConnectionSettingsBySingleNode(ElasticsearchRelations relation)
     {
-        var connectionSetting = new ConnectionSettings(relation.Nodes[0]);
+        var connectionSetting = new ConnectionSettings(relation.Nodes[0])
+            .EnableApiVersioningHeader();
         relation.Action?.Invoke(connectionSetting);
         return connectionSetting;
     }
@@ -74,7 +75,8 @@ public class DefaultElasticsearchFactory : IElasticsearchFactory
             pool,
             relation.ConnectionSettingsOptions?.Connection,
             relation.ConnectionSettingsOptions?.SourceSerializerFactory,
-            relation.ConnectionSettingsOptions?.PropertyMappingProvider);
+            relation.ConnectionSettingsOptions?.PropertyMappingProvider)
+            .EnableApiVersioningHeader();
 
         relation.Action?.Invoke(settings);
         return settings;
