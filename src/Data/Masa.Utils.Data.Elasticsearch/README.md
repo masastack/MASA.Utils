@@ -71,3 +71,19 @@ public async Task<string> BindAliasAsync([FromServices] IMasaElasticClient clien
 ````
 
 > For more methods, please see [IMasaElasticClient](./IMasaElasticClient.cs)
+
+## FAQ
+
+1. The error message is: `"Content-Type header [application/vnd.elasticsearch+json; compatible-with=7] is not supported"`
+
+   We enable the compatibility mode by default, namely `EnableApiVersioningHeader(true)`, which supports the 8.* version very well, but will cause errors in some 7.*, in this case, you need to manually turn off the compatibility mode, that is, `EnableApiVersioningHeader(false)`.
+
+     ```` C#
+     service.AddElasticsearchClient("es", option =>
+     {
+         option.UseNodes("http://localhost:9200")
+             .UseConnectionSettings(setting => setting.EnableApiVersioningHeader(false));
+     });
+     ````
+
+[Why turn on compatibility mode? ](https://github.com/elastic/elasticsearch-net/issues/6154)
