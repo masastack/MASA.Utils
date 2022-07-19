@@ -107,17 +107,17 @@ public class MasaPrometheusClientTests
     [DataRow(new string[] { "error data" })]
     public async Task TestLabelsQueryAsync(IEnumerable<string> matches)
     {
-        var result = await _client.LabelsQueryAsync(new MetaDataQueryRequest { Match = matches });
         if (matches != null && matches.Any(s => s.Contains(' ')))
         {
+            var result = await _client.LabelsQueryAsync(new MetaDataQueryRequest { Match = matches });
             Assert.AreEqual(result.Status, ResultStatuses.Error);
             Assert.IsNotNull(result.Error);
         }
         else
-    {
-        var result = await _client.LabelsQueryAsync(default!);
-        Assert.IsNotNull(result);
-        Assert.AreEqual(result.Status, ResultStatuses.Success);
+        {
+            var result = await _client.LabelsQueryAsync(default!);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Status, ResultStatuses.Success);
             if (matches == null || matches.Any(s => s == "up"))
             {
                 Assert.IsTrue(result.Data?.Any());
