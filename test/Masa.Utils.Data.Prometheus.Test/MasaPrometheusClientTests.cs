@@ -8,24 +8,41 @@ public class MasaPrometheusClientTests
 {
     private IMasaPrometheusClient _client;
 
-    [TestInitialize]
-    public void Initialize()
+    public MasaPrometheusClientTests()
     {
         IServiceCollection service = new ServiceCollection();
         service.AddPrometheusClient("http://localhost:9090");
-        _client = service.BuildServiceProvider().GetService<IMasaPrometheusClient>();
+        _client = service.BuildServiceProvider().GetService<IMasaPrometheusClient>() ?? default!;
     }
 
     [TestMethod]
-    public async Task TestQueryAsync()
+    [DataRow(null)]
+    [DataRow("up")]
+    [DataRow("not_exists")]
+    [DataRow("error data")]
+    public async Task TestQueryAsync(string query)
     {
         var result = await _client.QueryAsync(new QueryRequest
         {
-            Query = "up"
+            Query = query
         });
+
         Assert.IsNotNull(result);
-        Assert.AreEqual(result.Status, ResultStatuses.Success);
-        Assert.IsNotNull(result.Data);
+        if (string.IsNullOrEmpty(query) || query.Contains(' '))
+        {
+            Assert.AreEqual(result.Status, ResultStatuses.Error);
+        }
+        else
+        {
+            if (query == "not_exists")
+            {
+                Assert.IsFalse(result.Data?.Result?.Any());
+            }
+            else
+            {
+                Assert.IsTrue(result.Data?.Result?.Any());
+            }
+        }
     }
 
     [TestMethod]
@@ -84,11 +101,32 @@ public class MasaPrometheusClientTests
     }
 
     [TestMethod]
-    public async Task TestLabelsQueryAsync()
+    [DataRow(null)]
+    [DataRow(new string[] { "up" })]
+    [DataRow(new string[] { "not_exists" })]
+    [DataRow(new string[] { "error data" })]
+    public async Task TestLabelsQueryAsync(IEnumerable<string> matches)
+    {
+        var result = await _client.LabelsQueryAsync(new MetaDataQueryRequest { Match = matches });
+        if (matches != null && matches.Any(s => s.Contains(' ')))
+        {
+            Assert.AreEqual(result.Status, ResultStatuses.Error);
+            Assert.IsNotNull(result.Error);
+        }
+        else
     {
         var result = await _client.LabelsQueryAsync(default!);
         Assert.IsNotNull(result);
         Assert.AreEqual(result.Status, ResultStatuses.Success);
+            if (matches == null || matches.Any(s => s == "up"))
+            {
+                Assert.IsTrue(result.Data?.Any());
+            }
+            else
+            {
+                Assert.IsFalse(result.Data?.Any());
+            }
+        }
     }
 
     [TestMethod]
