@@ -9,7 +9,7 @@ internal static class CallerProviderExtensions
     public static async Task<string> GetAsync(this ICallerProvider caller, string url, object data)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, $"{url}?{data.ToUrlParam()}");
-        var response = await caller.SendAsync(request,autoThrowUserFriendlyException:false);
+        var response = await caller.SendAsync(request, autoThrowUserFriendlyException: false);
         return await response.Content.ReadAsStringAsync();
     }
 }
