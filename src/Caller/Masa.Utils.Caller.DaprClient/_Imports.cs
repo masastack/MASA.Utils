@@ -4,3 +4,5 @@
 global using Dapr.Client;
 global using Masa.Utils.Caller.Core;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.DependencyInjection.Extensions;
+global using Microsoft.Extensions.Options;

@@ -15,7 +15,7 @@ public abstract class DaprCallerBase : CallerBase
 
     public override void UseCallerExtension() => UseDapr();
 
-    protected virtual void UseDapr()
+    protected virtual DefaultDaprClientBuilder UseDapr()
     {
         CallerOptions.UseDapr(opt =>
         {
@@ -26,5 +26,6 @@ public abstract class DaprCallerBase : CallerBase
                 opt.Configure = Configure;
             }
         });
+        return new DefaultDaprClientBuilder(CallerOptions.Services, Name);
     }
 }

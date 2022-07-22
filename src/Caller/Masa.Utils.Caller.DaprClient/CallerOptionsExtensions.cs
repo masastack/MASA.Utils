@@ -23,7 +23,7 @@ public static class CallerOptionsExtensions
         });
 
         AddCallerExtensions.AddCaller(callerOptions, builder.Name, builder.IsDefault,
-            serviceProvider => new DaprCallerProvider(serviceProvider, builder.AppId));
+            serviceProvider => new DaprCallerProvider(serviceProvider, builder.Name, builder.AppId));
         return callerOptions;
     }
 
