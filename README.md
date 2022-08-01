@@ -1,6 +1,6 @@
 [中](README.zh-CN.md) | EN
 
-# MASA.Utils
+# MASA.Utils [Archived, please see [MASA.Framework](https://github.com/masastack/MASA.Framework)]
 
 MASA.Utils is a library of MASA tools used by projects such as [MASA Stack](https://github.com/masastack) and [MASA Labs](https://github.com/masalabs).
 
