@@ -1,6 +1,6 @@
 中 | [EN](README.md)
 
-# MASA.Utils
+# MASA.Utils [已归档，请看 [MASA.Framework](https://github.com/masastack/MASA.Framework)]
 
 MASA.Utils是MASA的工具库，这些工具被[MASA Stack](https://github.com/masastack)和[MASA Labs](https://github.com/masalabs)等项目使用。
 
